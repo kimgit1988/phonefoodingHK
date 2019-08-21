@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>后台管理系统模板</title>
+	<!-- CSS -->
+<link rel="shortcut icon" href="{$Think.config.Houtai}favicon.ico" type="image/x-icon"/>
+	<link href="{$Think.config.Houtai}css/bootstrap.min.css" rel="stylesheet">
+	<link href="{$Think.config.Houtai}css/animate.min.css" rel="stylesheet">
+	<link href="{$Think.config.Houtai}css/font-awesome.min.css" rel="stylesheet">
+	<link href="{$Think.config.Houtai}css/form.css" rel="stylesheet">
+	<link href="{$Think.config.Houtai}css/calendar.css" rel="stylesheet">
+	<link href="{$Think.config.Houtai}css/style.css" rel="stylesheet">
+	<link href="{$Think.config.Houtai}css/icons.css" rel="stylesheet">
+	<link href="{$Think.config.Houtai}css/generics.css" rel="stylesheet">
+    <link href="{$Think.config.Houtai}css/select2.min.css" rel="stylesheet" /> 
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/summernote.css">
+</head>
+<body>
+	<header id="header" class="media">
+		<a href="" id="menu-toggle"></a>
+		<a class="logo pull-left" href="{:url('index/index')}">后台管理系统</a>
+
+		<div class="media-body">
+			<div class="media" id="top-menu">
+				<!--
+				<div class="pull-right tm-icon">
+					<a href="{:url('index/logout')}">
+						<i class="sa-top-updates"></i>
+						<i class="n-count animated">
+                            退出</i>
+						<span class="pull-right"></span>
+                    </a>
+				</div>
+				-->
+				<div class="text-center pull-right s-widget dropdown m-r-15" id="profile-menu">
+					<a href="" data-toggle="dropdown" class="pull-left">
+						{empty name="$user['head']"}
+						<img class="profile-pic animated" src="{$Think.config.Houtai}img/profile-pic.jpg" alt=""> {else /}<img class="profile-pic animated" src="{$user.head}" alt=""> {/empty}
+					</a>
+					<ul class="dropdown-menu profile-menu">
+						<li>
+							<a href="{:url('back/index/profile')}">个人信息</a> <i class="icon left">&#61903;</i><i class="icon right">&#61815;</i></li>
+
+						<li>
+							<a href="{:url('back/index/proedit')}">修改信息</a> <i class="icon left">&#61903;</i><i class="icon right">&#61815;</i></li>
+						<li>
+							<a onclick="is_loginout();">注销登录</a> <i class="icon left">&#61903;</i><i class="icon right">&#61815;</i></li>
+					</ul>
+					<h4 class="m-0 pull-left userInfo">欢迎登录:{$user.nick}</h4>
+
+				</div>
+				<!-- <div id="time" class="pull-right">
+					<span id="hours"></span> :
+					<span id="min"></span> :
+					<span id="sec"></span>
+				</div>
+
+				<div class="media-body">
+					<input type="text" class="main-search">
+				</div> -->
+			</div>
+		</div>
+	</header>
+
+	<div class="clearfix"></div>
+
+	<section id="main" class="p-relative" role="main">
+
+		<!-- Sidebar -->
+		<aside id="sidebar">
+
+			<!-- Sidbar Widgets -->
+			<!-- 
+			<div class="side-widgets overflow">
+
+				<div class="text-center s-widget m-b-25 dropdown" id="profile-menu">
+					<a href="" data-toggle="dropdown">
+						{empty name="$user['head']"}
+						<img class="profile-pic animated" src="{$Think.config.Houtai}img/
+profile-pic.jpg" alt=""> {else /}<img class="profile-pic animated" src="{$user.head}" alt=""> {/empty}
+
+					</a>
+					<ul class="dropdown-menu profile-menu">
+						<li>
+							<a href="{:url('back/index/profile')}">个人信息</a> <i class="icon left">&#61903;</i><i class="icon right">&#61815;</i></li>
+
+						<li>
+							<a href="{:url('back/index/proedit')}">修改信息</a> <i class="icon left">&#61903;</i><i class="icon right">&#61815;</i></li>
+						<li>
+							<a href="{:url('back/index/logout')}">注销登录</a> <i class="icon left">&#61903;</i><i class="icon right">&#61815;</i></li>
+					</ul>
+					<h4 class="m-0">欢迎登录:{$user.nick}</h4>
+
+				</div>
+
+				< !-- Calendar -- >
+				<div class="s-widget m-b-25">
+					<div id="sidebar-calendar"></div>
+				</div>
+
+				< !-- Feeds -- >
+				<div class="s-widget m-b-25">
+					<h2 class="tile-title">
+                           最新订单
+                        </h2>
+
+					<div class="s-widget-body">
+						<div id="news-feed"></div>
+					</div>
+				</div>
+
+				< !-- Projects -- >
+				<div class="s-widget m-b-25">
+					<h2 class="tile-title">
+                            Projects on going
+                        </h2>
+					<div class="s-widget-body">
+						<div class="side-border">
+							<small>Joomla Website</small>
+							<div class="progress progress-small">
+								<a href="#" data-toggle="tooltip" title="" class="progress-bar tooltips progress-bar-danger" style="width: 100%;" data-original-title="60%">
+									<span class="sr-only">60% Complete</span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			-->
+			<!-- Side Menu -->
+			<ul class="list-unstyled side-menu">
+				{volist name="ruledata" id="rule"}
+				<li class="dropdown" id="{$rule->id}">
+					<a class="{$rule->class}" href="#">
+						<span class="menu-item">{$rule->title}</span>
+					</a>
+					<ul class="list-unstyled menu-item">
+						{volist name="$rule->parent" id="r"}
+						<li>
+							<a href="#" onclick="toHtml('{$Think.config.Url}{$r->name}','{$rule->id}')">{$r->title}</a>
+						</li>
+						
+                       {/volist}
+					</ul>
+				</li>
+				{/volist}
+			
+			</ul>
+			
+		</aside>
+
+		<!-- Content -->
+		{__CONTENT__}
+
+	</section>
+	{include file="public/js"/}
+	<script>
+	function getUrlParam(name)
+	{
+	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+	var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+	if (r!=null) return unescape(r[2]); return null; //返回参数值
+	} 
+	
+	
+	var mid = getUrlParam('mid');
+	if(mid == '' || mid == null){
+		$("#12").addClass('sel');
+	}else{
+		$("#" + mid).addClass('sel');
+	}
+	function toHtml(url, id){
+		if(url.indexOf('?') < 0){
+			url += '?t=m';
+		}
+		var param = "&mid=";
+		var value = id;
+		if(url.indexOf(param) >= 0){
+			
+			var temp = url.substring(url.indexOf(param));
+			
+			if(temp.substr(1).indexOf('&') > 0){
+				
+				temp = temp.substring(0, temp.substr(1).indexOf('&')+1);
+			}
+			if(value == ''){
+				
+				url = url.replace(temp, '');
+			}else{
+				
+				url = url.replace(temp, param + value);
+			}
+		}else if(value != ''){
+			
+			url += param + value;
+		}
+		location.href = url;
+	}
+	function is_loginout()
+	{
+		var r=confirm("是否退出登录")
+		if (r==true){
+			$.ajax({
+		        type: "POST",
+		        url : "{:url('back/index/logout')}",
+		        data: {},
+		        async: true,
+		        success: function(data) {
+		        	if(data.code){
+			            alert(data.msg);
+			            location.href = data.url;
+		        	}else{
+			            alert(data.msg);
+		        	}
+		        },
+		        error: function(request) {
+		        	//$('.captcha-img').attr('src',newurl);
+		            alert('頁面錯誤');
+		        }
+		    });
+		}
+	}
+	</script>
+</body>
+</html>

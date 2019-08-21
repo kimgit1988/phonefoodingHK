@@ -1,0 +1,137 @@
+{layout name="layout" /}
+<!-- Content -->
+<style>
+.btn-default.disabled{
+	background:#ff0000de;
+}
+</style>
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">打印機列表</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('printer/add')}" title="添加打印機" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('printer/index')}">
+				<select class="search-select select2" id="contact" name="contact">
+					<option value="" selected="selected">请选择餐廳</option>
+					{volist name="contact" id="vo"}
+					<option value="{$vo.number}" {if(!empty($param.contact)&&$param.contact==$vo.number)}selected="selected"{/if}>{$vo.name}({$vo.number})</option>
+					{/volist}
+				</select>
+				<select class="search-select select2" id="PrinterBrand" name="PrinterBrand">
+					<option value="" selected="selected">请选择打印機類型</option>
+					{volist name="PrinterBrand" id="vo"}
+					<option value="{$vo.id}" {if(!empty($param.PrinterBrand)&&$param.PrinterBrand==$vo.id)}selected="selected"{/if}>{$vo.brand}-{$vo.brandNumber}</option>
+					{/volist}
+				</select>
+				<input type="text" name="search" class="search-input" placeholder="打印機暱稱" value="{if(!empty($param.search))}{$param.search}{/if}">
+				<button class="search-btn btn-primary">搜索</button>
+				<a class="search-btn btn-primary" href="{:url('printer/food')}">菜品关联设置</a>
+			</form>
+		</header>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				});
+				$("#PrinterBrand").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				});
+			});
+
+		</script> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>打印機暱稱</th>
+									<th>設備編號</th>
+									<th>餐厅名称</th>
+									<th>打印機型號</th>
+									<th>状态</th>
+									<th>操作</th>
+								</tr>
+								{volist name="printer" id="vo"}
+								<tr>
+									<td class="text-left">{$vo.id}</td>
+									<td>{$vo.deviceNick}</td>
+									<td>{$vo.deviceNumber}</td>
+									<td>{$vo.contactName}</td>
+									<td>{$vo.brand}-{$vo.brandNumber}</td>
+									<td>{if($vo['disable'])==1}啟用{else}禁用{/if}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('printer/edit',['id'=>$vo['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('printer/destroy',['id'=>$vo['id']])}',true,'確認刪除?');">删除</div>
+										{if($vo.defaultPrint!=1)}<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('printer/setDefault',['id'=>$vo['id']])}');">設為默認</div>{else}<div class="btn btn-xs btn-default disabled">默認打印機</div>{/if}
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	function href_ajax(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	                location.href = data.url;
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+</script>

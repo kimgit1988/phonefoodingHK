@@ -1,0 +1,147 @@
+{layout name="layout" /}
+
+<style>
+#content .block-area {
+	background: url('/public/static/houtai/img/beijing0.png') no-repeat;
+	background-size: 100% 100%;
+	height: calc(100vh - 85px);
+}
+.t-l{
+	text-align: left;
+}
+.t-c{
+	text-align: center;
+}
+.t-r{
+	text-align: right;
+}
+.tit{
+	font-size: 1.2vw;
+	color: #000;
+}
+.con{
+	font-size: 1.2vw;
+	color: #ae0400;
+	margin-top: 10px;
+	font-weight: 600;
+}
+.body-div{
+	position: relative;
+	width: 38vw;
+	min-height: 385px;
+	margin-left: 17vw;
+	margin-top: 100px;
+}
+.text-div{
+	position: absolute;
+	width: max-content;
+	width: -moz-max-content;
+	width: -webkit-max-content;
+	min-width: 15%;
+}
+.content-div{
+	position: absolute;
+	width: 20vw;
+	height: 20vw;
+	background: url('/public/static/houtai/img/cantingzongshu.png') no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+.t1{
+	top: 3vw;
+	right: 30vw;
+}
+.t2{
+	top: 9vw;
+	right: 32vw;
+}
+.t3{
+	top: 15vw;
+	right: 30vw;
+}
+.t4{
+	top: 3vw;
+	left: 30vw;
+}
+.t5{
+	top: 9vw;
+	left: 32vw;
+}
+.t6{
+	top: 15vw;
+	left: 30vw;
+}
+.img-div{
+	position: absolute;
+	width: max-content;
+	width: -moz-max-content;
+	width: -webkit-max-content;
+	height: -moz-max-content;
+	height: -webkit-max-content;
+	height: 120px;
+	height: max-content;
+	margin: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+} 
+.img-div .tit{
+	font-size: 2vw;
+	color: #fff;
+}
+.img-div .con{
+	font-size: 2.5vw;
+	color: #fff;
+}
+</style>
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title">{$contact.name}</h4>
+
+	<!-- Shortcuts -->
+	<div class="block-area ">
+	<div class="row">
+		<div class="body-div">
+			<div class="text-div t1">
+				<div class="tit t-r">訂單總量</div>
+				<div class="con t-l">{$count.allNum}</div>
+			</div>
+			<div class="text-div t2">
+				<div class="tit t-c">本月訂單</div>
+				<div class="con t-c">{$count.monthNum}</div>
+			</div>
+			<div class="text-div t3">
+				<div class="tit t-l">今日訂單</div>
+				<div class="con t-r">{$count.todayNum}</div>
+			</div>
+			<div class="content-div">
+				<div class="img-div">
+					<div class="tit">餐廳總數</div>
+					<div class="con t-c">{$count.contact}</div>
+				</div>
+			</div>
+			<div class="text-div t4">
+				<div class="tit t-l">交易總額</div>
+				<div class="con t-r">￥{$count.allPrice}</div>
+			</div>
+			<div class="text-div t5">
+				<div class="tit t-c">月交易額</div>
+				<div class="con t-c">￥{$count.monthPrice}</div>
+			</div>
+			<div class="text-div t6">
+				<div class="tit t-r">日交易額</div>
+				<div class="con t-l">￥{$count.todayPrice}</div>
+			</div>
+		</div>
+	</div>
+	
+	</div>
+
+</section>

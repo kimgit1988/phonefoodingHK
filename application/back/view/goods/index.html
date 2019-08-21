@@ -1,0 +1,152 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">菜品管理</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Goods/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('goods/index')}">
+				<select class="search-select select2" id="contact" name="contact">
+					<option value="" selected="selected">请选择餐廳</option>
+					{volist name="contact" id="vo"}
+					<option value="{$vo.number}" {if(!empty($param.contact)&&$param.contact==$vo.number)}selected="selected"{/if}>{$vo.name}({$vo.number})</option>
+					{/volist}
+				</select>
+				<select class="search-select select2" id="category" name="category">
+					<option value="" selected="selected">全部分類</option>
+					{volist name="category" id="vo"}
+					<option value="{$vo.id}" {if(!empty($param.category)&&$param.category==$vo.id)}selected="selected"{/if}>{$vo.name}</option>
+					{/volist}
+				</select>
+				<input type="text" name="search" class="search-input" placeholder="菜品名稱/編號" value="{if(!empty($param.search))}{$param.search}{/if}">
+				<button class="search-btn btn-primary">搜索</button>
+				<a class="search-btn btn-primary" href="{:url('goods/importfood')}">导入菜品</a>
+			</form>
+		</header>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+				$("#contact").change(function(){
+					var contact = $("#contact").val();
+					$.ajax({
+		                type: "POST",
+		                url : '{:url('base/getcategory')}',
+		                data: {contactNumber:contact},
+		                async: true,
+		                success: function(data) {
+		                    var str = '<option value="">全部分類</option>';
+		                    console.log(data.msg);
+		                    if(!$.isEmptyObject(data.msg)){
+			                    $.each(data.msg,function(n,vo) {
+			                    	str += '<option value="'+vo.id+'">'+vo.name+'</option>';
+			                    });
+		                	}
+		                	$("#category").html(str);
+		                },
+		                error: function(request) {
+		                    alert('頁面錯誤');
+		                }
+		            });
+				});
+				$("#category").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script> 
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>菜品ID</th>
+									<th>缩略图</th>
+									<th>菜品编号</th>
+									<th>菜品名称</th>
+									<th>菜品单价</th>
+									<th>菜品分类</th>
+									<th>菜品餐厅</th>
+									<th>菜品状态</th>
+									<th>操作</th>
+								</tr>
+								{volist name="lists" id="Row"}
+								<tr>
+									<td>{$Row->gid}</td>
+									<td><img src="{$Row->thumbnailUrl}" style="max-width: 80px;"></td>
+									<td>{$Row->gnumber}</td>
+									<td>{$Row->gname}</td>
+									<td>{$Row->salePrice}</td>
+									<td>{$Row->categoryName}</td>
+									<td>{$Row->name}{$Row->name} {if(!empty($Row->number))} ({$Row->number}) {/if}</td>
+									<td>{if($Row->gdisable)==1}啟用{else}禁用{/if}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Goods/edit',['id'=>$Row['gid']])}">编辑</a>
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Goods/destroy',['id'=>$Row['gid']])}');">删除</div>
+									</td>
+								</tr>
+								{/volist}
+								
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	function href_ajax(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	                location.href = data.url;
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+</script>

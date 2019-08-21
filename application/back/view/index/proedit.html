@@ -1,0 +1,117 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+    <script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>
+	<h4 class="page-title b-0">编辑个人信息</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/groupdata/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('back/index/proedit')}" class="form-horizontal ajax-form" enctype="multipart/form-data" method="post" id="editform">
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">昵称</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="nick" value="{$userRow.nick}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputpassword" class="col-sm-3 control-label">修改密码</label>
+										<div class="col-sm-5">
+											<input type="password" class="form-control" name="password" placeholder="新密码">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">确认密码</label>
+										<div class="col-sm-5">
+											<input type="password" class="form-control" name="repassword" placeholder="确认新密码">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-3 control-label">头像</label>
+										<div class="col-sm-5">
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<div class="fileupload-new thumbnail small form-control"></div>
+												<div class="fileupload-preview form-control fileupload-exists thumbnail small">
+													<img src="">
+												</div>
+												<span class="btn btn-file btn-alt btn-sm">
+                            					<span class="fileupload-new">Select image</span>
+												<span class="fileupload-exists">Change</span>
+												<input type="file" name="images" />
+												</span>
+												<a href="#" class="btn-sm btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+											</div>
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">修改个人信息</div>
+										</div>
+
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript"> 
+$(function () {  
+	$(".submit").click(function(){
+        var options = {
+            "beforeSubmit" : checkForm,
+            "success" : resultForm,
+            "resetForm" : false,
+            "dataType" : "json"
+        };
+        $("#editform").ajaxSubmit(options);
+    });
+ 
+    function checkForm(formData, form, options) {
+    }
+ 
+    function resultForm(data, status) {
+        //表单完成
+        if(data.code){
+	        alert(data.msg);
+	        window.history.go(-1);
+        }else{
+	        alert(data.msg);
+        }
+    }
+});
+</script>

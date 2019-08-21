@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('第三方支付設置')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/manage.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <script src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+
+</head>
+<body>
+
+<div class="container-div">
+    <div class="title-div">
+        <div class="title" onclick="javascript:location.href='/index.php/mobile/manage/index.html';">
+            <i class="fab-left"></i><span>{:lang('第三方支付設置')}</span>
+        </div>
+    </div>
+    <div class="payset-main">
+            <div class="item-title">{:lang('請選擇支付方式')}</div>
+            {volist name="payment_data" id="vo"}
+            <div class="item-tr-6 b-3">
+                    <span class="item-text">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="{$vo.fileName}"></use>
+                        </svg>
+                        <span>{$vo.name}</span>
+                    </span>
+                <div class="check-box" >
+                    <input type="checkbox" name="paytype" value="{$vo.id}" id="{$vo.code}" {if($vo.status==1)}checked{/if} onclick="show({$vo.id})">
+                    <label for="{$vo.code}">
+                       <span class="check-div">
+                           <span class="inner"></span>
+                       </span>
+                    </label>
+                </div>
+            </div>
+            {/volist}
+        <div class="alert-fail"></div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    function show(id) {
+        $.ajax({
+            type: "POST",
+            url: "{:url('manage/paySet')}",
+            data: {'paytype': id},
+            async: true,
+            success:function (data) {
+                if(data.code){
+                    $('.alert-fail').html('{:lang(\'設置成功\')}').show().delay(1500).fadeOut();
+                }
+            },
+            error:function (msg) {
+                console.log(msg.errorMessage);
+            }
+        });
+    }
+</script>
+</html>

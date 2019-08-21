@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{:lang('測試自動播放')}</title>
+</head>
+<body><div class="container" style="margin:0;padding:0;">
+	<div class="order-main">
+	<div style="width: 100px;height: 100px;border: 1px solid #333;" onclick="audioAutoPlay();">{:lang('播放聲音')}</div>
+	<div style="width: 100px;height: 100px;border: 1px solid #333;" onclick="play();">{:lang('播放聲音')}</div>
+<audio src="STATIC_PATH/assets/mobile/sound/tip.mp3" id="tip" controls>123123</audio>
+</div></div>
+</body>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+	var sound = {};
+	sound.bg = document.getElementById('tip');
+	audioAutoPlay();
+	//背景音乐播放
+function audioAutoPlay(){
+	sound.bg.load();
+	sound.bg.currentTime = 0;
+	play = function(){
+		sound.bg.currentTime = 0;
+		sound.bg.play();  
+		document.removeEventListener("touchstart",play, false);  
+	};  
+    sound.bg.play();  
+    document.addEventListener("WeixinJSBridgeReady", function () {  
+        play();  
+    }, false);  
+    document.addEventListener('YixinJSBridgeReady', function() {  
+        play();  
+    }, false);  
+    document.addEventListener("touchstart",play, false);  
+}
+
+</script>
+</html>

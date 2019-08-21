@@ -1,0 +1,136 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+
+	{include file="public/breadcrumb"/}
+	<!-- 调用select2需要新版jquery -->
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+
+	<h4 class="page-title b-0">用户组编辑</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/groupdata/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header> -->
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-10">
+								<form action="{:url('back/groupdata/edit',['id'=>$ruleRow['id']])}" class="form-horizontal ajax-form" method="post" name="rule" id="edit">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-2 control-label">用户组名称</label>
+										<div class="col-sm-10">
+											<input type="text" class="form-control" name="title" id="inputname" value="{$ruleRow.title}" placeholder="菜单名称">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-2 control-label"> 简单说明 </label>
+										<div class="col-sm-10">
+											<textarea class="form-control" name="remark">{$ruleRow.remark}</textarea>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="" class="col-sm-2 control-label">权限管理</label>
+										<div class="col-sm-10">
+											<div class="widget-group">
+												{volist name="$ruleRows" id="rules"}
+												<div class="widget-box">
+													<div class="widget-header">
+														<h5 class="widget-title">
+                                                    <label >
+                                                        {if condition="in_array($rules['id'], $myRuleRows)"}
+                                                          <input name="rules[]" class="ace ace-checkbox-2 father" checked="checked" type="checkbox" value="{$rules.id}">
+                                                        {else /}
+                                                        <input name="rules[]" class="ace ace-checkbox-2 father" type="checkbox" value="{$rules.id}">
+                                                        {/if}
+                                                        <span class="lbl badge"> {$rules.title} </span> <span class="lbl badge">*勾选某个子类的时候必须勾选它父级，父级的父级*</span>
+                                                    </label>
+                            </h5>
+													</div>
+													<div class="widget-body  in">
+														<div class="widget-main row ">
+															{volist name="$rules->parents" id="rule"}
+															<label class="col-xs-12 ">
+                                                    {if condition="in_array($rule['id'], $myRuleRows)"}
+                                                    <input name="rules[]" class="ace ace-checkbox-2 children" checked="checked" type="checkbox" value="{$rule.id}">
+                                                    {else /}
+                                                        <input name="rules[]" class="ace ace-checkbox-2 children" type="checkbox" value="{$rule.id}">
+                                                    {/if}
+                                                        <span class="lbl"> {$rule.title}</span>
+                               </label>
+                             {volist name="$rule->parents" id="ru"}
+															<label class="col-xs-3 col-xs-offset-1">
+                                                    {if condition="in_array($ru['id'], $myRuleRows)"}
+                                                        <input name="rules[]" class="ace ace-checkbox-2 children" type="checkbox" checked="checked" value="{$ru.id}">
+                                                        {else /}
+                                                        <input name="rules[]" class="ace ace-checkbox-2 children" type="checkbox" value="{$ru.id}">
+                                                    {/if}
+                                                        <span class="lbl"> {$ru.title}</span>
+                             </label> 
+                             {/volist} 
+                             {/volist}
+														</div>
+													</div>
+												</div>
+												{/volist}
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-offset-2 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+    $(function () {
+        $(".submit").click(function(){
+            $.ajax({
+                type: "POST",
+                url : '{:url('back/groupdata/edit',['id'=>$ruleRow['id']])}',
+                data: $("#edit").serialize(),
+                async: true,
+                success: function(data) {
+                    if(data.code){
+                        alert(data.msg);
+	            		window.history.go(-1);
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,109 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">商家結算单</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Balance/Sendxls')}" title="send" class="tooltips">
+						<i class="sa-list-message"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('balance/contactstatements')}">
+				<select class="search-select select2" id="contact" name="contact">
+					<option value="" selected="selected">请选择商家</option>
+					{volist name="contact" id="vo"}
+					<option value="{$vo.number}" {if(!empty($param.contact)&&$param.contact==$vo.number)}selected="selected"{/if}>{$vo.name}（{$vo.number}）</option>
+					{/volist}
+				</select>
+				<input type="text" id="account" name="account" class="search-input" placeholder="結算日" value="{if(!empty($param.account))}{$param.account}{/if}" readonly="readonly">
+				<input type="text" id="ctimeStart" name="ctimeStart" class="search-input" placeholder="創建起始時間" value="{if(!empty($param.ctimeStart))}{$param.ctimeStart}{/if}" readonly="readonly">
+				<input type="text" id="ctimeEnd" name="ctimeEnd" class="search-input" placeholder="創建結束時間" value="{if(!empty($param.ctimeEnd))}{$param.ctimeEnd}{/if}" readonly="readonly">
+				<button class="search-btn btn-primary">搜索</button>
+			</form>
+		</header>
+		<script src="{$Think.config.Houtai}js/laydate.js"></script>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "沒有該選項";
+				        }
+				    }
+				});
+			});
+
+		laydate.render({
+		  elem: '#account', //指定元素
+		  type:'date',
+		});
+		laydate.render({
+		  elem: '#ctimeStart', //指定元素
+		  type:'datetime',
+		});
+		laydate.render({
+		  elem: '#ctimeEnd', //指定元素
+		  type:'datetime',
+		});
+		</script> 
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>流水ID</th>
+									<th>商家編號</th>
+									<th>商家名稱</th>
+									<th>结算起始时间</th>
+									<th>结算結束时间</th>
+									<th>結算日</th>
+									<th>結算總額</th>
+									<th>結算金額</th>
+									<th>結算費率</th>
+									<th>結算手續費</th>
+									<th>記錄創建時間</th>
+									<th>操作</th>
+								</tr>
+								{volist name="lists" id="Row"}
+								<tr>
+									<td>{$Row.id}</td>
+									<td>{$Row.contactNumber}</td>
+									<td>{$Row.name}</td>
+									<td>{$Row.accountStartTime}</td>
+									<td>{$Row.accountEndTime}</td>
+									<td>{$Row.merAccountDate}</td>
+									<td>{$Row.balanceTotal}</td>
+									<td>{$Row.balanceMoney}</td>
+									<td>{$Row.balanceRate}</td>
+									<td>{$Row.balancePoundage}</td>
+									<td>{$Row.ctime}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Balance/contactbalance',['contact'=>$Row['contactNumber'],'account'=>$Row['merAccountDate']])}">详情</a>
+										<a class="btn btn-xs btn-default" href="{:url('Balance/downElx',['id'=>$Row['id']])}">下载记录</a>
+									</td>
+								</tr>
+								{/volist}
+								
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <title>{:config('web_title')}</title>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+	<script src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+	<link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+	<link href="STATIC_PATH/assets/wxweb/css/reply.css" rel="stylesheet">
+	<!-- <link href="STATIC_PATH/assets/wxweb/css/order.css" rel="stylesheet"> -->
+	<link href="STATIC_PATH/assets/css/dropload.css" rel="stylesheet" >
+
+</head>
+<div class="head-div">
+	<img class="food-detail-close" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="window.location.href='{$prevurl}'"/>
+	<div class="food-detail-title">留言详情</div>
+</div>
+<div class="scroll-main" id="scroll-main">
+<div class="container-div" id="container-div">
+	<div class="message-div">
+		<div class="message-title">{$message.message_title}</div>
+		<div class="message-user">
+			<div class="message-user-info" style="font-weight: 700;margin-bottom: 1vw;"><span>{$message.name}</span></div>
+			<div class="message-user-info"><span>{$message.message_name}</span>
+				<span style="margin-bottom: 1vw;">
+					{if(!empty($message.message_sex)&&$message.message_sex==1)}(先生)
+					{elseif(!empty($message.message_sex)&&$message.message_sex==2)}(女士)
+					{/if}
+				</span>
+			</div>
+			<div class="message-user-info">
+				<span style="color:#666;">{$message.message_phone}</span>
+			</div>
+			<div class="message-user-info">
+				<span style="color:#666;">{$message.message_email}</span>
+			</div>
+		</div>
+		<!-- <div class="message-content">
+			工商卡的間隔哈盧卡斯的供貨商百多分地方開始膠帶更合適的恐懼感北師大版副書記葉更富有申達股份哈維前無古人氛圍
+		</div> -->
+	</div>
+	<div class="order-list" id="order-list">
+		{volist name="list" id="vo"}
+		{if($vo.reply_type==1)}
+		<div class="reply-div reply-user">
+			<div class="reply-info">
+				{:date('Y-m-d H:i:s',$vo.reply_ctime)}
+			</div>
+			<div class="reply-img">
+				<img src="STATIC_PATH/assets/wxweb/images/reply-user.png" class="register-arrow">
+			</div>
+			<div class="reply-content">
+				<div class="reply-name">我</div>
+				<div class="reply-con">{$vo.reply_content}</div>
+			</div>
+		</div>
+		{else}
+		<div class="reply-div reply-admin">
+			<div class="reply-info">
+				{:date('Y-m-d H:i:s',$vo.reply_ctime)}
+			</div>
+			<div class="reply-img">
+				<img src="STATIC_PATH/assets/wxweb/images/reply-admin.png" class="register-arrow">
+			</div>
+			<div class="reply-content">
+				<div class="reply-name">客戶服務</div>
+				<div class="reply-con">{$vo.reply_content}</div>
+			</div>
+		</div>
+		{/if}
+		{/volist}
+	</div>
+</div>
+</div>
+<div class="foot-div" onclick="window.location.href='{:url('index/sendReply',['messageNo'=>$memberNo])}'">回復</div>
+<!-- <script type="text/javascript">
+
+	var allpage = 1;
+
+	var dropload = $('#scroll-main').dropload({
+		domUp : {
+			domClass   : 'dropload-up',
+			domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加载中...</div>'
+		},
+		domDown : {
+			domClass   : 'dropload-down',
+			domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加载中...</div>',
+			domNoData  : '<div class="dropload-noData"></div>'
+		},
+		loadUpFn : function(me){
+			return;
+		},
+		loadDownFn : function(me){
+			$.ajax({ 
+			    type: "POST",  
+			    url: "{:url('index/getOrder')}",
+			    dataType: 'json',  
+			    data:{  
+			        'page':allpage,
+			    },
+			    success: function (res) {
+					if(res.code==1){
+						if(!$.isEmptyObject(res.msg)){
+							var addorder = '';
+							$.each(res.msg,function(n,vo) {
+							});
+							allpage = allpage+1;
+							$("#order-list").append(addorder);
+							me.resetload();
+						}else{
+							me.lock();
+							me.noData(true);
+							me.resetload();
+							if(allpage==1){
+								var notorder = '<img src="STATIC_PATH/assets/wxweb/images/no-order.png" style="width:50vw;margin-left:25vw;">';
+								$("#container-div").append(notorder);
+							}else{
+								$(".dropload-noData").text('暂无更多');
+							}
+						}
+					}else{
+						me.lock();
+						me.noData();
+						me.resetload();
+						if(allpage==1){
+							var notorder = '<img src="STATIC_PATH/assets/wxweb/images/no-order.png" style="width:50vw;margin-top:25vw;">';
+							$("#container-div").append(notorder);
+						}else{
+							$(".dropload-noData").text('暂无更多');
+						}
+					}
+
+				}
+			});
+		}
+	});
+	dropload.lock('up');
+
+</script> -->
+</body>
+</html>

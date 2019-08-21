@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,minimal-ui" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<meta name="screen-orientation" content="portrait">
+	<meta name="full-screen" content="yes">
+	<meta name="browsermode" content="application">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="apple-mobile-web-app-title" content="豐富點智能點餐系統">
+	<meta name="x5-orientation" content="portrait">
+	<meta name="x5-fullscreen" content="true">
+	<meta name="x5-page-mode" content="app">
+	<meta name="HandheldFriendly" content="true">
+	<meta name="MobileOptimized" content="320">
+	<title>{:lang('菜式')}</title>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<!--<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">-->
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link href="STATIC_PATH/assets/mobile/css/foods.css" rel="stylesheet">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<script>
+        function toDiv(obj, id){
+            $('li.active').removeClass('active');
+            $(obj).parent('li').addClass('active');
+            var target_top = $('#' + id).position().top + $(".food").scrollTop();
+            $(".food").scrollTop(target_top );
+        }
+
+	</script>
+</head>
+<body  data-spy="scroll" data-target="#myScrollspy" data-offset="70">
+<div class="container-div" id="main">
+	  <div class="row head-div">
+		  <i class="fab-left" onclick="window.location.href='{:url(\'manage/foodmanage\')}'"></i>
+		<div class="logo">
+			<img src="{$contact.logoUrl}" />
+			<span>{$contact.name}</span>
+		</div>
+		<div class="no add-btn">{:lang('添加')}</div>
+	  </div>
+	  <div class="container-div">
+		  <div class="search-box">
+			  <div class="search-div">
+				  <i class="fab-search"></i>
+				  <input type="text" class="input-search" placeholder="請輸入菜品名稱" />
+				  <span class="icon-close" onclick="btnclose()">X</span>
+			  </div>
+		  </div>
+		{if(!empty($list))}
+		<div class="row">
+			<nav class="left" id="myScrollspy">
+				<ul class="nav nav-pills flex-column">
+					{volist name="list" id="vo" key="k"}
+					{if(!empty($vo['_child']))}
+					<li class="nav-item {if $k==1} active {/if}" id="{$vo.id}">
+						{if $vo.id==23}
+						<a class="nav-link" href="#food{$vo['id']}" onclick="toDiv(this, 'food{$vo[\'id\']}');return false;"><i class="fab-remmcond"></i>{$vo['name']}</a>
+						{else}
+						<a class="nav-link" href="#food{$vo['id']}" onclick="toDiv(this, 'food{$vo[\'id\']}');return false;">{$vo['name']}</a>
+						{/if}
+					</li>
+					{/if}
+					{/volist}
+				</ul>
+			</nav>
+			<div class="right food" data-spy="scroll" data-target="#myScrollspy">
+				{volist name="list" id="vo"}
+				{if(!empty($vo['_child']))}
+				<div id="food{$vo['id']}" class="right-li">
+					<div class="li-item li-tit">
+						{$vo['name']}
+					</div>
+					{volist name="vo['_child']" id="food"}
+					{if($food['jumpType']==1)}
+					{if($food['disable']==1)}
+					<div class="li-item" onclick="window.location.href='{:url(\'foods/edit\',[\'id\'=>$food[\'id\']])}';">
+						<div>
+							<div class="li-img">
+								<img class="lazy" dataimg="{$food['thumbnailUrl']}" src="STATIC_PATH/assets/img/lazyloadImg.png"  />
+							</div>
+							<div class="li-text">
+								<p class="tit">{$food['name']}</p>
+								<p class="content">{$food['remark']}&nbsp;</p>
+								<p class="price"><span class="price-size">HKD$</span>{$food['salePrice']}</p>
+							</div>
+						</div>
+						<!-- onclick="changeDisable(1,{$food['id']})" -->
+						<!--<div class="num">
+                            &lt;!&ndash;<i class="fab-finish"></i>&ndash;&gt;
+                            <i class="fab-check"></i>
+                        </div>-->
+						<div class="edit">
+							<i class="fab-edit"  onclick="window.location.href='{:url(\'foods/edit\',[\'id\'=>$food[\'id\']])}';"></i>
+						</div>
+					</div>
+					{else}
+					<div class="li-item disable" onclick="window.location.href='{:url(\'foods/edit\',[\'id\'=>$food[\'id\']])}';">
+						<div>
+							<div class="li-img">
+								<img class="lazy" dataimg="{$food['thumbnailUrl']}" src="STATIC_PATH/assets/img/lazyloadImg.png" />
+							</div>
+							<div class="li-text">
+								<p class="tit">{$food['name']}</p>
+								<p class="content">{$food['remark']}&nbsp;</p>
+								<p class="price"><span class="price-size">HKD$</span>{$food['salePrice']}</p>
+							</div>
+						</div>
+						<!-- onclick="changeDisable(0,{$food['id']})" -->
+						<!--<div class="num">
+                            &lt;!&ndash;<i class="fab-enable"></i>&ndash;&gt;
+                            <i class="fab-check enable"></i>
+                        </div>-->
+						<div class="edit">
+							<i class="fab-edit"  onclick="window.location.href='{:url(\'foods/edit\',[\'id\'=>$food['id']])}';"></i>
+						</div>
+					</div>
+					{/if}
+					{elseif($food['jumpType']==2)}
+					{if($food['status']==1)}
+					<div class="li-item" onclick="window.location.href='{:url(\'setmeal/edit\',[\'id\'=>$food[\'id\']])}';">
+						<div>
+							<div class="li-img">
+								<img class="lazy" dataimg="{$food['thumbnailUrl']}" src="STATIC_PATH/assets/img/lazyloadImg.png" />
+							</div>
+							<div class="li-text">
+								<p class="tit">{$food['name']}</p>
+								<p class="content">{$food['remark']}&nbsp;</p>
+								<p class="price"><span class="price-size">HKD$</span>{$food['totlePrice']}</p>
+							</div>
+						</div>
+						<!-- onclick="changeDisable(1,{$food['id']})" -->
+						<div class="num">
+							<i class="fab-finish" ></i>
+						</div>
+						<div class="edit">
+							<i class="fab-edit"  onclick="window.location.href='{:url(\'setmeal/edit\',[\'id\'=>$food[\'id\']])}';"></i>
+						</div>
+					</div>
+					{else}
+					<div class="li-item disable" onclick="window.location.href='{:url(\'setmeal/edit\',[\'id\'=>$food[\'id\']])}';">
+						<div>
+							<div class="li-img">
+								<img class="lazy" dataimg="{$food['thumbnailUrl']}" src="STATIC_PATH/assets/img/lazyloadImg.png" />
+							</div>
+							<div class="li-text">
+								<p class="tit">{$food['name']}</p>
+								<p class="content">{$food['remark']}&nbsp;</p>
+								<p class="price"><span class="price-size">HKD$</span>{$food['totlePrice']}</p>
+							</div>
+						</div>
+						<!-- onclick="changeDisable(0,{$food['id']})" -->
+						<div class="num">
+							<i class="fab-enable"></i>
+						</div>
+						<div class="edit">
+							<i class="fab-edit"   onclick="window.location.href='{:url(\'setmeal/edit\',[\'id\'=>$food[\'id\']])}';"></i>
+						</div>
+					</div>
+					{/if}
+					{/if}
+					{/volist}
+				</div>
+				{/if}
+				{/volist}
+				<div id="empty" class="right-li">
+					<div id="empty-item" style="height: 150px;"></div>
+				</div>
+			</div>
+		</div>
+		{else}
+		<div class="not">
+			<div class="alert">
+				<p>{:lang('您好')}！</p>
+				<p>{:lang('您暫時無任何菜式')}</p>
+				<p>{:lang('請點擊管理先添加菜式分類')}</p>
+			</div>
+		</div>
+		{/if}
+		  <div class="search-list-wrapper">
+
+		  </div>
+		  <div class="alert-fail"></div>
+	</div>
+	  {include file="common:footer"}
+</div>
+
+<script type="text/javascript">
+	$('#myScrollspy').on('activate.bs.scrollspy', function(e) {
+		var li = $('#myScrollspy').find('li.active');
+		//dv.scrollTop = a.offsetTop - dv.offsetTop;
+		var liTop = $(li)[0].offsetTop;
+		var ulTop = $(".nav")[0].offsetTop;
+		if (liTop < $(".nav").scrollTop() || liTop > ($(".nav").scrollTop() + $(".nav").height() - 100)) {
+			var top = (liTop - ulTop) / 1.5;
+			$(".nav").animate({scrollTop:top + "px"}, 5);
+		}
+	});
+
+	//關閉搜索列表
+	function btnclose(){
+	    $('.input-search').val("");
+	    $('.search-list-wrapper').fadeOut();
+	}
+
+	$('.add-btn').click(function () {
+        swal({
+            text: '{:lang(\'請選擇\')}',
+            showCancelButton: true,
+            confirmButtonText: '{:lang(\'菜式\')}',
+            cancelButtonText: '{:lang(\'套餐\')}',
+            customClass: 'addFM'
+        }).then(function(isConfirm) {
+        	if (isConfirm === true) {
+        		window.location.href="{:url('foods/add')}";
+        	}else if(isConfirm === false){
+        		window.location.href="{:url('setmeal/add')}";
+        	}
+        });
+        
+    });
+
+	function changeDisable(status,id){
+		$.ajax({
+            type: "POST",
+            url : "{:url('changeDisable')}",
+            data: {status:status,id:id},
+            async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/edit-ful.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+                        'title': '{:lang(\'豐富點点餐系统\')}',
+                        'text':data.msg,
+                        'confirmButtonColor':'#AAA',
+                    });
+                }
+            },
+            error: function(request) {
+                swal({
+                    'title': '{:lang(\'豐富點点餐系统\')}',
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonColor':'#AAA',
+                });
+            }
+        });
+
+	}
+
+	function foodEdit(id){
+	    var url = "edit/id/"+id;
+	    window.location.href = '{:url("' + url + '")}';
+	}
+
+	$('.input-search').on('keydown', function (e) {
+		var keyword = $(this).val();
+		if(e.keyCode==13){
+            $.ajax({
+				type:"POST",
+                url:"{:url('foods/index')}",
+				data:{"keyword":keyword},
+				async: true,
+				success:function (res) {
+					if(res.length>0){
+					    var listHtml = '';
+                        listHtml += '<div class="order-item">';
+					    $.each(res,function (index,vo) {
+                            listHtml += '<div id="" class="right-li">'
+                                + '<div class="li-item" onclick="foodEdit('+vo.id+')">'
+                                + '<div class="li-img">';
+								if(vo.thumbnailUrl){
+                                    listHtml += '<img class="lazy"  src="'+vo.thumbnailUrl+'" /></div>';
+								}else{
+                                    listHtml += '<img class="lazy"  src="STATIC_PATH/assets/img/lazyloadImg.png" /></div>';
+								}
+                            listHtml += '<div class="li-text">'
+                                + '<p class="tit">'+vo.name+'</p>'
+								+ '<p class="content">'+vo.remark+'</p>'
+								+ '<p class="price"><span class="price-size">HKD$</span>'+vo.salePrice+'</p>'
+								+ '</div><div class="edit">'
+								+ '<i class="fab-edit"  onclick="foodEdit('+vo.id+')"></i>'
+								+ '</div></div>';
+                        });
+							listHtml += '</div>';
+							$('.search-list-wrapper').html("").append(listHtml).fadeIn();
+
+					}else{
+                        $('.alert-fail').html("{:lang('暫無數據')}").show().delay(1500).fadeOut();
+					}
+                },
+				error:function (msg) {
+					console.log(msg.errorMsg);
+                }
+			});
+		}
+
+    });
+</script>
+
+<script type="text/javascript">
+    var lazyload = {
+        init : function(opt){
+            var that = this,
+                op = {
+                    anim: true,
+                    extend_height:0,
+                    selectorName:"img",
+                    realSrcAtr:"dataimg"
+                };
+            // 合并对象，已有的{anim:true}+用户自定义对象。也就是op = op + opt
+            $.extend(op,opt);
+            // 调用lazyload.img.init(op)函数
+            that.img.init(op);
+        },
+
+        img : {
+            init : function(n){
+                var that = this,
+                    selectorName = n.selectorName,
+                    realSrcAtr = n.realSrcAtr,
+                    anim = n.anim;
+
+                // 要加载的图片是不是在指定窗口内
+                function inViewport( el ) {
+                    // 当前窗口的顶部
+                    var top = window.pageYOffset,
+                        // 当前窗口的底部
+                        btm = window.pageYOffset + window.innerHeight,
+                        // 元素所在整体页面内的y轴位置
+                        elTop = $(el).offset().top;
+                    // 判断元素，是否在当前窗口，或者当前窗口延伸400像素内
+                    return elTop >= top && elTop - n.extend_height <= btm - 100;
+                }
+
+                // 滚动事件里判断，加载图片
+                $(".right").on('scroll', function() {
+                    $(selectorName).each(function(index,node) {
+                        var $this = $(this);
+                        if(!$this.attr(realSrcAtr) || !inViewport(this)){
+                            return;
+                        }
+                        act($this);
+                    })
+                }).trigger('scroll');
+
+                // 展示图片
+                function act(_self){
+                    // 已经加载过了，则中断后续代码
+                    if (_self.attr('lazyImgLoaded')) return;
+                    var img = new Image(),
+                        original = _self.attr('dataimg');
+                    // 图片请求完成后的事件，把dataimg指定的图片，放到src里面，浏览器显示
+                    img.onload = function() {
+                        _self.attr('src', original);
+                        anim && _self.css({ opacity: .2 }).animate({ opacity: 1 }, 280);
+                    };
+                    // 当你设置img.src的时候，浏览器就在发送图片请求了
+                    original && (img.src = original);
+                    _self.attr('lazyImgLoaded', true);
+                }
+            }
+        }
+    };
+
+    /*
+     * selectorName，要懒加载的选择器名称
+     * extend_height  扩展高度
+     * anim  是否开启动画
+     * realSrcAtr  图片真正地址*/
+    lazyload.init({
+        anim:false,
+        selectorName:".lazy"
+    });
+
+    $('.lazy').on('onerror', function (e) {
+        var img = e.srcElement;
+        img.src="STATIC_PATH/assets/img/lazyloadImg.png";
+        img.onerror=null;
+    });
+
+</script>
+</body>
+</html>

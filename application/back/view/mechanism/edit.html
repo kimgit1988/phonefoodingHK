@@ -1,0 +1,118 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">机构編輯</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Mechanism/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header> -->
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Mechanism/edit')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="edit">
+									<input type="hidden" name="id" value="{$mechanism.id}">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">机构名稱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="name" value="{$mechanism.name}" placeholder="机构名稱">
+										</div>
+									</div>
+
+									<div id="contact_list">
+										<div class="form-group">
+											<label for="inputname" class="col-sm-3 control-label">佣金分组</label>
+											<div class="col-sm-5">
+												<select id="commission" class="form-control select2" name="commission" id="commission">  
+												    <option value="">请选择</option>
+													{volist name="commission" id="vo"}
+													<option value="{$vo.id}" {if($mechanism.commissionId==$vo.id)}selected="selected"{/if}>{$vo.name}({$vo.startNum}-{$vo.endNum})</option>
+													{/volist} 
+												</select>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											{if condition="$mechanism['disable'] eq 1"}
+											<label><input type="radio" name="status" id="status1" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="status" id="status0" value="0" />停用</label>
+											{else /}
+											<label><input type="radio" name="status" id="status1" value="1"/>启用</label>
+											<label><input type="radio" name="status" id="status0" value="0" checked="checked"/>停用</label>
+											{/if}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+											<div class="btn btn-primary" onclick="window.location.href='{:url('mechanism/useredit',['zid'=>$mechanism['zid'],'mechanism'=>$mechanism['id']])}';">修改主账号信息</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">  
+    //页面加载完成后初始化select2控件  
+    $(function () {
+		$(".submit").click(function(){
+            var options = {
+                "beforeSubmit" : checkForm,
+                "success" : resultForm,
+                "resetForm" : false,
+                "dataType" : "json"
+            };
+            $("#edit").ajaxSubmit(options);
+        });
+ 
+        function checkForm(formData, form, options) {
+        }
+ 
+        function resultForm(data, status) {
+            //表单完成
+            if(data.code){
+	            alert(data.msg);
+	            window.history.go(-1);
+            }else{
+	            alert(data.msg);
+            }
+        }
+		$("#commission").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该分类";
+		        }
+		    }
+		});
+	});
+</script>

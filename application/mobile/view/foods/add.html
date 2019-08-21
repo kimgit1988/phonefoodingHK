@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('菜式添加')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/foods-add.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/summernote.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/summernote.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/lang/summernote-zh-CN.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="title-div">
+        <div class="title" onclick="javascript:location.href='{:url(\'foods/index\')}';">
+            <i class="fab-down"></i>{:lang('添加菜式')}
+        </div>
+    </div>
+	<div class="edit-main">
+		<form  action="{:url('add')}" method="post" id="add">
+			<div class="food-input-li">
+                <div class="food-cate-label">{:lang('名稱-繁体')}</div><input name="name" type="text" maxlength="100">
+            </div>
+            <div class="food-input-li">
+                <div class="food-cate-label">{:lang('名稱-英文')}</div><input name="name_en" type="text" maxlength="100">
+            </div>
+            <div class="food-input-li">
+                <div class="food-cate-label">{:lang('名稱-其他语言')}</div><input name="name_other" type="text" maxlength="100">
+            </div>
+        	<div class="food-input-li">
+        		<div class="food-cate-label">{:lang('分類')}</div>
+                <div class="select" id="category" {if empty($category)} onclick="location='{:url(\'manage/addgoodscategory\')}'" {/if}></div>
+                <i class="fab-down"></i>
+                <input type="hidden" name="categoryId" id="categoryId">
+                <input type="hidden" name="categoryName" id="categoryName">
+                <input type="hidden" value="" name="originurl" id="originurl">
+        	</div>
+            <div class="food-input-li">
+                <div class="food-cate-label">{:lang('所屬崗位')}</div>
+                <div class="select" id="department">{:lang('默認崗位')}</div>
+                <i class="fab-down"></i>
+                <input type="hidden" name="departmentId" id="departmentId">
+        </div>
+            <!-- <div class="food-input-li">
+                <div class="food-cate-label">編號</div><input name="number" type="text">
+            </div> -->
+            <div class="food-input-li">
+                <div class="food-cate-label">{:lang('計價方式')}</div>
+                <div class="food-radio-div">
+                    <input name="payType" type="radio" value="1" id="pt1" checked="checked">
+                    <label for="pt1">{:lang('按份計價')}</label>
+                    <input name="payType" type="radio" value="2" id="pt2">
+                    <label for="pt2">{:lang('稱重計價')}</label>
+                </div>
+            </div>
+            <div class="food-input-li">
+                <div class="food-cate-label">{:lang('價格')}(HKD$)</div><input name="price" type="text" maxlength="10">
+            </div>
+            <div class="food-input-li" id="ptselect2">
+                <div class="food-cate-label">{:lang('稱重單位')}</div><input name="payUnit" type="text" maxlength="2">
+            </div>
+            <div class="food-input-li">
+				<div class="food-cate-label f-l">{:lang('圖片上傳')}({:lang('建議解像度')}300*300)</div>
+				<div class="food-cate-img f-r add-img" id="upload-img">
+					<img src="STATIC_PATH/assets/mobile/images/shangchuanzp.png" class="food-img " >
+					<input type="hidden" name="pic_path" id="pic_path">
+					<input type="hidden" name="thumb_path" id="thumb_path">
+				</div>
+				<!--<div class="upload-img f-r">建議分辨率80*80</div>-->
+			</div>
+            <div class="food-input-li remark-div">
+                <div class="food-cate-label-detail">{:lang('備註-繁体')}</div><textarea name="remark" id="remark"></textarea>
+            </div>
+            <div class="food-input-li remark-div">
+                <div class="food-cate-label-detail">{:lang('備註-英文')}</div><textarea name="remark_en" id="remark"></textarea>
+            </div>
+            <div class="food-input-li remark-div">
+                <div class="food-cate-label-detail">{:lang('備註-其他语言')}</div><textarea name="remark_other" id="remark"></textarea>
+            </div>
+            <div class="food-detail">
+                <div class="food-cate-label-detail">{:lang('詳情-繁体')}</div><input type="hidden" name="detail" id="inputdetail"><div id="detail"></div>
+            </div>
+            <div class="food-detail">
+                <div class="food-cate-label-detail">{:lang('詳情-英文')}</div><input type="hidden" name="detail_en" id="inputdetail_en"><div id="detail_en"></div>
+            </div>
+            <div class="food-detail">
+                <div class="food-cate-label-detail">{:lang('詳情-其他语言')}</div><input type="hidden" name="detail_other" id="inputdetail_other"><div id="detail_other"></div>
+            </div>
+            <div class="food-input-li remark-div">
+                <div class="food-cate-label-detail dishes">{:lang('菜式選項')}<i class="fab-add-b" id="add-spec-btn"></i></div>
+                <div class="food-spec">
+
+                </div>
+            </div>
+            <div class="food-input-li spec-div">
+                <div class="add-show" id="add-show">
+                    <div class="add-spec-pdiv">
+                        <div class="add-spec-label">{:lang('名稱')}：</div>
+                        <div class="add-spec-pselect" id="spec-pselect"></div>
+                    </div>
+                    <div class="add-spec-div">
+                        <div class="add-spec-label">{:lang('選項')}：</div>
+                        <div class="add-spec-list">
+                        </div>
+                    </div>
+                    <div class="add-query-btn">
+                        <div class="add-spec-left-btn" id="save-spec-btn">{:lang('保存')}</div>
+                        <div class="add-spec-right-btn" id="reset-spec-btn">{:lang('返回')}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="food-input-li b-n">
+                <div class="food-cate-label">{:lang('是否啟用')}</div>
+                <div class="food-radio-div">
+                    <input name="status" type="radio" value="1" id="label-yes" checked="checked">
+                    <label for="label-yes">{:lang('是')}</label>
+                    <input name="status" type="radio" value="0" id="label-no">
+                    <label for="label-no">{:lang('否')}</label>
+                </div>
+            </div>
+
+        </form>
+    <div class="member-cate-add-btn">{:lang('完成')}</div>
+	</div>
+	<!--<div class="member-cate-add-btn">完成</div>-->
+
+</div>
+<div class="clipbg clipbg-img displaynone">
+    <div id="clipArea1"></div>
+    <div class="loading loading-img displaynone">{:lang('正在載入圖片')}...</div>
+    <div class="footer">
+    <dl>
+        <dd>{:lang('打開相簿')}<input type="file" id="img" accept="image/*" onClick="window.lee.pickImage()"></dd>
+        <dd id="clipBtn-img">{:lang('完成裁剪')}</dd>
+    </dl>
+    <div class="back back-img">{:lang('取消')}</div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).on('click','.spec-input',function (e) {
+        var $this = $(e.target);
+        $this.closest('.food-spec-tr').siblings().find('.spec-input').prop('checked',false);
+    })
+
+    var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+    window.onload=function(){ //在页面整体加载完毕时
+        $('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+        setForm();
+    };
+    function setForm(){
+        var payType = $("input[name='payType']:checked").val();
+        if(payType==2){
+            $("#ptselect2").css('display','flex');
+        }else{
+            $("#ptselect2").hide();
+        }
+    }
+    $("input[name='payType']").on('change', function(event){
+        setForm();
+    });
+    $("#add-spec-btn").click(function(){
+        $(".add-show").show();
+        $("#add-spec-btn").hide();
+    });
+
+    $("#reset-spec-btn").click(function(){
+        $(".add-show").hide();
+        $("#add-spec-btn").show();
+        mobileSelect2.locatePosition(0,0);
+        $('#spec-pselect').html('');
+        $(".add-spec-list").html('');
+    })
+
+    $("#save-spec-btn").click(function(){
+        var selectOption = mobileSelect2.getValue();
+        var addpid = selectOption[0]['id'];
+        var addpname = selectOption[0]['value'];
+        var html = '';
+        if($("#spec-tr-"+addpid).length>0){
+           swal({
+                'text':'{:lang(\'该分類已添加\')}',
+                'confirmButtonText': '{:lang(\'確認\')}',
+                'confirmButtonColor':'#e07a0a',
+                'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                'imageSize': '16x16',
+                'customClass': 'fail'
+            });
+        }else{
+            var regPos = /^[0-9]+\d*(\.\d{0,2})?$|^0?\.\d{0,2}$/; //非负浮点数
+            var set = 1;
+            $(".add-spec-list input.spec-price-edit-aaa").each(function(){
+                var val = $(this).val();
+                if(val==''){
+                    val = 0;
+                }
+                if(!regPos.test(val)) {
+                    set = 0;
+                    swal({
+                        'text':'{:lang(\'價格只能为數字且小數点后最多兩位\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    })
+                    return false;
+                }
+            } );
+            var order = $('.order-bg-color').val();
+            if(set){
+                html += '<div class="food-spec-div" id="spec-tr-'+addpid+'">';
+                html += '<div class="food-spec-title">';
+                html += '<div class="food-spec-label">{:lang(\'名稱\')}：</div>';
+                html += '<div class="food-spec-pname">'+addpname+'</div>';
+                html += '</div>';
+                html += '<div class="food-spec-body"><div class="food-spec-label"></div><div class="food-spec-detail"><span class="default-name">{:lang(\'默認\')}</span><span class="repeat-name">{:lang(\'可重選\')}</span></div></div>';
+                html += '<div class="food-spec-body">';
+                html += '<div class="food-spec-label">{:lang(\'選項\')}：</div>';
+                html += '<div class="food-spec-detail">';
+                $(".add-spec-list .add-spec-price-aa").each(function(){
+                    $this = $(this);
+                    var addid   = $this.attr('data-id');
+                    var addname = $this.attr('data-name');
+                    var addprice = $this.val();
+                    var next = $this.next();
+                    prev = $this.prev();
+                    if(addprice==''){
+                        addprice = 0;
+                    }
+                    html += '<div class="food-spec-tr">';
+                    if(prev.val() == 1){
+                        html += '<input class="spec-input" name="spec[' + addpid + '][' + addid + '][is_default]" type="checkbox" value="'+prev.val()+'" checked="checked" id="label-yes" >';
+                    }else {
+                        html += '<input class="spec-input" name="spec[' + addpid + '][' + addid + '][is_default]" type="checkbox" value="'+prev.val()+'" id="label-yes" >';
+                    };
+                    html += '<div class="food-spec-name">'+addname+'</div>';
+                    html += '<div class="food-spec-price"><span>'+addprice+'</span><input type="text" class="food-spec-price-input" value="'+addprice+'" name="spec['+addpid+']['+addid+'][price]" data-type="'+addpid+'"></div>';
+                    if(next.val()==1) {
+                        html += '<input name="spec[' + addpid + '][' + addid + '][is_repeat]" type="checkbox" value="' + next.val() + '" checked="checked" id="label-yes" >';
+                    }else {
+                        html += '<input name="spec[' + addpid + '][' + addid + '][is_repeat]" type="checkbox" value="' + next.val() + '" id="label-yes" >';
+                    };
+                    html+='<input type="hidden" class="food-spec-price-input  spec-order-bbb" value="'+order+'" name="spec['+addpid+']['+addid+'][order]" data-type="'+addpid+'">';
+                    html += '</div>';
+                });
+                html += '<div class="food-spec-name sort">{:lang(\'排序\')}</div>';
+                html += '<div class="food-spec-price"><span>'+order+'</span><input type="text" class="food-spec-price-input  add-spec-order-aaa" value="'+order+'" data-type="'+addpid+'"></div>';
+                html += '</div>';
+                html += '<div class="food-spec-edit">';
+                html += '<i class="icon-fab-edit" onclick="editSpec(\''+addpid+'\')"></i>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="food-query-btn">';
+                html += '<div class="add-spec-left-btn" onclick="saveSpec(\''+addpid+'\')">{:lang(\'確認\')}</div>';
+                html += '<div class="add-spec-right-btn" onclick="resetSpec(\''+addpid+'\')">{:lang(\'取消\')}</div>';
+                html += '</div>';
+                html += '</div>';
+                $(".add-show").hide();
+                $('.food-spec').append(html);
+                $("#add-spec-btn").show();
+                mobileSelect2.locatePosition(0,0);
+                $('#spec-pselect').html('');
+                $(".add-spec-list").html('');
+            }
+
+        }
+    })
+
+    function editSpec(id){
+        $('spec-tr-'+id+' input')
+        var addid   = $("input[data-type="+id+"]");
+        $("input[data-type="+id+"]").each(function(){
+            $(this).siblings('span').hide();
+            $(this).show();
+        });
+        $(" input[data-type="+id+"] .add-spec-order-aaa").show();
+        $("#spec-tr-"+id+" .food-query-btn").css('display','flex');
+        $("#spec-tr-"+id+" .food-spec-edit").hide();
+    }
+
+    function saveSpec(id){
+        var regPos = /^[0-9]+\d*(\.\d{0,2})?$|^0?\.\d{0,2}$/; //非负浮点数
+        var set = 1;
+        var order = $("#spec-tr-"+id+" .add-spec-order-aaa").val();
+        $("#spec-tr-"+id+" .spec-order-bbb").each(function(){
+            $(this).val(order);
+        });
+        $("input[data-type="+id+"]").each(function(){
+            var val = $(this).val();
+            if(!regPos.test(val)) {
+                set = 0;
+                swal({
+                    'text':'{:lang(\'價格只能为數字且小數点后最多兩位\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                    'imageSize': '16x16',
+                    'customClass': 'success'
+                })
+                return false;
+            }
+        });
+        if(set){
+            $("input[data-type="+id+"]").each(function(){
+                var val = $(this).val();
+                $(this).siblings('span').text(val);
+                $(this).siblings('span').show();
+                $(this).hide();
+            });
+            $("input[data-type="+id+"] .add-spec-order-aaa").hide();
+            $("#spec-tr-"+id+" .food-query-btn").hide();
+            $("#spec-tr-"+id+" .food-spec-edit").show();
+        }
+    }
+
+    function resetSpec(id){
+        $('spec-tr-'+id+' input')
+        var addid   = $("input[data-type="+id+"]");
+        $("input[data-type="+id+"]").each(function(){
+            var val = $(this).siblings('span').text();
+            $(this).siblings('span').show();
+            $(this).val(val);
+            $(this).hide();
+        });
+        $("#spec-tr-"+id+" .food-query-btn").hide();
+        $("#spec-tr-"+id+" .food-spec-edit").show();
+    }
+
+    $("#detail,#detail_en,#detail_other").summernote({
+        minHeight : 150,
+        lang:'zh-CN',
+        disableDragAndDrop: true,
+        dialogsInBody: true,
+        dialogsFade : true,
+        toolbar: [
+            // ['style', ['style']],
+            ['font', ['bold', 'underline']],
+            // ['font', ['bold', 'underline', 'clear']],
+            // ['fontname', ['fontname']],
+            ['color', ['color']],
+            // ['para', ['ul', 'ol', 'paragraph']],
+            // ['table', ['table']],
+            ['insert', ['link', 'picture']],
+            // ['insert', ['link', 'picture', 'video']],
+            // ['view', ['fullscreen', 'codeview', 'help']]
+        ],
+        callbacks : {
+            // onImageUpload的参数为files，summernote支持选择多张图片
+            onImageUpload : function(files) {
+                var $files = $(files);
+                // 通过each方法遍历每一个file
+                $files.each(function() {
+                    var file = this;
+                    // FormData，新的form表单封装，具体可百度，但其实用法很简单，如下
+                    var data = new FormData();
+                    // 将文件加入到file中，后端可获得到参数名为“file”
+                    data.append("image", file);
+                    // ajax上传
+                    $.ajax({
+                        data : data,
+                        type : "POST",
+                        url : "{:url('Foods/uploadImg')}", // div上的action
+                        cache : false,
+                        contentType : false,
+                        processData : false,
+
+                        // 成功时调用方法，后端返回json数据
+                        success : function(data) {
+                            // 状态ok时
+                            if (data.code == 1) {
+                                // 获取后台数据保存的图片完整路径
+                                var imageUrl = data.msg;
+
+                                // 插入到summernote
+                                $("#detail").summernote('insertImage', imageUrl, function($image) {
+                                    // todo，后续可以对image对象增加新的css式样等等，这里默认
+                                    $image[0].style.width="100%";
+                                });
+                            }
+
+                        },
+                        // ajax请求失败时处理
+                        error : function(res){
+
+                        }
+                    });
+                });
+            }
+        }
+
+    })
+
+    var submitInfo = true;
+	$('.member-cate-add-btn').click(function () {
+        if(submitInfo){
+            if (!$("#detail").summernote('isEmpty')) {
+                var detail = $('#detail').summernote('code');
+                var detail_en = $('#detail_en').summernote('code');
+                var detail_other = $('#detail_other').summernote('code');
+                $("#inputdetail").val(detail);
+                $("#inputdetail_en").val(detail_en);
+                $("#inputdetail_other").val(detail_other);
+            }
+            var add = $('#add').serialize();
+            $.ajax({
+                type: "POST",
+                url : "{:url('add')}",
+                data: $('#add').serialize(),
+                async: true,
+                beforeSend: function(){
+                    openloading("STATIC_PATH/assets/img/loading-2.gif");
+                },
+                success: function(data) {
+                    closeloading();
+                    if (data.code) {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/a-dishes-add.png',
+							'imageSize': '16x16',
+							'customClass': 'success'
+						}).then(function(isConfirm) {
+                            location.href = data.url;
+                        });
+                    } else {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+                    closeloading();
+					swal({
+						'text':'{:lang(\'頁面錯誤\')}',
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+        }else{
+            swal({
+                'text':'{:lang(\'圖片上傳中,請稍後\')}',
+				'confirmButtonText': '{:lang(\'確認\')}',
+                'confirmButtonColor':'#e07a0a',
+				'customClass': 'default'
+            });
+        }
+
+    });
+
+    $("#upload-img").click(function(){
+        $(".clipbg-img").fadeIn()
+    })
+
+    function photoclip_obj(imgurl) {
+        var photoclip = new  PhotoClip("#clipArea1", {
+            size: [300, 300],//裁剪框大小
+            outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+            img:imgurl,
+            ok: "#clipBtn-img",
+            loadStart: function() {
+                //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+                var size = img.size;
+                if(size> {:config('UploadSize.logo')}){
+                    swal({
+                        'text':'{:lang(\'圖片大小不能超過\')}{:config("UploadSize.logo")/1024/1024}M！',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'customClass': 'default'
+                    });
+                    return false;
+                }
+                $(".loading-img").removeClass("displaynone");
+
+            },
+            loadComplete: function() {
+                //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+                $(".loading-img").addClass("displaynone");
+
+            },
+            done: function(dataURL) {
+                //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
+                $(".clipbg-img").fadeOut();
+                $(".food-img").attr("src",dataURL);
+                $("#pic_path").val(dataURL);
+                var originurl = $('.photo-clip-rotation-layer img').attr('src');
+                $("#originurl").val(originurl);
+            }
+        });
+    }
+
+    function getimgdata(imgdata){
+        console.log(imgdata);
+        photoclip_obj(imgdata);
+    }
+
+    function getimgurl(base64Codes){
+        console.log(base64Codes);
+        photoclip_obj(base64Codes);
+    }
+
+    var clipAreaImg = new  PhotoClip("#clipArea1", {
+        size: [300, 300],//裁剪框大小
+        outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+        file: "#img",
+        ok: "#clipBtn-img",
+        loadStart: function() {
+        //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+            var size = document.getElementById("img").files[0].size;
+            if(size> {:config('UploadSize.logo')}){
+                swal({
+                    'text':'{:lang(\'圖片大小不能超過\')}{:config("UploadSize.logo")/1024/1024}M！',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'customClass': 'default'
+                });
+                return false;
+            }
+            $(".loading-img").removeClass("displaynone");
+
+        },
+        loadComplete: function() {
+        //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+            $(".loading-img").addClass("displaynone");
+
+        },
+        done: function(dataURL) {
+        //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
+            $(".clipbg-img").fadeOut();
+            $(".food-img").attr("src",dataURL);
+            $("#pic_path").val(dataURL);
+            var originurl = $('.photo-clip-rotation-layer img').attr('src');
+            $("#originurl").val(originurl);
+        }
+    });
+
+    $(".back-img").click(function(){
+        $(".clipbg-img").fadeOut()
+    })
+
+    function setCategory(){
+        var selectOption = mobileSelect1.getValue();
+        $("#categoryId").val(selectOption[0]['id']);
+        $("#categoryName").val(selectOption[0]['value']);
+    }
+
+    function setSpec(){
+        var selectOption = mobileSelect2.getValue();
+        var addpid = selectOption[0]['id'];
+        var addpname = selectOption[0]['value'];
+        var html = '';
+        if(child[selectOption[0]['id']]){
+            $.each(child[selectOption[0]['id']],function(n,vo) {
+                html += '<div class="add-spec-tr">';
+                html += '<div class="add-spec-label">'+vo.name+'</div>';
+                html+='<input type="hidden" value="'+vo.is_default+'" name="spec['+vo.pid+']['+vo.id+'][is_default]">';
+                html += '<input type="text" class="spec-price add-spec-price-aa" data-id="'+vo.id+'" data-pid="'+vo.pid+'" data-name="'+vo.name+'"'+'value="'+vo.spec_price+'">';
+                html+='<input type="hidden" value="'+vo.is_repeat+'" name="spec['+vo.id+']['+vo.pid+'][is_repeat]">';
+                html+='<input type="hidden" class="food-spec-price-input" value="'+vo.spec_order+'" name="spec['+vo.pid+']['+vo.id+'][order]">';
+                html += '</div>';
+            });
+            html += '<div class="add-spec-label sort">{:lang(\'排序\')}</div>';
+            html += '<input type="text" class="spec-price  add-spec-order-aaa order-bg-color" data-id="'+addpid+'" data-name="'+addpname+'" value="1">';
+        }
+        $(".add-spec-list").html(html);
+    }
+
+    var spec = [];
+    var child = {};
+    {volist name='spec' id='vo'}
+        {if(!empty($vo._child))}
+        spec.push({id:{$vo.id},value:'{$vo.spec_name}'});
+        child['{$vo.id}'] = {};
+        {volist name="vo._child" id="child"}
+            child['{$vo.id}']['{$child.id}']={id:{$child.id},pid:{$child.spec_pid},name:'{$child.spec_name}',spec_price:'{$child.spec_price}',is_repeat:'{$child.is_repeat}',is_default:'{$child.is_default}',spec_order:'{$child.spec_order}'};
+        {/volist}
+        {/if}
+    {/volist}
+    if(spec!='[]'&&spec.length>0){
+        var mobileSelect2 = new MobileSelect({
+            trigger: '#spec-pselect',
+            title: '{:lang(\'選項\')}',
+            cancelBtnText:'{:lang(\'取消\')}',
+            ensureBtnText:'{:lang(\'確認\')}',
+            wheels: [
+                {data:spec,},
+            ],
+            callback:setSpec,
+        });
+    }
+        function tip(msg,type){
+            if(type){
+                swal({
+                    'text':msg,
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/a-dishes-add.png',
+                    'imageSize': '16x16',
+                    'customClass': 'success'
+                })
+            }else{
+                swal({
+                    'text':msg,
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        }
+
+        function setDepartment(){
+            var selectOption = mobileSelect3.getValue();
+            $("#departmentId").val(selectOption[0]['id']);
+        }
+
+    // 設置分類選項數組
+    var option = [];
+    {volist name="category" id="vo" key="i"}
+    // 設置分類選項
+    option.push({id:{$vo.id},value:'{$vo.name}'});
+    {/volist}
+
+    if(option!='[]'&&option.length>0){
+        var mobileSelect1 = new MobileSelect({
+            trigger: '#category',
+            title: '{:lang(\'分類\')}',
+            cancelBtnText:'{:lang(\'取消\')}',
+            ensureBtnText:'{:lang(\'確認\')}',
+            wheels: [
+                {data:option,},
+            ],
+            callback:setCategory,
+        });
+    }
+        // 設置部門選項數組
+        var opt = [];
+        {volist name="department" id="vo" key="i"}
+        // 設置分類選項
+        opt.push({id:{$vo.id},value:'{$vo.name}'});
+        {/volist}
+            if(opt.length==0){
+                opt.push({id:0,value:'{:lang(\'默認崗位\')}'});
+            }
+
+            if(opt!='[]'&&opt.length>0){
+                var mobileSelect3 = new MobileSelect({
+                    trigger: '#department',
+                    title: '{:lang(\'所屬崗位\')}',
+                    cancelBtnText:'{:lang(\'取消\')}',
+                    ensureBtnText:'{:lang(\'確認\')}',
+                    wheels: [
+                        {data:opt,},
+                    ],
+                    callback:setDepartment,
+                });
+            }
+
+</script>
+<script type="text/javascript" src="STATIC_PATH/assets/js/scale.js"></script>
+</body>
+</html>

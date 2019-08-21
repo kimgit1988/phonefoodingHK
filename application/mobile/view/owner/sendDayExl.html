@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>店主</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/common.css"/>
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<!-- <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-1.9.1.js"></script> -->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/date.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iscroll.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <link href="STATIC_PATH/assets/mobile/css/normalize3.0.2.min.css" rel="stylesheet"/>
+    <link href="STATIC_PATH/assets/mobile/css/mobiscroll_style.css" rel="stylesheet"/>
+    <link href="STATIC_PATH/assets/mobile/css/mobiscroll.css" rel="stylesheet" />
+    <link href="STATIC_PATH/assets/mobile/css/mobiscroll_date.css" rel="stylesheet" />
+    <script src="STATIC_PATH/assets/mobile/js/mobiscroll_date.js"></script> 
+    <script src="STATIC_PATH/assets/mobile/js/mobiscroll.js"></script> 
+</head>
+<body>
+<style type="text/css">
+	/*#daywrapper{
+		display: none;
+	}*/
+	.order-main{
+		position: relative;
+		float:left;
+		background: none;
+		
+	}
+</style>
+<div class="title-div">
+	<div class="title" onclick="javascript:location.href='{:url('owner/index')}';"><i class="icon-fab-chevron-left"></i>
+		發送日訂單
+	</div>
+</div>
+<div class="container">
+	<div class="order-main">
+		<form  action="{:url('register')}" method="post" id="register" onkeydown="if(event.keyCode==13)return false;">
+            <div class="register-info">
+                <div class="register-input-li-small">
+                    <div class="register-long-label">選擇日期:</div><input id="beginTime"  name="time" type="text" placeholder="選擇日期" value="2018-12-01">
+                </div>
+    		</div>
+    	</form>
+    	<div class="member-cate-add-btn">確認發送</div>
+
+	</div>
+	<div id="datePlugin"></div>
+</div>
+
+</body>
+
+  <script type="text/javascript">
+  	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+
+    $(function () {
+        var currYear = (new Date()).getFullYear();  
+        var opt={};
+        opt.date = {preset : 'date'};
+        opt.datetime = {preset : 'datetime'};
+        opt.time = {preset : 'time'};
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式 
+            mode: 'scroller', //日期选择模式
+            dateFormat: 'yy-mm-dd',
+            lang: 'zh',
+            showNow: true,
+            nowText: "今天",
+            cancelText: "取消",
+            startYear: currYear - 50, //开始年份
+            endYear: currYear + 10 //结束年份
+        };
+
+        $("#beginTime").mobiscroll($.extend(opt['date'], opt['default']));
+
+    });
+
+	$('.member-cate-add-btn').click(function () {
+        $.ajax({
+          type: "POST",
+          url : '{:url('sendDayExl')}',
+          data: $('#register').serialize(),
+          async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+            		    'text':data.msg,
+						'confirmButtonText': '確認',
+            		    'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+            		}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+                        'title': '豐富點智能點餐系统',
+                        'text':'發送失敗',
+                        'confirmButtonColor':'#AAA',
+                    });
+                }
+            },
+            error: function(request) {
+                swal({
+                    'title': '豐富點智能點餐系统',
+                    'text':'頁面錯誤',
+                    'confirmButtonColor':'#AAA',
+                });
+            }
+        });
+    });
+  </script>
+</html>

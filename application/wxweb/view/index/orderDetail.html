@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <!--<meta name="theme-color" content="#ff6600" />-->
+    <title>{:lang('訂單詳情')}</title>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+    <link href="STATIC_PATH/assets/wxweb/css/order.css" rel="stylesheet">
+    <link href="STATIC_PATH/assets/css/dropload.css" rel="stylesheet" >
+    <link href="STATIC_PATH/assets/css/icon.css" rel="stylesheet">
+
+</head>
+<script>
+    $(function(){
+        var X = 0;
+        var moveEndX = 0;
+        var startX = 0;
+        var Y = 0;
+        var moveEndY = 0;
+        var startY = 0;
+        $("#myCarousel").on("touchstart", function(e) {
+            // 判断默认行为是否可以被禁用
+            if (e.cancelable) {
+                // 判断默认行为是否已经被禁用
+                if (!e.defaultPrevented) {
+                    e.preventDefault();
+                }
+            }
+            startX = e.originalEvent.changedTouches[0].pageX,
+                startY = e.originalEvent.changedTouches[0].pageY;
+        });
+        $("#myCarousel").on("touchend", function(e) {
+            // 判断默认行为是否可以被禁用
+            if (e.cancelable) {
+                // 判断默认行为是否已经被禁用
+                if (!e.defaultPrevented) {
+                    e.preventDefault();
+                }
+            }
+            moveEndX = e.originalEvent.changedTouches[0].pageX,
+                moveEndY = e.originalEvent.changedTouches[0].pageY,
+                X = moveEndX - startX,
+                Y = moveEndY - startY;
+            //左滑
+            if ( X > 20 ) {
+                // alert('左滑');
+                $("#carousel-left").click();
+            }
+            //右滑
+            else if ( X < -20 ) {
+                $("#carousel-right").click();
+                // alert('右滑');
+            }
+            /*
+            //下滑
+            else if ( Y > 0) {
+                alert('下滑');
+            }
+            //上滑
+            else if ( Y < 0 ) {
+                alert('上滑');
+            }*/
+            //单击
+            else{
+                var id = $(".carousel-inner>.active").attr('data-val');
+                $.ajax({
+                    type: "POST",
+                    url: "{:url('index/clickbanner')}",
+                    dataType: 'json',
+                    data:{
+                        'id':id,
+                    },
+                    success: function (res) {
+                        if(res.code==1){
+                            window.location.href = res.msg;
+                        }
+                    }
+                });
+            }
+
+        });
+        $('#myCarousel').carousel({interval:5000});
+    });
+</script>
+<body>
+
+<div class="container-div" id="container-div">
+    <div class="head-box">
+        <div class="title">
+            <i class="fab-left" onclick="window.location.href='{:url(\'index/allorder\')}'"></i>{:lang('我的訂單')}
+        </div>
+    </div>
+    <div class="scroll-main" id="scroll-main">
+        <div class="order-list" id="order-list">
+
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    var allpage = 1;
+
+    var dropload = $('#scroll-main').dropload({
+        domUp : {
+            domClass   : 'dropload-up',
+            domRefresh : '<div class="dropload-refresh">↓{:lang(\'下拉更新\')}</div>',
+            domUpdate  : '<div class="dropload-update">↑{:lang(\'釋放更新\')}</div>',
+            domLoad    : '<div class="dropload-load"><span class="load"></span>{:lang(\'加載中\')}...</div>'
+        },
+        domDown: {
+            domClass: 'dropload-down',
+            domRefresh: '',
+            domLoad: '<div class="dropload-load"><span class="load"></span>{:lang(\'加載中\')}...</div>',
+            domNoData: ''
+        },
+        loadUpFn : function(me){
+            window.location.href = "{:url('index/orderdetail',['ordersn'=>$ordersn])}";
+        },
+        loadDownFn : function(me){
+            $.ajax({
+                type: "POST",
+                url: "{:url('index/getOrder')}",
+                dataType: 'json',
+                data:{
+                    'page':allpage,'ordersn':'{$ordersn}',
+                },
+                success: function (res) {
+                    if(res.code==1){
+                        if(!$.isEmptyObject(res.msg)){
+                            var addorder = '';
+                            $.each(res.msg,function(n,vo) {
+                                var sStatu = '';
+                                if(vo.orderStatus==2){
+                                    sStatu = '{:lang(\'等待商家接單\')}';
+                                }else if(vo.orderStatus==3){
+                                    sStatu = '{:lang(\'商家已接單\')}';
+                                    if(vo.addStatus==1){
+                                        sStatu = '{:lang(\'等待商家接單（加單）\')}';
+                                    }
+                                }else if(vo.orderStatus==0){
+                                    sStatu = '{:lang(\'已取消\')}';
+                                }else{
+                                    sStatu = '{:lang(\'已完成\')}';
+                                }
+
+                                addorder += '<div class="order-ul">';
+                                addorder += '<div class="dno">';
+                                addorder += '<div class="no"><span class="icon-status"></span>'+sStatu+'</div></div>';
+                                addorder += '<div class="div-box add">';
+                                addorder += '<div class="order-table-code"><span class="order-table">{:lang(\'餐枱號\')}<em>'+vo.contactMemberName+'</em></span>';
+                                addorder += '<span class="order-code">{:lang(\'取餐碼\')}<em>'+vo.orderAssignedNumber+'</em></span></div>';
+
+                                if(vo.orderStatus==2 || (vo.orderStatus==3 && vo.addStatus==1)){
+                                    var str ='';
+                                    (vo.addStatus==1 && vo.orderStatus==3)? str='({:lang(\'加單\')})' : str='';
+
+                                    addorder += '<div class="head-div"><span class="text-left">{:lang(\'未確定菜式\')}'+str+'</span><span class="text-right">{:lang(\'等待商家接單\')}</span></div>';
+                                    addorder += '<div class="pro printer-table">';
+                                    $.each(vo._food,function(i,food) {
+                                        if(food.addStatus==1 || (vo.orderStatus==2 && food.addStatus==0)){
+                                            if(food.goodsType==3){
+                                                addorder += '<div class="li-meal-item">';
+                                                addorder += '<div class="li-item meal printer-tr">';
+                                                addorder += '<div class="li-text printer-td"><span>'+food.goodsName+'</span></div>';
+                                                addorder += '<div class="pir  printer-td"><span class="pri-text">HK$&nbsp;'+food.goodsPrice+'</span></div>';
+                                                addorder += '<div class="num  printer-td"><span class="num-text">x'+food.num+'</span></div>';
+                                                addorder += '</div>';
+                                                addorder += '<div class="li-foods printer-table">';
+                                                $.each(food._food,function(i,mealFood) {
+                                                    addorder += '<div class="li-item printer-tr">';
+                                                    addorder += '<div class="li-text printer-td"><span>'+mealFood.goodsName+'</span></div>';
+                                                    addorder += '<div class="num  printer-td"><span class="num-text">x'+mealFood.num+'</span></div>';
+                                                    addorder += '</div>';
+                                                });
+                                                addorder += '</div>';
+                                                addorder += '</div>';
+                                            }else{
+                                                addorder += '<div class="li-item printer-tr">';
+                                                addorder += '<div class="li-text printer-td"><span>'+food.goodsName+'</span></div>';
+                                                addorder += '<div class="pir  printer-td"><span class="pri-text">HK$&nbsp;'+food.goodsPrice+'</span></div>';
+                                                addorder += '<div class="num  printer-td"><span class="num-text">x'+food.num+'</span></div>';
+                                                addorder += '</div>';
+                                            }
+                                        }
+
+                                    });
+                                    addorder += '</div></div>';
+                                }
+                                if(vo.orderStatus!=2){
+                                    addorder += '<div class="head-div"><span class="title">{:lang(\'已落單菜式\')}</span></div>';
+                                    addorder += '<div class="pro printer-table">';
+                                    $.each(vo._food,function(i,food) {
+                                        if(food.addStatus==0){
+                                            if(food.goodsType==3){
+                                                addorder += '<div class="li-meal-item">';
+                                                addorder += '<div class="li-item meal printer-tr">';
+                                                addorder += '<div class="li-text printer-td"><span>'+food.goodsName+'</span></div>';
+                                                addorder += '<div class="pir  printer-td"><span class="pri-text">HK$&nbsp;'+food.goodsPrice+'</span></div>';
+                                                addorder += '<div class="num  printer-td"><span class="num-text">x'+food.num+'</span></div>';
+                                                addorder += '</div>';
+                                                addorder += '<div class="li-foods printer-table">';
+                                                $.each(food._food,function(i,mealFood) {
+                                                    addorder += '<div class="li-item printer-tr">';
+                                                    addorder += '<div class="li-text printer-td"><span>'+mealFood.goodsName+'</span></div>';
+                                                    addorder += '<div class="num  printer-td"><span class="num-text">x'+mealFood.num+'</span></div>';
+                                                    addorder += '</div>';
+                                                });
+                                                addorder += '</div>';
+                                                addorder += '</div>';
+                                            }else{
+                                                addorder += '<div class="li-item printer-tr">';
+                                                addorder += '<div class="li-text printer-td"><span>'+food.goodsName+'</span></div>';
+                                                addorder += '<div class="pir  printer-td"><span class="pri-text">HK$&nbsp;'+food.goodsPrice+'</span></div>';
+                                                addorder += '<div class="num  printer-td"><span class="num-text">x'+food.num+'</span></div>';
+                                                addorder += '</div>';
+                                            }
+                                        }
+                                    });
+
+                                    addorder += '</div></div>';
+                                }
+                                addorder += '<div class="div-box"><div class="head-div"><span class="title">{:lang(\'訂單明細\')}</span></div>';
+                                addorder += '<div class="pro printer-table">';
+                                addorder += '<div class="li-item"><div class="li-name">{:lang(\'訂單金額\')}</div><div class="li-count">HK$'+vo.foodsAmount+'</div></div>';
+                                // addorder += '<div class="li-item"><div class="li-name">優惠券-滿50減5</div><div class="li-count">-$5.00</div></div>';
+
+                                if('{:session("contact_info.is_cover_charge")}'==1){
+                                    addorder += '<div class="li-item"><div class="li-name">{:lang(\'茶位費\')}</div><div class="li-count">HK$'+vo.tea_fees+'</div></div>';
+                                }
+                                if('{:session("contact_info.is_service_fee")}'==1) {
+                                    addorder += '<div class="li-item"><div class="li-name">{:lang(\'服務費\')}</div><div class="li-count">Hk$' + vo.service_fees + '</div></div>';
+                                }
+                                if(vo.box_frees>0) {
+                                    addorder += '<div class="li-item"><div class="li-name">{:lang(\'餐盒費\')}</div><div class="li-count">Hk$' + vo.box_frees + '</div></div>';
+                                }
+                                if(vo.discount!=10) {
+                                    addorder += '<div class="li-item"><div class="li-name">{:lang(\'折扣\')}</div><div class="li-count">' + vo.discount + '{:lang(\'折\')}</div></div>';
+                                }
+                                addorder += '</div>';
+                                addorder += '<div class="total">';
+                                addorder += '<div class="total-name">{:lang(\'合計\')}:</div><div class="total-price">HK$&nbsp;'+vo.goodsAmount+'</div>';
+                                addorder += '</div></div>';
+
+                                addorder += '<div class="div-box"><div class="head-div"><span class="title">{:lang(\'訂單信息\')}</span></div>';
+                                addorder += '<div class="pro printer-table">';
+                                // addorder += '<div class="li-item"><div class="li-name">取餐碼</div><div class="li-count">'+vo.orderAssignedNumber+'</div></div>';
+                                addorder += '<div class="li-item"><div class="li-name">{:lang(\'訂單編號\')}</div><div class="li-count">'+vo.orderSN+'</div></div>';
+                                addorder += '<div class="li-item"><div class="li-name">{:lang(\'落單時間\')}</div><div class="li-count">'+vo.create_time+'</div></div>';
+                                addorder += '</div></div>';
+
+
+                                if(vo.orderStatus==2 || vo.orderStatus==3) {
+                                    addorder += '<div class="div-box code"><div class="title-c"><div>{:lang(\'就餐後\')}</div>{:lang(\'您可以通過此二維碼在前台埋單\')}</div><div class="code-img"><img style="width: 100%;" src="'+vo.qrcode+'" alt=""></div></div></div>';
+                                    addorder += '<div class="btn-fix">';
+                                    if (vo.orderStatus == 2 && vo.addStatus == 0) {
+                                        addorder += '<div class="button-normal cancel" onclick="orderCancel(\''+vo.orderSN+'\')">{:lang(\'取消訂單\')}</div>';
+                                    }
+
+                                    addorder += '<div class="button-normal confirm" onclick="window.location.href=\'{:url("index/foodList")}\'">{:lang(\'加單\')}</div></div>';
+                                }
+                                addorder += '</div>';
+                            });
+                            $("#order-list").append(addorder);
+                            setTimeout(function () {
+                                me.resetload();
+                            }, 500);
+                        }else{
+                            setTimeout(function () {
+                                me.lock();
+                                me.noData(true);
+                                me.resetload();
+                            }, 500);
+                            if(allpage==1){
+                                var notorder = '<img src="STATIC_PATH/assets/wxweb/images/no-order.png" style="width:2rem;margin-top:20%;"><div style="font-size: 0.4rem;padding: 0 14vw;text-align:center;margin-top:10px;">{:lang(\'您好！您當前無任何訂單，請返回首頁掃碼點餐。\')}</div>';
+                                $("#container-div").append(notorder);
+                            }else{
+                                $(".dropload-noData").text('{:lang(\'暫無更多\')}');
+                            }
+                        }
+                    }else{
+                        me.lock();
+                        me.noData();
+                        me.resetload();
+                        if(allpage==1){
+                            var notorder = '<img src="STATIC_PATH/assets/wxweb/images/no-order.png" style="width:2rem;margin-top:20%;"><div style="font-size: 0.4rem;padding: 0 14vw;text-align:center;margin-top:10px;">{:lang(\'您好！您當前無任何訂單，請返回首頁掃碼點餐。\')}</div>';
+                            $("#container-div").append(notorder);
+                        }else{
+                            $(".dropload-noData").text('{:lang(\'暫無更多\')}');
+                        }
+                    }
+
+                }
+            });
+        }
+    });
+
+    // 取消訂單
+    function orderCancel(orderSN) {
+        swal({
+            text: "{:lang('確定要取消訂單嗎')}？",
+            // type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#e07a0a",
+            imageUrl: "STATIC_PATH/assets/mobile/images/a-delete.png",
+            confirmButtonText: "{:lang('確認')}",
+            cancelButtonText: "{:lang('取消')}",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            confirmButtonClass: 'btn-order-cancel',
+        }).then(function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    type: "POST",
+                    url: "{:url('index/orderCancel')}",
+                    data: {'orderSN': orderSN},
+                    async: true,
+                    success: function (data) {
+                        if (data.code) {
+                            window.location.href = "{:url('index/orderdetail',['ordersn'=>$ordersn])}";
+                        }
+                    },
+                    error: function (request) {
+                        closeloading();
+                        swal({
+                            'text': '{:lang(\'操作失敗\')}',
+                            'confirmButtonText': '{:lang(\'確認\')}',
+                            'confirmButtonColor': '#e07a0a',
+                            'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                            'imageSize': '16x16',
+                            'customClass': 'fail'
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+</script>
+</body>
+</html>

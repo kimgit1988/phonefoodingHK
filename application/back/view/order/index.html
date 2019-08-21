@@ -1,0 +1,255 @@
+{layout name="layout" /}
+<style type="text/css">
+	.news{
+		background: rgba(203, 206, 212, 0.5);
+	}
+</style>
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script> 
+	<h4 class="page-title b-0">订单管理</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<form method="get" action="{:url('order/index')}">
+				<select class="search-select select2" id="contact" name="contact">
+					<option value="" selected="selected">请选择餐廳</option>
+					{volist name="contact" id="vo"}
+					<option value="{$vo.number}" {if(!empty($param.contact)&&$param.contact==$vo.number)}selected="selected"{/if}>{$vo.name}</option>
+					{/volist}
+				</select>
+				<select class="search-select select2" id="status" name="status">
+					<option value=""selected="selected">请选择状态</option>
+					<option value="0" {if(isset($param.status)&&$param.status==='0')}selected="selected"{/if}>已取消</option>
+					<option value="1" {if(isset($param.status)&&$param.status==='1')}selected="selected"{/if}>未付款</option>
+					<option value="2" {if(isset($param.status)&&$param.status==='2')}selected="selected"{/if}>已下单</option>
+					<option value="3" {if(isset($param.status)&&$param.status==='3')}selected="selected"{/if}>已确认</option>
+					<option value="4" {if(isset($param.status)&&$param.status==='4')}selected="selected"{/if}>已完成</option>
+				</select>
+				<input type="text" id="orderstart" name="orderstart" class="search-input" placeholder="订单起始時間" value="{if(!empty($param.orderstart))}{$param.orderstart}{/if}" readonly="readonly" style="cursor: pointer;">
+				<input type="text" id="orderend" name="orderend" class="search-input" placeholder="订单結束時間" value="{if(!empty($param.orderend))}{$param.orderend}{/if}" readonly="readonly" style="cursor: pointer;">
+				<input type="text" id="paystart" name="paystart" class="search-input" placeholder="支付起始時間" value="{if(!empty($param.paystart))}{$param.paystart}{/if}" readonly="readonly" style="cursor: pointer;">
+				<input type="text" id="payend" name="payend" class="search-input" placeholder="支付结束时间" value="{if(!empty($param.payend))}{$param.payend}{/if}" readonly="readonly" style="cursor: pointer;">
+				<input type="text" name="search" class="search-input" placeholder="订单号" value="{if(!empty($param.search))}{$param.search}{/if}">
+				<button class="search-btn btn-primary">搜索</button>
+				<span>订单总额:{$sum}</span>
+			</form>
+		</header>
+		<script src="{$Think.config.Houtai}js/laydate.js"></script>
+		<script type="text/javascript">
+			laydate.render({
+				elem: '#orderstart', //指定元素
+				type:'datetime',
+			});
+			laydate.render({
+				elem: '#orderend', //指定元素
+				type:'datetime',
+			});
+			laydate.render({
+				elem: '#paystart', //指定元素
+				type:'datetime',
+			});
+			laydate.render({
+				elem: '#payend', //指定元素
+				type:'datetime',
+			});
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+				$("#status").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script> 
+		<div class="vo">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr id="title">
+									<th>订单ID</th>
+									<th>订单编号</th>
+
+									<th>餐厅名称</th>
+									<th>支付金额</th>
+
+									<th>餐桌名称</th>
+									<th>订单总价</th>
+
+									<th>订单状态</th>
+									<th>付款状态</th>
+
+									<th>支付方式</th>
+									<th>支付渠道</th>
+									<th>下单时间</th>
+									<th>通道支付状态</th>
+									<th>支付通道查询状态</th>
+
+									<th>支付时间</th>
+									<th>是/否在服务范围</th>
+									<th colspan="2">订单确认</th>
+									<th>操作</th>
+								</tr>
+								{volist name="lists" id="vo"}
+								{if($vo.orderStatus=='已下单')}
+								<tr class="news">
+								{else /}
+								<tr>
+								{/if}
+									<td>{$vo.id}</td>
+									<td>{$vo.orderSN}</td>
+
+									<td>{$vo.contactName}</td>
+									<td>{$vo.moneyPaid}</td>
+
+									<td>{$vo.contactMemberName}</td>
+									<td>{$vo.goodsAmount}</td>
+
+									<td>{$vo.orderStatus}</td>
+									<td>{$vo.payStatus}</td>
+
+									<td>{$vo.payName}</td>
+									<td>{$vo.payMethodName}</td>
+									<td>{$vo.createTime}</td>
+									<td>
+										{if($vo.methodPayStatus==0)}
+										未提交
+										{elseif($vo.methodPayStatus==1)}
+										已提交
+										{elseif($vo.methodPayStatus==2)}
+										已回调
+										{elseif($vo.methodPayStatus==3)}
+										已完成
+										{/if}
+									</td>
+									<td>
+										{if($vo.methodNotifyStatus==0)}
+										未查询
+										{elseif($vo.methodNotifyStatus==1)}
+										已查询
+										{elseif($vo.methodNotifyStatus==2)}
+										已返回
+										{elseif($vo.methodNotifyStatus==3)}
+										已完成
+										{/if}
+									</td>
+
+									<td>{$vo.payTime}</td>
+									{if($vo.orderInArea=='1')}
+									<td>是</td>
+									{else}
+									<td>否</td>
+									{/if}
+									{if($vo.orderStatus=='已下单')}
+									<td>
+										
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Order/confirm',['id'=>$vo['id'],'action'=>2])}')">确认订单</div>
+									</td>
+									<td>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('Order/cancel',['id'=>$vo['id']])}')">取消订单</div></td>
+									</td>
+									{elseif($vo.orderStatus=='已确认')}
+									<td>
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Order/confirm',['id'=>$vo['id'],'action'=>3])}')">完成订单</div>
+									</td>
+									<td></td>
+									{else}
+									<td></td>
+									<td></td>
+									{/if}
+									<td>
+										<div class="btn btn-xs btn-default" onclick="post_reload('{:url('pay/index/PayQuery',['orderNo'=>$vo['orderSN']])}')">支付查询</div>
+										<a class="btn btn-xs btn-default" href="{:url('Order/detail',['id'=>$vo['id']])}">详情</a>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+	var NewId = {$NewId};
+	var getNewOrder = setInterval("order()",15000);
+	function order(){  
+	    $.ajax({  
+	        type: "POST",  
+	        url: "{:url('Index/newOrders')}",
+	        dataType: 'json',  
+	        data:{  
+	            'NewId':NewId,  
+	        },  
+	        success: function (data) {
+	        	//有新订单
+	        	if(data.code==1){
+	        		var str = data.msg.Order;
+		            NewId = data.msg.NewId;
+	        	}
+	        	$("#title").after(str);
+	        }
+	    });  
+	  
+	}  
+  
+</script>
+
+<script type="text/javascript">
+	function href_ajax(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	                location.href = data.url;
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+	function post_reload(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	                location.reload();
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+</script>

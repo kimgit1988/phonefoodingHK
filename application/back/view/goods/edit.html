@@ -1,0 +1,496 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+    <script type="text/javascript" src="STATIC_PATH/assets/js/jquery-1.8.2.min.js"></script><!-- 移动端富文本 -->
+	<h4 class="page-title b-0">编辑菜品</h4>
+	<!-- 调用select2需要新版jquery -->
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Goods/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header> -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('Goods/edit')}" enctype="multipart/form-data" class="form-horizontal ajax-form" method="post" id="editform">
+									<input type="hidden" name="id" id="inputid" value="{$Goods.id}">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">餐廳選擇</label>
+										<div class="col-sm-11">
+											<select id="contactNumber" class="form-control select2" name="contactNumber">  
+											    <option value="">请选择</option>
+												{volist name="type" id="vo"}
+												{if ($vo.number==$Goods.contactNumber)}
+												<option value="{$vo.number}" selected="selected">{$vo.name}</option>
+												{else}
+												<option value="{$vo.number}">{$vo.name}</option>
+												{/if}
+												{/volist} 
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">菜品分類</label>
+										<div class="col-sm-11">
+											<select id="cCategory" class="form-control select2" name="cCategory">  
+											    <option value="">请选择</option>
+											    {volist name="category" id="vo"}
+											    {if ($vo.id==$Goods.categoryId)}
+											    <option value="{$vo.id}" selected="selected">{$vo.name}</option>
+												{else}
+												<option value="{$vo.id}">{$vo.name}</option>
+												{/if}
+												{/volist} 
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">菜品名-繁體</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="name" id="inputname" placeholder="菜品名" value="{$Goods.name}" maxlength="100">
+										</div>
+									</div>
+                                    <div class="form-group">
+                                        <label for="inputname" class="col-sm-1 control-label">菜品名-英語</label>
+                                        <div class="col-sm-11">
+                                            <input type="text" class="form-control" name="name_en" id="inputname" placeholder="菜品名" value="{$Goods.name_en}" maxlength="100">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputname" class="col-sm-1 control-label">菜品名-其他</label>
+                                        <div class="col-sm-11">
+                                            <input type="text" class="form-control" name="name_other" id="inputname" placeholder="菜品名" value="{$Goods.name_other}" maxlength="100">
+                                        </div>
+                                    </div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="payType"> 计价方式 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="payType" id="pt1" value="1" 
+											{if($Goods['payType']==1)}checked="checked"{/if}/>按份计价</label>
+											<label><input type="radio" name="payType" id="pt2" value="2"
+											{if($Goods['payType']==2)}checked="checked"{/if}/>称重计价</label>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputurl"> 菜品单价 </label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="salePrice" id="inputPrice" placeholder="菜品单价" value="{$Goods.salePrice}" maxlength="10">
+										</div>
+									</div>
+									<div id="ptselect2" style="display: none;">
+										<div class="form-group">
+											<label class="col-sm-1 control-label" for="payUnit"> 称重单位 </label>
+											<div class="col-sm-11">
+												<input type="text" class="form-control" name="payUnit" id="payUnit" placeholder="重量单位(斤,两,克)等" value="{$Goods.payUnit}" maxlength="2">
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">菜品排序</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="sort" id="inputsort" placeholder="菜品排序（数值小的排前面）" value="{$Goods.sort}" maxlength="5">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">图片</label>
+										<div class="col-sm-11">
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<div class="fileupload-new thumbnail big form-control">
+													<img src="{$Goods.thumbnailUrl}"></div>
+												<div class="fileupload-preview form-control fileupload-exists thumbnail big">
+												</div>
+												<span class="btn btn-file btn-alt btn-sm">
+                            					<span class="fileupload-new">Select image</span>
+												<span class="fileupload-exists">Change</span>
+												<input type="file" name="image" id="image" onchange="fileChange(this,1)";/>
+												</span>
+												<a href="#" class="btn-sm btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">详情</label>
+										<div class="col-sm-11">
+											<input type="hidden" class="form-control" name="detail" id="inputdetail">
+											<div id="detail">{$Goods.detail}</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											{if condition="$Goods['disable'] eq 1"}
+											<label><input type="radio" name="disable" id="inputstatus" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="0" />停用</label>
+											{else /}
+											<label><input type="radio" name="disable" id="inputstatus" value="1"/>启用</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="0" checked="checked"/>停用</label>
+											{/if}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputremark"> 备注 </label>
+										<div class="col-sm-11">
+											<textarea name="remark" class="form-control">{$Goods.remark}</textarea>
+										</div>
+									</div>
+
+									<div class="form-group" style="margin-top: 25px;">
+										<label for="inputname" class="col-sm-1 control-label">菜品規格</label>
+										<div class="col-sm-10">
+											<select id="spec" class="form-control select2" name="spec">  
+											    <option value="">请选择</option>
+											    {volist name="spec" id="vo"}
+											    <option value="{$vo.id}">{$vo.spec_name}</option>
+											    {/volist}
+											</select>
+										</div>
+										<div class="col-sm-1">
+											<div class="btn btn-info spec-add">添加</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">規格列表</label>
+										<div class="col-sm-10">
+										<table class="table" id="spec-list">
+											<tr>
+												<th>父级名稱</th>
+												<th>規格名稱</th>
+												<th>價格增量</th>
+												<th>操作</th>
+											</tr>
+											{volist name="gs" id="vo"}
+											{if(!empty($spec[$vo.gs_spec_pid]['_child'][$vo.gs_spec_id]))}
+											<tr id="spec{$vo.gs_spec_id}">
+												<td>{$spec[$vo.gs_spec_pid]['spec_name']}</td>
+												<td>{$spec[$vo.gs_spec_pid]['_child'][$vo.gs_spec_id]['spec_name']}</td>
+												<td>
+													<input type="hidden" name="spec[{$vo.gs_spec_id}][num]" value="{$vo.id}">
+													<input type="hidden" name="spec[{$vo.gs_spec_id}][id]" value="{$vo.gs_spec_id}">
+													<input type="hidden" name="spec[{$vo.gs_spec_id}][pid]" value="{$vo.gs_spec_pid}">
+													<input class="form-control" type="text" name="spec[{$vo.gs_spec_id}][price]" value="{$vo.gs_price}">
+												</td>
+												<td><div class="btn btn-info" onclick="specDel('{$vo.gs_spec_id}')">刪除</div></td></tr>
+											{/if}
+											{/volist}
+										</table>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style>
+	.select2{
+		background: rgba(0, 0, 0, 0.05);
+	    border: 1px solid rgba(255, 255, 255, 0.3);
+	    text-shadow: none;
+	    color: #000;
+	    box-shadow: none;
+	    font-family: open-sans-regular;
+	}
+	.select2-results{
+		color:#000;
+	}
+	.select2-search__field{
+		color:#000;
+	}
+	.note-toolbar-wrapper,.note-toolbar{
+		background-color: #666 !important;
+	}
+</style>
+<script type="text/javascript">
+	function fileChange(target, filetypeid) {
+	    var filepath = target.value;
+	    if (filepath == "") {
+	        return false;
+	    }
+
+	    var fileSize = 0;
+	    var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+	    if (isIE && !target.files) {
+	        var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+	        var file = fileSystem.GetFile(filepath);
+	        fileSize = file.Size;
+	    } else {
+	        fileSize = target.files[0].size;
+	    }
+	    if (fileSize > 10*1024*1024) {
+	        target.value = '';
+	        alert('图片大小不能大于10M！');
+	        return false;
+	    }
+	}
+
+    //页面加载完成后初始化select2控件  
+    $(function () {
+    	setForm();
+    	function setForm(){
+	    	var payType = $("input[name='payType']:checked").val();
+	    	if(payType==2){
+	    		$("#ptselect2").show();
+	    	}else{
+	    		$("#ptselect2").hide();
+	    	}
+	    }
+    	$("input[name='payType']").on('ifChecked', function(event){
+	    	setForm();
+		});
+
+    	var speclist = {
+    		{volist name="spec" id="vo"}
+    		{$vo.id} : {
+    			'name' : '{$vo.spec_name}',
+    			{if(!empty($vo._child))}
+    			'_child' : [
+    				{volist name="vo._child" id="Row"}
+    				{
+    					'id' : '{$Row.id}',
+    					'spec_name' : '{$Row.spec_name}',
+    					'spec_pid' : '{$Row.spec_pid}',
+    				},
+    				{/volist}
+    			],
+    			{/if}
+    		},
+    		{/volist}
+    		//生成spec列表
+    	}; 
+    	$(".spec-add").click(function(){
+        	var specval  = $("#spec").val();
+        	var spectext  = $("#spec").find("option:selected").text();
+        	if(specval!=''&&specval!=undefined&&specval!=null&&JSON.stringify(speclist[specval]) != "{}"&&JSON.stringify(speclist[specval]) != "[]"){
+	        	var addstr;
+	        	if(speclist[specval]._child!=undefined&&(speclist[specval]._child.length>0||JSON.stringify(speclist[specval]._child) != "{}")){
+	        		$.each(speclist[specval]._child,function(n,vo) {
+	        			if($("#spec"+vo.id).length==0){
+			        		addstr += '<tr id="spec'+vo.id+'"><td>'+spectext+'</td><td>'+vo.spec_name+'</td>';
+			        		addstr += '<td><input type="hidden" name="spec['+vo.id+'][id]" value="'+vo.id+'"><input type="hidden" name="spec['+vo.id+'][pid]" value="'+vo.spec_pid+'"><input class="form-control" type="text" name="spec['+vo.id+'][price]" value="0"></td><td><div class="btn btn-info" onclick="specDel(\''+vo.id+'\')">刪除</div></td></tr>';
+	        			}
+		        	});
+	        	}else{
+	        		alert('沒有子規格');
+	        	}
+        		$("#spec-list").append(addstr);
+        	}else{
+        		alert('請選擇正確規格');
+        	}
+        })
+        $("#contactNumber").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该餐廳";
+		        }
+		    }
+		});
+		$("#cCategory").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该分類";
+		        }
+		    }
+		});
+		$("#spec").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该規格";
+		        }
+		    }
+		});
+		$(".submit").click(function(){
+            if (!$("#detail").summernote('isEmpty')) {
+                var detail = $('#detail').summernote('code');
+                $("#inputdetail").val(detail);
+            }
+            var options = {
+                "beforeSubmit" : checkForm,
+                "success" : resultForm,
+                "resetForm" : false,
+                "dataType" : "json"
+            };
+            $("#editform").ajaxSubmit(options);
+        });
+ 
+        function checkForm(formData, form, options) {
+        }
+ 
+        function resultForm(data, status) {
+            //表单完成
+            if(data.code){
+	            alert(data.msg);
+	            window.history.go(-1);
+            }else{
+	            alert(data.msg);
+            }
+        }
+
+		// $(".submit").click(function(){
+		// 	var formData = new FormData($("#editform")[0]);  
+  //           formData.append("image",$("#image")[0]);
+  //           console.log($("#image")[0]);
+  //           if (!$("#detail").summernote('isEmpty')) {
+  //               var detail = $('#detail').summernote('code');
+  //               $("#inputdetail").val(detail);
+  //               formData.append("detail",$("#inputdetail")[0]);
+  //           }
+		// 	$.ajax({
+  //               type: "POST",
+  //               url : '{:url('Goods/edit')}',
+  //               data: $("#editform").serialize(),
+  //               async: true,
+  //               contentType: false, 
+  //       		processData: false,
+  //               success: function(data) {
+  //               	if(data.code){
+	 //                    alert(data.msg);
+	 //                    location.href = data.url;
+  //               	}else{
+	 //                    alert(data.msg);
+  //               	}
+  //               },
+  //               error: function(request) {
+  //                   alert('頁面錯誤');
+  //               }
+  //           });
+		// });
+		$("#contactNumber").change(function(){
+			var contactNumber = $("#contactNumber").val();
+			$.ajax({
+                type: "POST",
+                url : '{:url('base/getcategory')}',
+                data: {contactNumber:contactNumber},
+                async: true,
+                success: function(data) {
+                    var str = '<option value="">请选择</option>';
+                    if(!$.isEmptyObject(data.msg)){
+	                    $.each(data.msg,function(n,vo) {
+	                    	str += '<option value="'+vo.id+'">'+vo.name+'</option>';
+	                    });
+                	}
+                	$("#cCategory").html(str);
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+            $.ajax({
+                type: "POST",
+                url : '{:url('base/getspec')}',
+                data: {contactNumber:contactNumber},
+                async: true,
+                success: function(data) {
+                	speclist = data.msg;
+                    var str = '<option value="">请选择</option>';
+                    if(!$.isEmptyObject(data.msg)){
+	                    $.each(data.msg,function(n,vo) {
+	                    	str += '<option value="'+n+'">'+vo.spec_name+'</option>';
+	                    });
+                	}
+                	$("#spec-list tr:gt(0)").empty();
+                	$("#spec").html(str);
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+		});
+		$("#detail").summernote({
+	        minHeight : 150,
+	        lang:'zh-CN',
+	        disableDragAndDrop: true,
+	        dialogsInBody: true,
+	        dialogsFade : true,
+	        toolbar: [
+	            // ['style', ['style']],
+	            ['font', ['bold', 'underline']],
+	            // ['font', ['bold', 'underline', 'clear']],
+	            // ['fontname', ['fontname']],
+	            ['color', ['color']],
+	            // ['para', ['ul', 'ol', 'paragraph']],
+	            // ['table', ['table']],
+	            ['insert', ['link', 'picture']],
+	            // ['insert', ['link', 'picture', 'video']],
+	            // ['view', ['fullscreen', 'codeview', 'help']]
+	        ],
+	        callbacks : {
+	            // onImageUpload的参数为files，summernote支持选择多张图片
+	            onImageUpload : function(files) {
+	                var $files = $(files);
+	                // 通过each方法遍历每一个file
+	                $files.each(function() {
+	                    var file = this;
+	                    // FormData，新的form表单封装，具体可百度，但其实用法很简单，如下
+	                    var data = new FormData();
+	                    // 将文件加入到file中，后端可获得到参数名为“file”
+	                    data.append("image", file);
+	                    // ajax上传
+	                    $.ajax({
+	                        data : data,
+	                        type : "POST",
+	                        url : '{:url('Base/uploadFoodsImg')}',// div上的action
+	                        cache : false,
+	                        contentType : false,
+	                        processData : false,
+	         
+	                        // 成功时调用方法，后端返回json数据
+	                        success : function(data) {
+	                            // 状态ok时
+	                            if (data.code == 1) {
+	                                // 获取后台数据保存的图片完整路径
+	                                var imageUrl = data.msg;
+	         
+	                                // 插入到summernote
+	                                $("#detail").summernote('insertImage', imageUrl, function($image) {
+	                                    // todo，后续可以对image对象增加新的css式样等等，这里默认
+	                                    $image[0].style.width="100%";
+	                                });
+	                            }
+	         
+	                        },
+	                        // ajax请求失败时处理
+	                        error : function(res){
+
+	                        }
+	                    });
+	                });
+	            }
+	        }
+	    })
+	});
+
+    function specDel(id){
+    	$("#spec"+id).remove();
+    }
+</script> 

@@ -1,0 +1,104 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<!-- 调用select2需要新版jquery -->
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">个人信息</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/groupdata/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('back/index/proedit')}" class="form-horizontal ajax-form" method="post" name="rule" id="edit">
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">昵称</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="nick" value="{$userRow.nick}" disabled="disabled">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">身份</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" value="{$userRow.title}" name="name" disabled="disabled">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-3 control-label">头像</label>
+										<div class="col-sm-5">
+											<img src="{$userRow.head}" style="max-width:100px; max-height:100px;" id="head" class="img-circle upload">
+
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5">
+											{if condition="$userRow['status'] eq 1"}
+											<input type="checkbox" name="status" id="inputstatus" value="1" checked="checked" disabled="disabled" /> {else /}
+											<input type="checkbox" name="status" id="inputstatus" value="0" disabled="disabled" /> {/if}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+										</div>
+
+									</div>
+
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+    $(function () {
+        $(".submit").click(function(){
+            $.ajax({
+                type: "POST",
+                url : '{:url('back/index/profile')}',
+                data: $("#edit").serialize(),
+                async: true,
+                success: function(data) {
+                    if(data.code){
+                        alert(data.msg);
+                        location.href = data.url;
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+        });
+    });
+</script>

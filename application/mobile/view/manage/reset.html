@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('修改資料')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="title-div">
+        <div class="title" onclick="javascript:location.href='{:url(\'manage/index\')}';">
+            <i class="fab-left"></i>{:lang('修改資料')}
+        </div>
+    </div>
+	<div>
+		<form  action="{:url('reset')}" method="post" id="reset">
+            <div class="food-input-li edit-input">
+                <div class="food-cate-label">{:lang('稱呼')}</div><input name="nick" type="text" value="{$user.nick}" maxlength="20">
+            </div>
+            <div class="food-input-li edit-input">
+                <div class="food-cate-label">{:lang('電郵地址')}</div><input name="mail" type="text" value="{$user.email}" maxlength="30">
+            </div>
+			<div class="food-input-li edit-input">
+                <div class="food-cate-label f-l">{:lang('上傳頭像')}<span class="comment">（{:lang('建議解像度')}300*300）</span></div>
+				<div class="food-cate-img f-r" id="upload-img">
+					<img src="{$user.head}" class="food-img">
+                    <!--<img src="STATIC_PATH/assets/mobile/images/shangchuanzp.png" class="food-img " >-->
+					<input type="hidden" name="pic_path" id="pic_path" value="{$user.head}">
+				</div>
+				<!--<div class="upload-img f-r">建議分辨率68*68</div>-->
+			</div>
+            <div class="member-cate-add-btn">{:lang('確認')}</div>
+        </form>
+	</div>
+</div>
+
+<div class="clipbg clipbg-img displaynone">
+    <div id="clipArea1"></div>
+    <div class="loading loading-img displaynone">{:lang('正在载入圖片')}...</div>
+    <div class="footer">
+    <dl>
+        <dd>{:lang('打開相簿')}<input type="file" id="img" accept="image/*" onClick="window.lee.pickImage()"></dd>
+        <dd id="clipBtn-img">{:lang('完成裁剪')}</dd>
+    </dl>
+    <div class="back back-img">{:lang('取消')}</div>
+    </div>
+</div>
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+    var submitInfo = true;
+	$('.member-cate-add-btn').click(function () {
+        if(submitInfo){
+            $.ajax({
+                type: "POST",
+                url : "{:url('reset')}",
+                data: $('#reset').serialize(),
+                async: true,
+                beforeSend: function(){
+                    openloading("STATIC_PATH/assets/img/loading-2.gif");
+                },
+                success: function(data) {
+                    if (data.code) {
+                        closeloading();
+                        swal({
+							'text':data.msg,
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+							'imageSize': '16x16',
+							'customClass': 'success'
+						}).then(function(isConfirm) {
+                            location.href = data.url;
+                        });
+                    } else {
+                        closeloading();
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+                    swal({
+						'text':'{:lang(\'頁面錯誤\')}',
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+        }else{
+            swal({
+                'text':'{:lang(\'圖片上傳中,請稍後\')}',
+                'confirmButtonText': '{:lang(\'確認\')}',
+				'confirmButtonColor':'#e07a0a',
+				'customClass': 'default'
+            });
+        }
+
+    });
+
+    $("#upload-img").click(function(){
+        $(".clipbg-img").fadeIn()
+    })
+
+    function photoclip_obj(imgurl) {
+        var photoclip = new  PhotoClip("#clipArea1", {
+            size: [300, 300],//裁剪框大小
+            outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+            img:imgurl,
+            ok: "#clipBtn-img",
+            loadStart: function() {
+                //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+                var size = img.size;
+                if(size> {:config('UploadSize.logo')}){
+                    swal({
+                        'text':'{:lang(\'圖片大小不能超過\')}{:config("UploadSize.logo")/1024/1024}M！',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'customClass': 'default'
+                    });
+                    return false;
+                }
+                $(".loading-img").removeClass("displaynone");
+
+            },
+            loadComplete: function() {
+                //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+                $(".loading-img").addClass("displaynone");
+
+            },
+            done: function(dataURL) {
+                //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
+                $(".clipbg-img").fadeOut();
+                $(".food-img").attr("src",dataURL);
+                $("#pic_path").val(dataURL);
+            }
+        });
+    }
+
+    function getimgdata(imgdata){
+        photoclip_obj(imgdata);
+    }
+
+    function getimgurl(base64Codes){
+        photoclip_obj(base64Codes);
+    }
+
+    var clipAreaImg = new  PhotoClip("#clipArea1", {
+        size: [300, 300],//裁剪框大小
+        outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+        file: "#img",
+        ok: "#clipBtn-img",
+        loadStart: function() {
+        //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+            var size = document.getElementById("img").files[0].size;
+            if(size> {:config('UploadSize.logo')}){
+                swal({
+                    'text':'logo{:lang(\'圖片大小不能超過\')}{:config("UploadSize.logo")/1024/1024}M！',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'customClass': 'default'
+                });
+                return false;
+            }
+            $(".loading-img").removeClass("displaynone");
+
+        },
+        loadComplete: function() {
+        //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+            $(".loading-img").addClass("displaynone");
+
+        },
+        done: function(dataURL) {
+        //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
+            $(".clipbg-img").fadeOut();
+            $(".food-img").attr("src",dataURL);
+            $("#pic_path").val(dataURL);
+        }
+    });
+
+    //图片剪裁取消
+    $(".back-img").click(function(){
+        $(".clipbg-img").fadeOut()
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,265 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">套餐配置</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Bank/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+ -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Bank/info')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="info">
+									<input type="hidden" name="id" value="{$meal.id}">
+									<div class="form-group">
+										<label class="col-sm-3 control-label">套餐名稱</label>
+										<div class="col-sm-5">
+											<div class="form-control" style="border:none;background: none;">{$meal.name}</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">套餐价格</label>
+										<div class="col-sm-5">
+											<div class="form-control" style="border:none;background: none;">{$meal.totlePrice}</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">分类添加</label>
+										<div class="col-sm-2">
+											<input type="text" class="form-control" id="name" value="" placeholder="分类名" maxlength="20">
+										</div>
+										<div class="col-sm-2">
+											<input type="text" class="form-control" id="categoryMax" value="" placeholder="分类可选数量" maxlength="3">
+										</div>
+										<div class="col-sm-2">
+											<input type="text" class="form-control" id="foodsMax" value="" placeholder="单项可选数量" maxlength="3">
+										</div>
+										<div class="col-sm-2">
+											<input type="text" class="form-control" id="sort" value="" placeholder="分类排序" maxlength="3">
+										</div>
+										<div class="col-sm-1">
+											<div class="btn btn-primary" id="addCategory">添加</div>
+										</div>
+									</div>
+
+									<div id="category-list">
+										{foreach name="list" item="vo" key="key"}
+											<div id="category-number-{$vo.arrkey}">
+												<div class="form-group">
+										    		<label class="col-sm-3 control-label">分类详情</label>
+										    		<input type="hidden" name="categoryList[{$vo.arrkey}][id]" value="{$vo.id}">
+										    		<input type="hidden" name="categoryList[{$vo.arrkey}][name]" value="{$vo.name}">
+										    		<input type="hidden" name="categoryList[{$vo.arrkey}][categoryMax]" value="{$vo.categoryMaxNumber}">
+										    		<input type="hidden" name="categoryList[{$vo.arrkey}][foodsMax]" value="{$vo.goodsMaxNumber}">
+										    		<input type="hidden" name="categoryList[{$vo.arrkey}][sort]" value="{$vo.sort}">
+													<div class="col-sm-2 category-info">分类名:{$vo.name}</div>
+													<div class="col-sm-2 category-info">分类可选数量:{$vo.categoryMaxNumber}</div>
+													<div class="col-sm-2 category-info">单项可选数量:{$vo.goodsMaxNumber}</div>
+													<div class="col-sm-2 category-info">排序:{$vo.sort}</div>
+													<div class="col-sm-1">
+														<div class="btn btn-primary" onclick="delDiv('category-number-{$vo.arrkey}')">删除分类</div>
+													</div>
+												</div>
+												<div class="form-group">
+												<div id="food-list-{$vo.arrkey}">
+													{if(!empty($vo._child))}
+													{foreach name="$vo['_child']" item="val"}
+													<div class="form-group" id="food-{$vo.arrkey}-{$val.id}">
+														<input type="hidden" name="categoryList[{$vo.arrkey}][food][{$val.id}][id]" value="{$val.id}">
+														<input type="hidden" name="categoryList[{$vo.arrkey}][food][{$val.id}][foodid]" value="{$val.gid}">
+														<label class="col-sm-3 control-label"></label>
+														<div class="col-sm-3 category-info">菜品名:{$val.goodsName}</div>
+														<div class="col-sm-1">
+															<div class="btn btn-primary" onclick="delDiv('food-{$vo.arrkey}-{$val.id}')">删除菜品</div>
+														</div>
+													</div>
+													{/foreach}
+													{/if}
+												</div>
+												<label class="col-sm-3 control-label">菜品添加</label>
+												<div class="col-sm-5">
+													<select id="add-food-select-{$vo.arrkey}" class="form-control select2">
+														<option value="">请选择需要添加的菜品</option>
+														{volist name="goods" id="food"}<option value="{$food.id}">{$food.name}</option>{/volist}
+													</select>
+												</div>
+												<script type="text/javascript"> 
+													$(function () {
+														$("#add-food-select-{$vo.arrkey}").select2({
+															language: {
+														    	noResults: function (params) {
+														        	return "没有该选项";
+														        }
+														    }
+														});
+													});
+												</script>
+												<div class="col-sm-1"><div class="btn btn-primary" onclick="addFood('{$vo.arrkey}')">添加</div></div>
+												</div>
+											</div>
+										{/foreach}
+									</div>
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style>
+	.category-info{
+		color: #000;
+	    box-shadow: none;
+	    font-family: open-sans-regular;
+	    -webkit-appearance: none;
+	    text-shadow: 0 0 0 rgba(0,0,0,1);
+	    padding: 6px 12px;
+	    font-size: 14px;
+	    line-height: 1.42857143;
+	}
+</style>
+<script type="text/javascript"> 
+	function addFood(addNumber){
+    	var val = $("#add-food-select-"+addNumber).val();
+    	var text = $("#add-food-select-"+addNumber).find("option:selected").text();
+    	if(val==""){
+    		alert('请选择需要添加的菜品');
+			return false;
+    	}
+		if($("#food-"+addNumber+'-'+val).length>0)
+		{
+			alert('该菜品已添加到该分类');
+			return false;
+		}
+    	var html = '<div class="form-group" id="food-'+addNumber+'-'+val+'"><input type="hidden" name="categoryList['+addNumber+'][food]['+val+'][foodid]" value="'+val+'"><label class="col-sm-3 control-label"></label><div class="col-sm-3 category-info">菜品名:'+text+'</div><div class="col-sm-1"><div class="btn btn-primary" onclick="delDiv(\'food-'+addNumber+'-'+val+'\')">删除菜品</div></div>';
+    	$('#food-list-'+addNumber).append(html);
+    }
+
+    function delDiv(id){
+    	$("#"+id).remove();
+    }
+
+    //页面加载完成后初始化select2控件  
+    $(function () {
+    	var addNumber = {$categoryNumber};
+    	var foodoption = '<option value="">请选择需要添加的菜品</option>{volist name="goods" id="vo"}<option value="{$vo.id}">{$vo.name}</option>{/volist}';
+    	$("#addCategory").click(function(){
+    		var name = $("#name").val();
+    		var categoryMax = $("#categoryMax").val();
+    		var foodsMax = $("#foodsMax").val();
+    		var sort = $("#sort").val()
+    		if(name==""){
+    			alert('请输入分类名称');
+    			return false;
+    		}
+    		if(categoryMax==""){
+    			alert('请输入分类最大可选数');
+    			return false;
+    		}
+    		if(foodsMax==""){
+    			alert('请输入单项最大可选数');
+    			return false;
+    		}
+    		if(sort==""){
+    			sort = 100;
+    		}
+    		if(categoryMax<foodsMax){
+    			alert('分类最大可选数量不能小于单项最大可选数');
+    			return false;
+    		};
+    		var html = '<div id="category-number-'+addNumber+'">'
+    		+'<div class="form-group">'
+    		+'<label class="col-sm-3 control-label">分类详情</label>'
+    		+'<input type="hidden" name="categoryList['+addNumber+'][name]" value="'+name+'">'
+    		+'<input type="hidden" name="categoryList['+addNumber+'][categoryMax]" value="'+categoryMax+'">'
+    		+'<input type="hidden" name="categoryList['+addNumber+'][foodsMax]" value="'+foodsMax+'">'
+    		+'<input type="hidden" name="categoryList['+addNumber+'][sort]" value="'+sort+'">'
+    		+'<div class="col-sm-2 category-info">分类名:'+name+'</div><div  class="col-sm-2 category-info">分类可选数量:'+categoryMax+'</div><div  class="col-sm-2 category-info">单项可选数量:'+foodsMax+'</div><div class="col-sm-2 category-info">排序:'+sort+'</div>'
+    		+'<div class="col-sm-1"><div class="btn btn-primary" onclick="delDiv(\'category-number-'+addNumber+'\')">删除分类</div></div>'
+    		+'</div>'
+    		+'<div id="food-list-'+addNumber+'">'
+    		+'</div>'
+    		+'<div class="form-group">'
+    		+'<label class="col-sm-3 control-label">菜品添加</label>'
+    		+'<div class="col-sm-5"><select id="add-food-select-'+addNumber+'" class="form-control select2">'+foodoption+'</select></div>'
+    		+'<div class="col-sm-1"><div class="btn btn-primary" onclick="addFood(\''+addNumber+'\')">添加</div></div>'
+    		+'</div>'
+    		+'</div>';
+    		$("#category-list").append(html);
+    		$("#name").val('');
+    		$("#categoryMax").val('');
+    		$("#foodsMax").val('');
+    		$("#sort").val('');
+    		addSelect2("add-food-select-"+addNumber);
+    		addNumber++;
+    	});
+
+	    function addSelect2(id){
+	    	$("#"+id).select2({
+			    language: {
+			        noResults: function (params) {
+			            return "没有该选项";
+			        }
+			    }
+			});
+	    } 
+
+    	$("#contactNumber").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该选项";
+		        }
+		    }
+		});
+		$(".submit").click(function(){
+			$.ajax({
+                type: "POST",
+                url : '{:url('setmeal/info')}',
+                data: $("#info").serialize(),
+                async: true,
+                success: function(data) {
+                	if(data.code){
+	                    alert(data.msg);
+	            		window.history.go(-1);
+                	}else{
+	                    alert(data.msg);
+                	}
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+		});
+	});
+</script> 

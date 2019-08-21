@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('管理')}</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/manage.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="container-div">
+	<div class="order-main">
+		<!-- 头部图片 -->
+		<!--<img src="{$contact.bgImageUrl}" class="header">
+		<div class="header-div">
+			<div class="header-icon"><img src="{$contact.logoUrl}"></div>
+			<div class="header-text">
+				<div class="header-name">{:session('mob_user.nick')}</div>
+				<div class="header-contanct">{$contact.name}&nbsp;&nbsp;{if(session('mob_user.is_contact')==1)}店主{else if(session('mob_user.is_contact')==2}店员{/if}</div>
+			</div>
+		</div>-->
+		<div class="title-div">
+			<div class="title" onclick="javascript:location.href='/index.php/mobile/owner/index.html';">
+				<i class="fab-left"></i>{:lang('設置')}
+			</div>
+		</div>
+		<div class="owner-avatar b-2">
+			<img class="avatar" src="{if(!empty($head))}{$head}{else}STATIC_PATH/assets/market/images/user-manage.png{/if}">
+			<div class="owner-name">{:session('mob_user.name')}</div>
+		</div>
+		<div class="owner-list">
+			<div class="li-self-radius">
+				<div class="li-div" onclick="window.location.href='{:url(\'manage/repass\')}'">
+					<i class="fab fab-rpassword"></i>
+					<div class="li-name">{:lang('修改密碼')}</div>
+					<i class="fab-right"></i>
+				</div>
+				<div class="li-div" onclick="window.location.href='{:url(\'manage/reset\')}'">
+					<i class="fab fab-edit"></i>
+					<div class="li-name">{:lang('修改資料')}</div>
+					<i class="fab-right"></i>
+				</div>
+				<!--<div class="li-div">
+					<div class="li-name">通知</div>
+					<i class="fab-right"></i>
+					&lt;!&ndash;<div class="li-arrow"><img src="STATIC_PATH/assets/mobile/images/arrow-next.png" style="height: 4vw;"></div>&ndash;&gt;
+				</div>-->
+			</div>
+			<!--<div class="li-loginout">退出</div>-->
+		</div>
+	</div>
+	{include file="common:footer"}
+</div>
+<script type="text/javascript">
+	$('.li-loginout').click(function () {
+		$.ajax({
+          type: "POST",
+          url : "{:url('manage/loginout')}",
+          data: {},
+          async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+                swal({
+					'text':'{:lang(\'頁面錯誤\')}',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+	});
+</script>
+</body>
+</html>

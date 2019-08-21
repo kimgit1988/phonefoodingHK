@@ -1,0 +1,1 @@
+<div class="footer"> &copy; 2015-2017 <a href="http://www.zcc.com" target="_blank"> www.zcc.com </a> 钟程程个人博客出品</div>

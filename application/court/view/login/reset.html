@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>忘記密碼</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/court/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/court/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/court/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/reset.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/court/js/camera.js/hammer.min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/court/js/camera.js/lrz.all.bundle.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/court/js/camera.js/iscroll-zoom-min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/court/js/camera.js/PhotoClip.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/court/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/court/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<style>
+		body{
+			background-color: #eee;
+		}
+		.register-main{
+			margin-bottom: 0;
+		}
+	</style>
+</head>
+<body>
+<div class="title-div">
+	<img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="javascript:history.back(-1);"/>
+	<div class="title">
+		忘記密碼
+	</div>
+</div>
+<div class="container">
+	<div class="register-main">
+        <div class="register-scroll">
+		<form  action="{:url('reset')}" method="post" id="reset">
+            <div class="register-info">
+                <div class="register-li">
+                    <div class="register-label">用戶名</div><input name="username" type="text">
+                </div>
+                <div class="register-line"></div>
+                <div class="register-li">
+                    <div class="register-label">郵箱</div><input name="email" type="text">
+                </div>
+            </div>
+        </form>
+        </div>
+	</div>
+    <div class="member-cate-add-btn member-btn">重置密碼</div>
+</div>
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+	$('.member-cate-add-btn').click(function () {
+        $.ajax({
+          type: "POST",
+          url : '{:url('reset')}',
+          data: $('#reset').serialize(),
+          async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/court/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/court/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+				swal({
+					'text':'页面错误',
+					'confirmButtonText': '确认',
+					'confirmButtonColor':'#ea831e',
+					'imageUrl': 'STATIC_PATH/assets/court/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

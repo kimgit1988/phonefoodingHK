@@ -1,0 +1,159 @@
+{include file="common:header"}
+<body>
+<div class="index-wrapper">
+    <div class="container">
+        <div class="item-title">請選擇用餐方式</div>
+        <ul class="ul-type">
+            <li class="li-item" onclick="openList()">
+                <input type="radio" name="meal-type" id="here">
+                <label for="here">
+                <img class="icon-type" src="STATIC_PATH/assets/padweb/images/bowl.png" alt="">
+                <div class="text">堂食</div>
+                </label>
+            </li>
+            <li class="li-item" onclick="openList()">
+                <input type="radio" name="meal-type" id="take">
+                <label for="take">
+                <img class="icon-type" src="STATIC_PATH/assets/padweb/images/take.png" alt="">
+                <div class="text">外帶</div>
+                </label>
+            </li>
+        </ul>
+        <div class="item-title">請選擇語言</div>
+        <ul class="ul-language">
+            <li class="li-item">
+                <input type="radio" id="english" name="language">
+                <label for="english">
+                    <i class="fab-English"></i>
+                    <span class="txt">英文</span>
+                </label>
+            </li>
+            <li class="li-item active">
+                <input type="radio" id="chinese" name="language" checked>
+                <label for="chinese">
+                    <i class="fab-chinese"></i>
+                    <span class="txt">中文</span>
+                </label>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<style type="text/css">
+    .index-wrapper {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        background: url('/static/assets/padweb/images/bg.jpg') no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .index-wrapper .container {
+        width: 100%;
+        height: 100%;
+        padding-top: 18%;
+        background-color: rgba(100, 164, 169, .7);
+    }
+
+    .item-title {
+        font-size: 60px;
+        color: #ffffff;
+        text-align: center;
+        margin: 150px 0 97px;
+    }
+
+    .ul-type, .ul-language {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 100px;
+    }
+
+
+    .ul-type a, .ul-type .li-item, .ul-language .li-item {
+        display: inline-block;
+        width: 350px;
+        height: 460px;
+        margin: auto;
+        background-color: #ffffff;
+        color: #000000;
+        text-align: center;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    .ul-type .li-item label{
+        display: inline-block;
+        width: 350px;
+        height: 460px;
+        border-radius: 8px;
+    }
+
+    .ul-language .li-item {
+        height: 120px;
+        line-height: 120px;
+    }
+
+    .ul-language .li-item label{
+        display: inline-block;
+        width: 350px;
+        height: 120px;
+        border-radius: 8px;
+    }
+
+
+    .ul-language .li-item input[type="radio"]:checked + label,
+    .ul-type .li-item input[type="radio"]:checked + label{
+        color: #6DAEB0;
+        box-shadow: 0 -2px 7px 5px rgba(96, 191, 181, 1);
+    }
+
+    .li-item .icon-type {
+        width: 225px;
+        height: 248px;
+        margin: 62px auto;
+    }
+
+    .li-item .text {
+        font-size: 50px;
+    }
+
+    .li-item .txt {
+        font-size: 60px;
+        vertical-align: middle;
+    }
+
+    input[type="radio"] {
+        position: absolute;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    .fab-chinese, .fab-English {
+        display: inline-block;
+        margin-right: 14px;
+        margin-top: 10px;
+        font-size: 62px;
+        color: #6DAEB0;
+        vertical-align: middle;
+    }
+
+    .fab-English {
+        font-size: 66px;
+    }
+    .modal-dialog img{
+        width:80px !important;
+        height: 80px !important;
+    }
+    .modal-backdrop.in{
+        opacity: 0 !important;
+    }
+
+</style>
+<script type="text/javascript">
+    function openList() {
+        openloading("STATIC_PATH/assets/img/loading-2.gif");
+        window.location.href = "{:url('foodList')}";
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('跟餐管理')}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/addmeal.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/manage/foodmanage.html';"></i>
+        <div class="title">{:lang('跟餐管理')}</div>
+    </div>
+    <div class="content-main">
+        {:var_dump($addon_data)}
+        {if($addon_data)}
+        <div class="meal-ul">
+            {volist name="addon_data" id="vo"}
+            <div class="meal-li">
+                <div class="meal-title">
+                    <div class="name" onclick="window.location.href='{:url(\'manage/editmeal\',[\'id\'=>$vo.id])}'">{:lang($vo.name)}</div>
+                    {if($vo.status==1)}
+                        <div class="set">{:lang('啟用')}</div>
+                    {else}
+                        <div class="set no">{:lang('禁用')}</div>
+                    {/if}
+                </div>
+                <div class="meal-text-s">{:lang('包含')}{$vo.foodscount}{:lang('個菜品')} ｜ {:lang('應用到')}{$vo.goodscount}{:lang('個菜品')}</div>
+                <div class="button">
+                    <div class="button-normal set orange" onclick="window.location.href='{:url(\'manage/setmeal\',[\'id\'=>$vo.id])}'">{:lang('設置菜品')}</div>
+                    <div class="button-normal set orange" onclick="window.location.href='{:url(\'manage/mealmanage\',[\'id\'=>$vo.id])}'">{:lang('查看應用菜品')}</div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+        {else}
+        <div class="content-none">
+            <svg class="icon icon-none" aria-hidden="true">
+                <use xlink:href="#icon-none"></use>
+            </svg>
+            <div class="text">暫時未有跟餐</div>
+        </div>
+        {/if}
+        <div class="btn-fix">
+            <div class="button-normal cancel" onclick="window.location.href='{:url(\'manage/addmeal\')}'">{:lang('添加跟餐')}</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

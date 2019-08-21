@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('添加分類')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/foods-add.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/summernote.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/summernote.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/lang/summernote-zh-CN.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body class="food-edit">
+<div class="container-div">
+    <div class="title-div">
+        <div class="title" onclick="javascript:location.href='{:url(\'setmeal/edit\',[\'id\'=>$mid,\'action\'=>2])}'">
+            <i class="fab-left"></i>{:lang('添加分類')}
+        </div>
+    </div>
+    <form  action="{:url('add')}" method="post" id="add">
+    <input type="hidden" name="mid" value="{$mid}">
+	<div class="main edit-main">
+        <div class="food-input-li">
+            <div class="food-cate-label">{:lang('名稱-繁体')}</div><input name="name" type="text" maxlength="20">
+        </div>
+        <div class="food-input-li">
+            <div class="food-cate-label">{:lang('名稱-英文')}</div><input name="name" type="text" maxlength="20">
+        </div>
+        <div class="food-input-li">
+            <div class="food-cate-label">{:lang('名稱-其他')}</div><input name="name" type="text" maxlength="20">
+        </div>
+        
+        <div class="food-input-li">
+            <div class="food-cate-label">{:lang('分類可選數')}</div><input name="categoryNumber" type="text" maxlength="3">
+        </div>
+        <div class="food-input-li">
+            <div class="food-cate-label">{:lang('單項最大數')}</div><input name="goodsMax" type="text" maxlength="3">
+        </div>
+        <div class="food-input-li">
+            <div class="food-cate-label">{:lang('排序')}</div><input name="sort" type="text" maxlength="3">
+        </div>
+	</div>
+	<div class="member-cate-add-btn">{:lang('添加')}</div>
+    </form>
+</div>
+<script type="text/javascript">
+    var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+    window.onload=function(){ //在页面整体加载完毕时
+        $('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+    };
+    var submitInfo = true;
+	$('.member-cate-add-btn').click(function () {
+        if(submitInfo){
+            var add = $('#add').serialize();
+            $.ajax({
+                type: "POST",
+                url : "{:url('addcategory')}",
+                data: $('#add').serialize(),
+                async: true,
+                beforeSend: function(){
+                    openloading("STATIC_PATH/assets/img/loading-2.gif");
+                },
+                success: function(data) {
+                    closeloading();
+                    if (data.code) {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/a-add.png',
+							'imageSize': '16x16',
+							'customClass': 'success'
+						}).then(function(isConfirm) {
+                            location.href='{:url(\'setmeal/edit\',[\'id\'=>$mid,\'action\'=>2])}';
+                        });
+                    } else {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+                    closeloading();
+					swal({
+						'text':'{:lang(\'頁面錯誤\')}',
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+        }else{
+            swal({
+                'text':'{:lang(\'團偏上傳中,請稍後\')}',
+				'confirmButtonText': '{:lang(\'確認\')}',
+                'confirmButtonColor':'#e07a0a',
+				'customClass': 'default'
+            });
+        }
+        
+    });
+
+</script>
+</body>
+</html>

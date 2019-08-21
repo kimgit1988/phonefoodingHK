@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('菜品排行榜')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/dropload.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/rank.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <!-- JS -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script src="http://s1.bdstatic.com/r/www/cache/efe/esl/2-1-6/esl.source.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+
+</head>
+
+<body>
+<div class="container-div">
+     <div class="head-div">
+            <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/owner/index.html';"></i>
+            <div class="title">{:lang('菜品排行榜')}</div>
+        </div>
+     <div class="content-main">
+            <div class="item-tr-5 border-b item-title">
+                {:lang('菜品排行榜')}<span class="title-text-s" onclick="selectRank()">{:lang('顯示近30天數據')}
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icon-up-down"></use>
+                </svg>
+                </span>
+            </div>
+            <div id="rank-scroll" class="rank-scroll">
+                <div class="rank-ul" id="rank-list">
+                </div>
+            </div>
+        </div>
+</div>
+</body>
+
+<script type="text/javascript">
+    var flag = true;
+    showRankList("desc");
+
+    function selectRank() {
+        var order;
+        flag = !flag;
+        flag ? order='desc' : order='asc';
+        showRankList(order);
+    }
+
+    function showRankList(order) {
+        $.ajax({
+            type: "POST",
+            url: "{:url('Foods/topFood')}",
+            dataType: 'json',
+            data:{
+                'order':order
+            },
+            async:true,
+            success: function (res) {
+                if(res.length>1){
+                    var strHtml = '';
+                    $.each(res,function (index,item) {
+                        strHtml += '<div class="rank-item "><span class="item-text">'+item.name+'</span>';
+                        strHtml += '<div class="item-box"><div class="item-data" style="width:'+item.percent+'%;">'+item.food_count+'</div>'
+                        strHtml += '</div></div>';
+                    });
+                    $('#rank-list').html("").append(strHtml);
+                }
+            }
+        });
+    }
+
+</script>
+
+</html>

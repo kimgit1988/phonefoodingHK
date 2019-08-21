@@ -1,0 +1,133 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">编辑餐桌</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('member/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header> -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('member/edit')}" enctype="multipart/form-data" class="form-horizontal ajax-form" method="post" id="edit">
+									<input type="hidden" name="id" id="inputid" value="{$member.id}">
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">餐桌分类</label>
+										<div class="col-sm-11">
+											<select name="contact" class="form-control" id="contact">
+												<option value="">请选择</option>
+												{volist name="contact" id="vo"}
+												{if ($vo.number==$member.contactNumber)}
+												<option value="{$vo.number}" selected="selected">{$vo.name}（{$vo.number}）</option>
+												{else}
+												<option value="{$vo.number}">{$vo.name}（{$vo.number}）</option>
+												{/if}
+												{if(isset($vo.child))}{:getChildOption($vo.child,'child',$member.cCategory)}{/if}
+												{/volist}
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">餐桌名</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="name" id="inputname" placeholder="餐桌名" value="{$member.name}">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">餐桌编号</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="number" id="inputnumber" placeholder="商家编号" value="{$member.number}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											{if condition="$member['disable'] eq 1"}
+											<label><input type="radio" name="disable" id="inputstatus" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="0" />停用</label>
+											{else /}
+											<label><input type="radio" name="disable" id="inputstatus" value="1"/>启用</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="0" checked="checked"/>停用</label>
+											{/if}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputremark"> 备注 </label>
+										<div class="col-sm-11">
+											<textarea name="remark" class="form-control">{$member.remark}</textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+//页面加载完成后初始化select2控件  
+$(function () {  
+	$("#contact").select2({
+	    language: {
+	        noResults: function (params) {
+	            return "没有该分类";
+	        }
+	    }
+	});
+});
+$(".submit").click(function(){
+    var options = {
+        "beforeSubmit" : checkForm,
+        "success" : resultForm,
+        "resetForm" : false,
+        "dataType" : "json"
+    };
+    $("#edit").ajaxSubmit(options);
+});
+
+function checkForm(formData, form, options) {
+}
+
+function resultForm(data, status) {
+    //表单完成
+    if(data.code){
+        alert(data.msg);
+	    window.history.go(-1);
+    }else{
+        alert(data.msg);
+    }
+}
+</script>

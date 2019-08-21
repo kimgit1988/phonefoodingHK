@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <title>{:config('web_title')}</title>
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+    <link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+    <link href="STATIC_PATH/assets/wxweb/css/home.css" rel="stylesheet">
+    <title>{:config('web_title')}</title>
+    <style type="text/css">
+        .title{
+            margin: 40px 0;
+            font-size:20px;
+            text-align: center;
+        }
+        .person-list{
+            display: flex;
+            width:100%;
+            padding:0 20px;
+            flex-wrap: wrap;
+        }
+        .person-list .person-item{
+            display: inline-block;
+            width:25%;
+            height: 40px;
+            line-height: 40px;
+            margin-bottom:18px;
+            list-style: none;
+
+        }
+        .person-item label{
+            display: block;
+        }
+        .person-item label input{
+            display: none;
+        }
+        .person-item .num, .person-item .more{
+            display: block;
+            width:86%;
+            margin:0 auto;
+            border:1px solid #52B293;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: normal;
+            color:#000000;
+        }
+        .person-list .person-item:nth-child(n+13){
+            display: none;
+        }
+        .person-list .person-item:nth-child(4n){
+            margin-right:0;
+        }
+        .btn-confirm{
+            margin:20px;
+            height: 50px;
+            line-height: 50px;
+            font-size:16px;
+            text-align: center;
+            border-radius: 4px;
+            background-color:#52B293;
+            color:#ffffff;
+        }
+        .alert{
+            display: none;
+            position:fixed;
+            top:25%;
+            left:50%;
+            min-width: 100px;
+            padding:15px;
+            font-size:14px;
+            background-color:rgba(0,0,0,.5);
+            color:#ffffff;
+            border-radius:4px;
+            transform:translate3d(-50%,-50%,0);
+        }
+    </style>
+    <?php
+        $currentUrl = url('index/index').'?'.http_build_query($param);
+    ?>
+    <script type="text/javascript">
+        $(function () {
+            $('.more').on('click',function () {
+                $(this).closest('.person-item').remove();
+                $('.person-item').css({
+                    'display': 'inline-block'
+                });
+            });
+            $('.num').on('click',function () {
+                    $('.num').css({
+                        'border-color': '#52B293',
+                        'color': '#000000'
+                    });
+                    $(this).css({
+                        'border': '1px solid #FF5901',
+                        'color': '#FF5901'
+                    });
+            });
+            $('.btn-confirm').on('click',function () {
+                var selNum = $('.person-item input[type=radio]:checked').val();
+                var url = "{$currentUrl}";
+                if(selNum){
+                    window.location.href = url+'&personCount='+selNum;
+                }else{
+                    $('.alert').html('請選擇就餐人數').show().delay(2500).fadeOut();
+                }
+            });
+        })
+    </script>
+</head>
+<body>
+    <div class="container-div">
+        <div class="content">
+            <div class="title">就餐人數</div>
+            <ul class="person-list">
+                {for start='1' end='21' name='i'}
+                {if $i == '12'}
+                <li class="person-item">
+                    <span class="more">....</span>
+                </li>
+                {/if}
+                <li class="person-item">
+                    <label for="num{$i}">
+                        <input type="radio" name="num" id="num{$i}" value="{$i}">
+                        <span class="num">{$i}</span>
+                    </label>
+                </li>
+                {/for}
+            </ul>
+            <div class="btn-confirm">確定</div>
+            <div class="alert"></div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,2599 @@
+{include file="common:header"}
+
+<body>
+<div class="list-wrapper">
+    <div class="slider-wrapper">
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <img src="/static/assets/padweb/images/banner1.jpg" alt="...">
+                </div>
+                <div class="item">
+                    <img src="/static/assets/padweb/images/banner2.jpg" alt="...">
+                </div>
+                <div class="item">
+                    <img src="/static/assets/padweb/images/banner3.jpg" alt="...">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="list-nav">
+        <span class="nav-title" onclick="window.history.back(-1)">
+            <img class="icon-back" src="/static/assets/padweb/images/back.png" alt="">返回
+        </span>
+    </div>
+    <div class="list-container">
+        <!---------左侧菜单--------->
+        <div class="list-left">
+            {if(!empty($list))}
+            <ul class="menu-food">
+                <!----------单品列表---------->
+                {volist name="list" id="vo" key="k"}
+                {if(!empty($vo._food))}
+                <li class="menu-item {if $k==1} active {/if}" onclick="toMealDiv(this,'category{$vo.categoryId}','food')">
+                    <span class="item-name">{if($k==1)}<i class="fab-remmcond"></i>{/if}{if($k==2)}<i class="fab-rice"></i>{/if}{$vo.categoryName}</span>
+                </li>
+                {/if}
+                {/volist}
+                <!----------套餐列表---------->
+                {:dump($mealMenu)}
+                {volist name="mealMenu" id="mo"}
+                {if(!empty($mo._meal) && !empty($mo.categoryName))}
+                    <li class="menu-item meal">
+                        <span class="item-name"><i class="fab-meal"></i>{$mo.categoryName}</span>
+                    </li>
+                    {if(array_key_exists('_meal',$mo))}
+                        <ul class="meal-list">
+                            {volist name="$mo['_meal']" id="m"}
+                            <li class="meal-item" onclick="toMealDiv(this,'{$m.id}','meal');return false">
+                                <a href="#meal{$m.id}" class="nav-link">
+                                <span class="item-name">{$m.name}</span>
+                                </a>
+                            </li>
+                            {/volist}
+                        </ul>
+                    {/if}
+                {/if}
+                {/volist}
+            </ul>
+            {/if}
+        </div>
+        <!---------右侧内容--------->
+        <div class="list-right">
+            <div class="ul-content">
+                <!--------单品--------->
+                {volist name="list" id="vo"}
+                {if(!empty($vo._food))}
+                <div class="list-content" id="food{$vo.categoryId}">
+                    <div class="food-title">{$vo.categoryName}</div>
+                    <div class="food-list">
+                        {volist name="vo._food" id="v" key="k"}
+                        {php}
+                        if(empty($v['imgUrl'])||is_numeric($v['imgUrl']))
+                        {
+                            $rndKey = array_rand($default_images);
+                            $v['imgUrl'] = $default_images[$rndKey];
+                        }
+                        {/php}
+                            <div class="food-item" id="food{$v.id}">
+                            <div class="food-img">
+                                <img class="lazy" dataimg="{$v.imgUrl}" src="STATIC_PATH/assets/wxweb/images/lazyloadImg.png" alt="">
+                            </div>
+                            <div class="food-info">
+                                <div class="food-name">{$v.name}</div>
+                                <div class="food-text">
+                                    <div class="food-price">HKD$<em>{$v.salePrice}</em></div>
+                                        {if(empty($v['_spec']))}
+                                            <div class="food-num">
+                                                <i class="fab-reduce" onclick="reduceCar('{$v.id}',1)"></i>
+                                                <span class="num-text nfood_{$v.id}"></span>
+                                                <i class="fab-add" onclick="addCar('{$v.id}',1)"></i>
+                                            </div>
+                                        {else}
+                                            <div class="food-spec" onclick="selSpec('{$v.id}',1)">選項</div>
+                                        {/if}
+                                </div>
+                            </div>
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+                {/if}
+                {/volist}
+                <!--------套餐--------->
+                {:dump($meal)}
+                {volist name="meal" id="mo"}
+                {if(!empty($mo['_category']))}
+                <div class="list-meal-content " id="meal{$mo.id}">
+                    {volist name="mo._category" id="c"}
+                    <div class="meal-li">
+                        <div class="food-title">
+                            <span class="title-name">{$c.name}</span>
+                            <span class="count">可選擇數量：<span id="maxNumber_{$c.mid}_{$c.id}">{$c.categoryMaxNumber}</span></span>
+                        </div>
+                        <div class="food-list">
+                            {if(!empty($c['_food']))}
+                            {volist name="c._food" id="f" key="k"}
+                            <div class="food-item" id="mealFood{$f.id}">
+                                <div class="food-img">
+                                    <img class="lazy" dataimg="{$f.imgUrl}" src="STATIC_PATH/assets/wxweb/images/lazyloadImg.png" alt="">
+                                </div>
+                                <div class="food-info">
+                                    <div class="food-name">{$f.name}</div>
+                                    <div class="food-text">
+                                        <div class="food-price">HKD$<em>{$f.salePrice}</em></div>
+                                        {if(empty($f['_spec']))}
+                                        <div class="food-num">
+                                            <i class="fab-reduce" onclick="reduceCar('{$f.id}',2)"></i>
+                                            <span class="num-text" id="nmeal_{$f.mid}_{$f.id}"></span>
+                                            <i class="fab-add" onclick="addCar('{$f.id}',2)"></i>
+                                        </div>
+                                        {else}
+                                        <div class="food-spec" onclick="selSpec('{$f.id}',2)">選項</div>
+                                        {/if}
+                                    </div>
+                                </div>
+                            </div>
+                            {/volist}
+                            {/if}
+                        </div>
+                    </div>
+                    {/volist}
+
+                </div>
+                {/if}
+                {/volist}
+            </div>
+        </div>
+    </div>
+    <div class="shopcart">
+        <div class="cart-wrap">
+            <div class="car-img">
+                <i class="fab-shopcart"></i>
+                <div id="cart-count" class="car-num"></div>
+            </div>
+            <div class="total-price">HKD$<em id="total">0.00</em></div>
+        </div>
+        <div class="btn-none hidden" id="setorderMeal">加入</div>
+        <div class="btn-none btn-submit" id="setorder">提交訂單</div>
+    </div>
+    <div class="dialog" >
+        <div class="dialog-wrapper">
+        </div>
+        <div class="dialog-main" id="spec-dialog">
+        </div>
+    </div>
+    <div id="shield"></div>
+    <div class="shopcart-container">
+        <div class="cart-header">
+            <span class="header-name">我的訂單</span>
+            <div class="header-clear"><i class="fab-delete"></i>清空</div>
+        </div>
+        <div class="cart-list">
+        </div>
+    </div>
+
+    <div class="modal fade mealCar" id="selMealFoodModal" tabindex="-1" role="dialog" aria-labelledby="selMealFoodModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body car-content" id="selMealFoods">
+
+                </div>
+                <div class="modal-footer">
+                    <div data-dismiss="modal" class="ok">確認</div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal tip fade" id="tipModal" tabindex="-1" role="dialog" aria-labelledby="tipModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body" id="tip-content">
+
+                </div>
+                <div class="modal-footer">
+                    <div id="tip-close" class="ok" onclick="tipClose();">重新點餐</div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+
+<style type="text/css">
+    .list-wrapper {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        color: #000000;
+        background-color: #F6F8F8;
+        overflow: hidden;
+        font-size: 0;
+    }
+
+    .slider-wrapper, .carousel {
+        width: 100%;
+        height: 490px;
+        display: inline-block;
+        overflow: hidden;
+    }
+
+    .carousel-inner .item img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .carousel-indicators li.active {
+        width: 10px;
+        height: 10px;
+        margin: 0 6px;
+        background-color: #FF5901;
+        border: none;
+    }
+
+    .carousel-indicators li {
+        margin: 0 6px;
+        border: 1px solid #FF5901;
+    }
+
+    .list-nav {
+        display: table;
+        width: 100%;
+        text-align: right;
+        padding: 20px 48px 25px;
+        line-height: 30px;
+        box-sizing: border-box;
+    }
+
+    .list-nav .icon-back {
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        margin-right: 5px;
+        vertical-align: text-bottom;
+    }
+
+    .list-nav .nav-title {
+        font-size: 20px;
+        color: #000000;
+        vertical-align: middle;
+    }
+
+    .list-container {
+        position: absolute;
+        top: 565px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        padding: 0 48px;
+        box-sizing: border-box;
+    }
+
+    .list-container .list-left {
+        width: 210px;
+        margin-right: 50px;
+        overflow: hidden;
+    }
+
+    .list-left .menu-food {
+        width: 100%;
+        padding-bottom: 200px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .menu-food .menu-item, .menu-meal .menu-item {
+        position: relative;
+        display: flex;
+        width: 210px;
+        padding: 12px 17px;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+        font-size: 28px;
+        align-items: center;
+        background-color: #FA875D;
+        color: #ffffff;
+        border-radius: 8px;
+    }
+
+    .menu-item .item-name{
+        display: inline-block;
+        line-height: 1.2;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+
+        -moz-user-select: none;
+
+        -ms-user-select: none;
+
+        user-select: none;
+    }
+
+    .menu-item.active {
+        background-color: #FE6400;
+    }
+
+    .menu-item a {
+        display: inline-block;
+        color: #ffffff;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .menu-item:before {
+        position: absolute;
+        content: "";
+        width: 10px;
+        height: 10px;
+        right: 10px;
+        top: -5px;
+        background-color: #F6F8F8;
+        border-radius: 50%;
+    }
+
+    .menu-item:after {
+        position: absolute;
+        content: "";
+        width: 10px;
+        height: 10px;
+        right: 10px;
+        bottom: -5px;
+        background-color: #F6F8F8;
+        border-radius: 50%;
+    }
+
+    .meal-list .meal-item {
+        width: 210px;
+        height: 65px;
+        line-height: 65px;
+        font-size: 24px;
+        background-color: #ffffff;
+        color: #000000;
+        text-align: center;
+        border-bottom: 1px solid #999999;
+    }
+
+    .meal-list .meal-item a{
+        color:#000000;
+        text-decoration: none;
+    }
+
+
+    .meal-list .meal-item:last-child {
+        border-bottom: none;
+    }
+
+    .menu-list .meal-item a {
+        color: #000000;
+    }
+
+    .meal-list {
+        position: relative;
+        margin-top: -20px;
+        margin-bottom:20px;
+        box-shadow: 0 2px 4px 0 rgba(222, 226, 226, 1);
+        display: none;
+    }
+
+    .meal-list.active {
+        display: block;
+    }
+
+    .meal-list:after {
+        position: absolute;
+        content: "";
+        top: -5px;
+        left: calc(50% - 5px);
+        width: 0;
+        height: 0;
+        border-right: 5px solid transparent;
+        border-left: 5px solid transparent;
+        border-bottom: 5px solid #ffffff;
+    }
+
+    .meal-list .meal-item.active, .meal-list .meal-item.active a {
+        color: #FE6400;
+    }
+
+    .menu-item .icon-tab {
+        display: inline-block;
+        width: 32px;
+        height: 34px;
+        margin-right: 14px;
+        vertical-align: text-top;
+    }
+
+    .list-right {
+        flex: 1;
+    }
+
+    .list-right .ul-content {
+        padding-bottom: 200px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .menu-food::-webkit-scrollbar,
+    .ul-content::-webkit-scrollbar,
+    .spec-list-wrap::-webkit-scrollbar {
+        display: none;
+    }
+
+    .list-right .list-content:nth-child(n+2), .list-right .list-meal-content {
+        display: none;
+    }
+    .list-right .list-meal-content .meal-li{
+        margin-bottom:45px;
+    }
+
+    .list-right .list-content:target {
+        display: block;
+    }
+
+    .list-right .food-list {
+        width: 100%;
+    }
+
+    .list-right .food-title {
+        margin-bottom: 30px;
+        padding-left: 10px;
+        height: 24px;
+        line-height: 24px;
+        font-size: 22px;
+        border-left: 8px solid #FE6400;
+    }
+
+    .food-title.mt-4 {
+        margin-top: 48px;
+    }
+
+    .list-right .food-title .title-name {
+        display: inline-block;
+    }
+
+    .list-right .food-title .count {
+        font-size: 18px;
+        color: #999999;
+        float: right;
+    }
+
+    .food-title .count span {
+        color: #FE6400;
+    }
+
+    .food-list .food-item {
+        position:relative;
+        display: inline-block;
+        width: 32%;
+        margin-right: 2%;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px -4px rgba(205, 211, 211, 1);
+        border-radius: 4px;
+    }
+
+    .food-list .food-item .selNum{
+        position: absolute;
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        font-size: 26px;
+        background-color: #FF5901;
+        color: #fff;
+        line-height: 30px;
+        text-align: center;
+        border-radius: 50%;
+        bottom: 40px;
+        right: 10px;
+    }
+
+    .food-list .food-item .food-img {
+        position:relative;
+        height: 0;
+        padding-top:62%;
+        overflow: hidden;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .food-img img {
+        position:absolute;
+        left:0;
+        top:0;
+        width: 100%;
+    }
+
+    .food-list .food-item:nth-child(3n) {
+        margin-right: 0;
+    }
+
+    .food-item .food-info .food-name {
+        margin-bottom: 10px;
+        height: 45px;
+        font-size: 16px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        line-height: 1.4;
+    }
+
+    .food-item .food-info {
+        padding: 8px;
+        background: #ffffff;
+    }
+
+    .food-item .food-info .food-text {
+        display: flex;
+    }
+
+    .food-text .food-price {
+        display: inline-block;
+        margin-top: 2px;
+        font-size: 14px;
+        color: #FF5901;
+        font-family: Arial;
+    }
+
+    .food-text .food-spec {
+        width: 80px;
+        height: 28px;
+        line-height: 1.5;
+        font-size: 18px;
+        text-align: center;
+        color: #ffffff;
+        background-color: #88CDB5;
+        border-radius: 14px;
+        margin-left: auto;
+    }
+
+    .food-text .food-price em {
+        font-size: 26px;
+    }
+
+    .food-text .food-num {
+        flex: 1;
+        position: relative;
+        display: inline-block;
+    }
+
+    .food-num .fab-add, .food-num .fab-reduce {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        color: #FF5901;
+        transition: all 0.4s linear;
+        opacity: 1;
+        box-sizing: border-box;
+    }
+
+    .food-num .fab-reduce {
+        color: #999999;
+        right: 50px;
+        transform: translate3d(50px, 0, 0);
+        opacity: 0;
+    }
+
+    .food-num .num-text {
+        position: absolute;
+        bottom: 0;
+        right: 30px;
+        width: 20px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 24px;
+        text-align: center;
+        display: none;
+    }
+
+    .shopcart {
+        position: fixed;
+        bottom: 0;
+        left: calc(50% - 399px);
+        width: 798px;
+        height: 100px;
+        line-height: 100px;
+        margin: auto;
+        color: #ffffff;
+        border-radius: 8px;
+        z-index: 10;
+    }
+
+    .shopcart .cart-wrap {
+        float: left;
+        width: 558px;
+        background: linear-gradient(180deg, rgba(80, 152, 157, 1) 0%, rgba(83, 179, 147, 1) 100%);
+        border-radius: 8px 0 0 8px;
+        opacity: 0.8859;
+    }
+
+    .shopcart .car-img {
+        position: relative;
+        display: table;
+        margin-left: 24px;
+        width: 56px;
+        height: 54px;
+        float: left;
+    }
+
+    .fab-shopcart {
+        display: inline-block;
+        font-size:54px;
+        vertical-align: middle;
+    }
+
+    .shopcart .car-img .car-num {
+        position: absolute;
+        right: -15px;
+        top: 12px;
+        width: 30px;
+        height: 30px;
+        line-height: 26px;
+        text-align: center;
+        font-size: 20px;
+        border-radius: 50%;
+        color: #ffffff;
+        background-color: #FF5901;
+        display: none;
+    }
+
+    .shopcart .total-price {
+        display: inline-block;
+        margin-left: 26px;
+        font-size: 22px;
+    }
+
+    .shopcart .total-price em {
+        margin-left: 5px;
+        font-size: 52px;
+    }
+
+
+
+    .shopcart .button {
+        width: 240px;
+        float: right;
+        color: #fff;
+        text-align: center;
+        font-size: 30px;
+        border-radius: 0 8px 8px 0;
+        background-color: #FA875D;
+        cursor: pointer;
+    }
+
+    .shopcart .mealBtn{
+        width: 120px !important;
+    }
+    .shopcart .mealBtn.btn-submit{
+        border-radius: 0;
+    }
+
+    .shopcart mealBtn.btn-submit {
+       /* display: inline-block;
+        width: 240px;
+        color: #ffffff;
+        line-height: 100px;
+        font-size: 30px;
+        text-align: center;
+        background: rgba(250, 135, 93, 1);
+        border-radius: 0 8px 8px 0;
+        text-decoration: none;*/
+        border-radius: 0;
+    }
+
+    .shopcart .btn-none {
+        width: 240px;
+        float: right;
+        color: #fff;
+        text-align: center;
+        font-size: 30px;
+        background-color: #999;
+        border-radius: 0 8px 8px 0;
+        border-left: 1px solid #ffffff;
+    }
+
+    .dialog {
+        /*position: absolute;*/
+        /*display: none;*/
+        /*z-index: 99;*/
+    }
+
+    .dialog .dialog-wrapper {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        overflow: auto;
+        backdrop-filter: blur(10px);
+        opacity: 1;
+        background: rgba(7, 17, 27, 0.8);
+        display: none;
+    }
+
+    .dialog .dialog-main {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0);
+        width: 700px;
+        max-height: 990px;
+        box-sizing: border-box;
+        background-color: #ffffff;
+        border-radius: 8px;
+        z-index: 102;
+    }
+
+    .dialog-main h1 {
+        margin: 100px 0 12px;
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .dialog-main .spec-list-wrap {
+        max-height: 720px;
+        padding: 0 20px 60px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .spec-list-wrap .title {
+        margin-top: 38px;
+        font-size: 20px;
+    }
+
+    .spec-list-wrap .spec-list {
+        display: flex;
+        flex-wrap: wrap;
+        padding-bottom: 44px;
+        border-bottom: 1px solid rgba(151, 151, 151, .2);
+    }
+
+    .spec-list-wrap .spec-list:last-child {
+        border-bottom: none;
+    }
+
+    .spec-list-wrap .spec-list .spec-item{
+        display: inline-block;
+        width: 31%;
+        margin-top: 22px;
+        margin-right: 20px;
+        /*padding: 15px 10px 10px 10px;*/
+        box-sizing: border-box;
+        background-color: #ffffff;
+        box-shadow: 0 1px 5px 2px rgba(230, 241, 238, 1);
+        border-radius: 15px;
+    }
+    .spec-list-wrap .spec-list .spec-item label {
+        display: inline-block;
+        width: 100%;
+        padding: 15px 10px 10px 10px;
+        border-radius: 15px;
+    }
+
+    .spec-list .spec-item input[type="checkbox"]:checked + label{
+        box-shadow: 0 0 7px 5px rgba(96, 191, 181, .2);
+    }
+
+    .spec-list-wrap .spec-list .spec-item:nth-child(3n) {
+        margin-right: 0;
+    }
+
+    .spec-item .spec-name {
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+
+    .spec-item .info {
+        display: flex;
+    }
+
+    .spec-item .info .spec-price {
+        display: inline-block;
+        margin: 6px 0 4px;
+        font-size: 12px;
+        color: #FFB892;
+    }
+
+    .spec-item .info .spec-price em {
+        font-size: 16px;
+    }
+
+    .spec-item .info .spec-num {
+        display: inline-block;
+        margin-left: auto;
+    }
+
+    .spec-item .info .spec-num .fab-reduce,
+    .spec-item .info .spec-num .fab-add {
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        transition: all 0.4s linear;
+        vertical-align: middle;
+    }
+
+
+    .spec-item .info .spec-num .fab-reduce {
+        transform: translate3d(50px,0, 0);
+        opacity: 0;
+    }
+
+    .spec-item .info .spec-num .num-text {
+        width: 30px;
+        font-size: 24px;
+        vertical-align: middle;
+        text-align: center;
+        display: none;
+    }
+
+    .spec-item .info .spec-num .fab-reduce.show,
+    .spec-item .info .spec-num .num-text.show{
+        opacity: 1;
+        display: inline-block !important;
+    }
+
+    .spec-item .info .spec-num .fab-reduce.show{
+        transform: translate3d(0,0,0);
+    }
+
+    .dialog-main .btn-wrap {
+        height: 128px;
+        width: 100%;
+        padding: 32px 38px;
+        box-sizing: border-box;
+        box-shadow: 0 -0.5vw 1.1vw 0 rgba(216, 216, 216, 0.5);
+    }
+
+    .btn-wrap .price {
+        display: inline-block;
+        font-size: 16px;
+        color: #FF5901;
+    }
+
+    .btn-wrap .price em {
+        font-size: 70px;
+    }
+
+    .btn-wrap .spec-add {
+        display: inline-block;
+        width: 260px;
+        height: 64px;
+        line-height: 64px;
+        font-size: 26px;
+        color: #ffffff;
+        background-color: #FF5901;
+        text-align: center;
+        margin-left: auto;
+        border-radius: 32px;
+        float: right;
+    }
+
+    .btn-wrap .spec-add.disable {
+        background-color: #999;
+    }
+
+    .shield-div {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(10, 10, 10, 0.4);
+        z-index: 9;
+    }
+
+    .shopcart-container {
+        position: fixed;
+        bottom: 116px;
+        width: 92%;
+        margin: 0 4%;
+        padding: 20px 30px 40px;
+        box-sizing: border-box;
+        background-color: #ffffff;
+        z-index: 20;
+        display: none;
+    }
+
+    .shopcart-container:after {
+        position: absolute;
+        content: "";
+        bottom: -10px;
+        left: 15%;
+        width: 0;
+        height: 0;
+        border-right: 10px solid transparent;
+        border-left: 10px solid transparent;
+        border-top: 10px solid #ffffff;
+    }
+
+    .shopcart-container .cart-header {
+        display: table;
+        width: 100%;
+        line-height: 40px;
+        padding-bottom: 10px;
+        font-size: 20px;
+        border-bottom: 1px solid #efefef;
+    }
+
+    .cart-header .header-name {
+        display: inline-block;
+        color: #000000;
+    }
+
+    .cart-header .header-clear {
+        float: right;
+        color: #66A1A6;
+    }
+
+    .fab-delete {
+        display: inline-block;
+        font-size:25px;
+        margin-right: 3px;
+        vertical-align: text-bottom;
+    }
+
+    .shopcart-container .cart-list {
+        padding: 0 0 30px 0;
+        max-height: 800px;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cart-list .cart-li {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        line-height: 2;
+        border-bottom: 1px solid #efefef;
+    }
+
+    .cart-list .cart-li .cart-name {
+        display: inline-block;
+        width: 65%;
+        font-size: 20px;
+        color: #333333;
+    }
+
+    .cart-list .cart-li .cart-price {
+        display: inline-block;
+        width: 20%;
+        line-height: 50px;
+        font-size: 12px;
+        color: #FF5901;
+        text-align: center;
+    }
+
+    .cart-list .cart-li .cart-price em {
+        font-size: 20px;
+    }
+
+    .cart-list .cart-li .cart-num {
+        flex: 1;
+        text-align: right;
+    }
+
+
+    .cart-li .cart-num .num-text {
+        display: inline-block;
+        font-size: 20px;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .fab-add, .fab-reduce {
+        display: inline-block;
+        font-size: 26px;
+        vertical-align: middle;
+    }
+
+    .fab-remmcond, .fab-rice, .fab-meal {
+        display: inline-block;
+        margin-right: 6px;
+        font-size: 32px;
+        color: #ffffff;
+        vertical-align: text-top;
+    }
+
+    .fab-add-b, .fab-reduce-b {
+        display: inline-block;
+        padding: 13px;
+        font-size: 28px;
+        color: #FF5901;
+        vertical-align: middle;
+    }
+
+    .fab-reduce-b {
+        color: #999999;
+    }
+
+    .alert {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        min-width: 26.7vw;
+        max-width: 53.3vw;
+        transform: translate(-50%, -50%);
+        z-index: 99999;
+        text-align: center;
+        padding: 4vw;
+        border-radius: 0.8vw;
+        font-size:20px;
+    }
+    .alert-fail {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+    .modal-dialog {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 70%;
+        transform: translate(-50%,-50%) !important;
+    }
+
+    .modal-content {
+        border: none;
+        padding: 50px 30px 30px;
+        box-shadow: none;
+    }
+
+    .modal-body .title {
+        font-size: 30px;
+        font-weight: 400;
+        line-height: 50px;
+        text-align: center;
+        color: #000000;
+    }
+    .modal-body .text, .modal-body .content {
+        margin-top: 20px;
+        font-size: 26px;
+        font-weight: 400;
+        color: rgba(80,157,155,1);
+        line-height: 40px;
+    }
+    .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 0;
+        border: none;
+        margin: 30px 0 20px;
+    }
+    .modal-footer .ok {
+        display: inline-block;
+        width: 40%;
+        padding: 20px 40px;
+        font-size: 26px;
+        color: #fff;
+        background-color: #FA875D;
+        border-radius: 30px;
+        text-align: center;
+    }
+    #selMealFoodModal .modal-dialog{
+        width: 70%;
+        margin: 0;
+    }
+
+
+    .car-content {
+        width: 100%;
+        padding: 1.3vw 4vw !important;
+        background-color: #fff;
+        font-size: 4.3vw;
+        height: max-content;
+        max-height: 45vh;
+        overflow: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #selMealFoodModal .car-content{
+        padding: 0 0 60px !important;
+    }
+
+    .car-content .car-li {
+        position: relative;
+        display: flex;
+        width: 100%;
+        float: left;
+        padding: 4vw 0;
+        font-size: 0;
+        line-height: 30px;
+        align-items: center;
+        border-bottom: 1px solid #f4f4f4;
+    }
+
+    .cart-li .cart-li-tit{
+        display: flex;
+        align-items: center;
+        font-size:22px;
+    }
+
+    .cart-li .cart-li-tit,
+    .cart-li .cart-li-list,
+    .cart-li .cart-li-list .item {
+        width: 100%;
+        float: left;
+        font-size: 20px;
+    }
+
+    .cart-li .cart-li-list .item .item-l {
+        padding-left: 2.7vw;
+        float: left;
+
+    }
+
+    .cart-li .cart-li-list .item .item-r {
+        float: left;
+        font-size: 20px;
+        padding-left: 2.7vw;
+
+    }
+
+
+    .car-content .tit {
+        width: 45%;
+        margin-right:15px;
+        float: left;
+        font-size:22px;
+        text-align: left;
+        color:#000000;
+        overflow-x: hidden;
+    }
+
+    .car-content .price {
+        width: 25%;
+        margin-right: 15px;
+        font-size:22px;
+        text-align: center;
+        color:#999999;
+    }
+
+    .car-content .num {
+        flex: 1;
+        margin-top:5px;
+        margin-right:5px;
+        text-align: right;
+    }
+
+    .car-content .num button {
+        width: 5.9vw;
+        height: auto;
+        border-radius: 2.9vw;
+        float: left;
+        border: none;
+        padding: 0;
+        background-color: #fff;
+    }
+
+    .car-content .num button img {
+        width: 100%;
+    }
+
+    .car-content .num span {
+        display: inline-block;
+        width: 40px;
+        font-size: 24px;
+        margin: 0 0.8vw;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+</style>
+<script type="text/javascript">
+    var selMid = 0;
+    var mealBtn = false; //套餐加入购物车按钮状态，默认为false 灰色
+    var mcIdNotMeet = 0;//套餐不满足要求的第一个分类id
+    var food = {
+        list: {
+            {volist name='food' id='vo'}
+            '{$vo.id}':{
+                id: '{$vo.id}',
+                    orderIndex: '',
+                    name: '{$vo.name}',
+                    image: '{$vo.imgUrl}',
+                    price: '{$vo.salePrice}',
+                    originalPrice: '{$vo.salePrice}',//原价
+                    unit:'{$vo.payUnit}',
+                    type:'{$vo.payType}',
+                    // sort:'1',
+                    category: '{$vo.categoryId}',
+                    catename: '{$vo.categoryName}',
+                    detail: '{$vo.detail}',
+                    _spec: JSON.parse('{:json_encode($vo._spec)}'),
+                    specIds: '',
+                    specCounts: 0,
+                    specNames: '',
+                    weight: ''
+            },
+            {/volist}
+        }
+    }
+
+    function mealCar(){
+        this.order = {}
+        this.saveOrder = function(){
+            var self =this;
+        }
+        this.addCar = function(index){
+            var self =this;
+            var row = {};
+            if(index.indexOf('_') == -1){
+                var mi = mealinfo.list[index];
+                row = food.list[mi.gid];
+                row.cid = mi.cid;
+                row.mid = mi.mid;
+                row.index = index;
+                var specIds = row.specIds;
+                if(row.type == 2){
+                    index = index + '_' + row.weight;
+                }
+                if(specIds.length > 0){
+                    row.orderIndex = index = index + '_' + row.specCounts;
+                }else{
+                    row.orderIndex = index + '';
+                }
+            }
+            if(self.order != null && self.order.hasOwnProperty(index)){
+                self.order[index].counter ++;
+            }else{
+                var obj = $.extend(true,{},row);
+                self.order[index] = obj;
+                self.order[index].counter = 1;
+            }
+            self.saveOrder();
+        }
+        this.removeCar = function(index){
+            var self =this;
+            var num = 0;
+            if(self.order.hasOwnProperty(index)){
+                self.order[index].counter --;
+                num = self.order[index].counter;
+                if( self.order[index].counter<=0){
+                    delete  self.order[index];
+                }
+
+            }
+            self.saveOrder();
+            return num;
+        }
+        this.clearCar = function(){
+            var self =this;
+            self.order =[];
+            self.saveOrder();
+        }
+        this.countPrice = function(){
+            var self = this;
+            var price = 0;
+            for(var i in self.order){
+                price += Number(self.order[i].price)*self.order[i].counter;
+            }
+            return price.toFixed(2);
+        }
+        this.count = function(){
+            var self =this;
+            var count=0;
+            for(var i in self.order){
+                if(!$.isEmptyObject(self.order[i])){
+                    count+=self.order[i].counter;
+                }
+
+            }
+            return count;
+        }
+        this.checkCar = function(){
+            var self =this;
+
+            for(var i in self.order){
+                if(!$.isEmptyObject(self.order[i])){
+                    return true;
+                }
+
+            }
+            return false;
+        }
+        this.getNum = function(index){
+            var self =this;
+            var obj = self.order[index];
+            var num = 0;
+            if(obj != undefined && obj != null && obj != ''){
+                num = obj.counter;
+            }
+            return num;
+        }
+    };
+    var mealList = {
+        list:{
+    {volist name="meal" id="ml"}
+    '{$ml.id}':{
+        id: '{$ml.id}',
+            name: '{$ml.name}',
+            price: '{$ml.price}',
+            thumbnailUrl: '{$ml.thumbnailUrl}',
+            category: {
+            {volist name="ml._category" id="mc"}
+            '{$mc.id}': {
+                id: '{$mc.id}',
+                    mid: '{$mc.mid}',
+                    name: '{$mc.name}',
+                    categoryMaxNumber: '{$mc.categoryMaxNumber}',
+                    goodsMaxNumber: '{$mc.goodsMaxNumber}'
+            },
+            {/volist}
+            },
+            type: 3,
+                foods: '',
+                specIds: '',
+                specNames: '',
+                car: new mealCar()
+        },
+        {/volist}
+        }
+    };
+
+    var mealcategory = {
+        list:{
+    {volist name="mealcategory" id="mco"}
+    '{$mco.id}':{
+        id: '{$mco.id}',
+            mid: '{$mco.mid}',
+            name: '{$mco.name}',
+            categoryMaxNumber: '{$mco.categoryMaxNumber}',
+            goodsMaxNumber: '{$mco.goodsMaxNumber}'
+    },
+    {/volist}
+    }
+    };
+
+    var mealinfo = {
+        list:{
+    {volist name="mealinfo" id="mio"}
+    '{$mio.id}':{
+        id: '{$mio.id}',
+            gid: '{$mio.gid}',
+            mid: '{$mio.mid}',
+            cid: '{$mio.cid}',
+            name: '{$mio.name}',
+    },
+    {/volist}
+    },
+    };
+
+    $(function () {
+        var height = document.body.clientHeight,
+            top = $('.list-container').offset().top;
+            maxH = height - top;
+        $('.menu-food,.ul-content').css({
+            'max-height':maxH
+        })
+
+    })
+
+    // 左側菜單欄切換
+    $('.menu-item').on('click', function (e) {
+        var index = $(this).index();
+        $('.menu-item,.meal-list').removeClass('active');
+        $(this).closest('.menu-item').addClass('active');
+        if ($(this).hasClass('meal')) {
+            $(this).next('.meal-list').toggle('active');
+        } else {
+            $('.meal-list .meal-item').removeClass('active');
+            $('.list-right .list-content').eq(index).show().siblings().hide();
+        }
+
+    })
+
+    // 左侧tab切換
+    function toMealDiv(e,id,type) {
+        $('.menu-item,.meal-item').removeClass('active');
+        $(e).addClass('active').closest('.meal-list').prev('.meal').addClass('active');
+        $('.list-content,.list-meal-content').hide();
+        selMid = id;
+        if(type=='meal'){
+            $('#meal'+id).show();
+            $("#setorder,#setorderMeal").addClass('mealBtn');
+            $("#setorder").text('提交');
+            $("#setorderMeal").removeClass('hidden');
+            changeSetOrder(2);
+        }else{
+            $("#setorder,#setorderMeal").removeClass('mealBtn');
+            $("#setorder").text('提交訂單');
+            $("#setorderMeal").addClass('hidden');
+            changeSetOrder(1);
+        }
+
+    }
+
+
+
+    var car = {
+        order:{},
+        menu: {},
+        Spec: {},
+        saveOrder:function(){
+            var self = this;
+        },
+        addCar:function (gid) {
+            var self = this;
+            var row = {};
+            if(gid.indexOf('_') == -1){
+                row = food.list[gid];
+                var specIds = row.specIds;
+                if(specIds.length > 0){
+                    row.orderIndex = gid = 'food_' + gid + '_' + row.specCounts;
+                }else{
+                    row.orderIndex = gid = 'food_' + gid +'';
+                }
+            }
+            if(self.order.hasOwnProperty(gid)){
+                self.order[gid].counter ++;
+            }else{
+                self.order[gid] = $.extend(true,{},row);
+                self.order[gid].counter = 1;
+            }
+            self.saveOrder();
+        },
+        addMealCar:function(){
+            var self = this;
+            var row = mealList.list[selMid];
+            var list = row.car.order;
+            var addIndex = '';
+            var addName = '';
+            var addCount ='';
+            var addScount = '';
+            var n = 0;
+
+            // var sCount = car.getSChildNum(index,child.id);
+            $.each(list, function(i, obj){
+                if(n > 0){
+                    addIndex += ';';
+                    addName += ';';
+                    addCount += ';';
+                }
+                addIndex += obj.orderIndex;
+                addName += obj.name + obj.specNames;
+                addScount += obj.specCounts;
+
+                if(obj.counter > 1){
+                    addIndex += '*' + obj.counter;
+                    addName += '*' + obj.counter;
+                }
+                n++;
+            });
+            row.foods = list;
+            row.specIds = addIndex;
+            row.specCounts = addScount;
+            row.specNames = addName ;
+            row.orderIndex = index = 'meal_' + row.id + '_' + addIndex;
+            if(self.order.hasOwnProperty(index)){
+                self.order[index].counter ++;
+            }else{
+                self.order[index] = $.extend(true,{},row);
+                self.order[index].counter = 1;
+            }
+            mealList.list[selMid].car.order = {};
+            $('#meal' + selMid).find(".selNum").remove();
+            changeNum(index, 'addMealCar', selMid);
+            changeSetOrder(2);
+            self.saveOrder();
+        },
+        removeCar: function(gid){
+            var self =this;
+            var num = 0;
+            if(self.order.hasOwnProperty(gid)){
+                self.order[gid].counter --;
+                num = self.order[gid].counter;
+                if( self.order[gid].counter<=0){
+                    delete  self.order[gid];
+                }
+            }
+            self.saveOrder();
+            return num;
+        },
+        getNum:function(gid){
+            var self =this;
+            var obj = self.order[gid];
+            var num = 0;
+            if(obj != undefined && obj != null && obj != ''){
+                num = obj.counter;
+            }
+            return num;
+        },
+        addCate:function(index){
+            this.menu['menu'+index] ? this.menu['menu'+index]++ : this.menu['menu'+index]=1;
+            this.saveOrder();
+        },
+        removeSpecChild: function (index, childId) {
+            var self = this;
+            var schild = car.Spec['spec_child_'+index+'_'+childId];
+            if(schild){
+                car.Spec['spec_child_'+index+'_'+childId]--;
+                if(schild<=0){
+                    delete schild;
+                }
+            }
+            self.saveOrder();
+        },
+        addSpecChild: function (index, childId) {
+            var self = this;
+            car.Spec['spec_child_'+index+'_'+childId] ? car.Spec['spec_child_'+index+'_'+childId]++ : car.Spec['spec_child_'+index+'_'+childId]=1;
+            self.saveOrder();
+        },
+        delSpecChild: function(index, childId) {
+            var self = this;
+            delete  car.Spec['spec_child_'+index+'_'+childId];
+            self.saveOrder();
+        },
+        getSChildNum: function (index, childId) {
+            var snum = 0;
+            var child = car.Spec['spec_child_'+index+'_'+childId];
+            if(child != undefined && child != null && child != ''){
+                snum = child;
+            }
+            return snum;
+        },
+        countPrice:function () {
+            var self = this;
+            var price = 0;
+            for(var i in self.order){
+                price += Number(self.order[i].price)*self.order[i].counter;
+            }
+            return price.toFixed(2);
+        },
+        count:function(){
+            var self =this;
+            var count=0;
+            for(var i in self.order){
+                if(!$.isEmptyObject(self.order[i])){
+                    count+=self.order[i].counter;
+                }
+            }
+            return count;
+        }
+    };
+
+
+    function checkMeal(mid){
+        var is = true;
+        var objId = -1;
+        $.each(mealcategory.list,function(i, obj){
+            if(mid == obj.mid){
+                if(checkMealCategory(obj.id) != 2){
+                    objId = obj.id;
+                    is = false;
+                }
+            }
+        });
+        mcIdNotMeet = objId;
+        return is;
+    }
+
+    // 判断food / meal 显示提交、加入按钮
+    function changeSetOrder(type){
+        var id = $("#setorder");
+        var mid = $("#setorderMeal");
+        var is = false;
+        var obj = car;
+        if(obj.count() > 0){
+            is = true;
+        }
+        if(type == 2){
+            var mis = false;
+            mis = checkMeal(selMid);
+            if(mis){
+                mid.removeClass('btn-none');
+                mid.addClass('button');
+                mealBtn = true;
+            }else{
+                mid.removeClass('button');
+                mid.addClass('btn-none');
+                mealBtn = false;
+            }
+        }
+
+        if(is){
+            id.removeClass('btn-none');
+            id.addClass('button');
+        }else{
+            id.removeClass('button');
+            id.addClass('btn-none');
+        }
+    }
+
+    // 添加购物车
+    function addCar(gid,type) {
+        //1 food, 2 meal
+        if(type == 2){
+            if(checkMealInfo(gid) == 1){
+                var c = mealList.list[selMid].car;
+                c.addCar(gid);
+            }
+        }else{
+            // 添加购物车
+            car.addCar(gid);
+        }
+        // 显示数量
+        var t ='';
+        type==1 ? t='food' : t='meal';
+        changeNum(gid,t);
+        // 显示提交/加入按钮
+        changeSetOrder(type);
+    }
+
+
+    // 减少购物车
+    function reduceCar(gid,type) {
+        // 2==meal   1==food
+        if(type==2){
+            mealList.list[selMid].car.removeCar(gid);
+        }else{
+            if(gid.indexOf('food_') == -1){
+                gid = 'food_' + gid;
+                var row = car.order[gid];
+                if(row.specIds.length>0){
+                    gid += '_' + row.specCounts;
+                }
+            }
+            car.removeCar(gid);
+        }
+        var t ='';
+        type==1 ? t='food' : t='meal';
+        changeNum(gid,t);
+        changeSetOrder(type);
+    }
+
+
+    function changeNum(gid,type,mid){
+        if(mid == undefined || mid == null || mid == ''){
+            mid = selMid;
+        }
+        if(type == undefined || type == null || type == ''){
+            type = '';
+        }
+
+        //修改购物车显示数量
+        var num = 0;
+        var id = "";
+        if(type=='meal'){
+            var oIndex = '';
+            if(gid.indexOf('meal_') == -1){
+                oIndex = 'meal_' + mid + '_' + gid;
+            }else{
+                oIndex = gid;
+            }
+            id = "#n" + oIndex;
+            num = mealList.list[mid].car.getNum(gid);
+        }else{
+            var count = car.count();   // 购物车列表数量
+            if(count == 0){
+                $('#cart-count').hide();
+            }else {
+                $('#cart-count').text(count);
+                if ($('#cart-count').css('display') == 'none') {
+                    $('#cart-count').show();
+                }
+            }
+            // 计算总价
+            $('#total').text(car.countPrice());
+
+            row = food.list[gid];
+
+            //修改减号按钮
+            var oIndex = '';
+            if(gid.indexOf('food_') == -1 && gid.indexOf('meal_') == -1 && gid!=''){
+                oIndex = 'food_' + gid;
+                if(row.specIds.length > 0){
+                    oIndex += '_' + row.specCounts;
+                }
+            }else{
+                oIndex = gid;
+            }
+            num = car.getNum(oIndex);
+            id = ".n" + oIndex;
+        }
+
+        // 显示加减
+        if(type.indexOf('MealCar') == -1){
+            var numObj = $(id);
+            numObj.text(num);
+            if(num>0){
+                numObj.prev('.fab-reduce').css({
+                    transform: 'translate3d(0,0,0) rotate(0)',
+                    opacity: 1
+                });
+                numObj.css('display','inline-block');
+            }else{
+                // 菜单中的数量
+                numObj.prev('.fab-reduce').css({
+                    transform: 'translate3d(50px,0,0)  rotate(180deg)',
+                    opacity: 0
+                });
+                numObj.text("0").css('display', 'none');
+            }
+        }else{
+            var btn = $('span[id^="nmeal_' + mid + '"]');
+            btn.text('0');
+        }
+    }
+
+
+    // 添加规格数量
+    function changeSpecNum(gid,specId,childId,type){
+        var childText = '.childnum_'+childId;
+        type>0 ? addSpecNum(gid,specId,childId) : reduceSpecNum(gid,specId,childId);
+        var num = $(childText).text();
+        if(num>0){
+            $(childText).prev('.fab-reduce').css({
+                transform: 'translate3d(0,0,0)',
+                opacity: 1
+            });
+            $(childText).text(num).addClass('show');
+        }else{
+            $(childText).prev('.fab-reduce').css({
+                transform: 'translate3d(50px,0,0)',
+                opacity: 0
+            });
+            $(childText).text(num).removeClass('show');
+        }
+
+    }
+
+    // 購物車菜单规格菜单添加
+    function pluscar(index, obj, mid,type,id){
+        car.addCar(index);
+        car.addCate(mid);
+        var num = car.getNum(index);
+        changeNum(index, type);
+        var tnum = $('#food'+ id).find('.selNum').text();
+        $(obj).prev().text(num);
+        // changeMenuNum(mid);
+        if(id !== '' && food.list[id]._spec && food.list[id]._spec.length !== 0){
+            //更改菜品总数量
+            tnum++;
+            addFoodSpecHtml(id, tnum, type);
+        }
+        changeSetOrder();
+    }
+
+    //购物车菜单删除
+    function redcar(index, obj, mid, type,id){
+        car.removeCar(index,mid);
+        changeNum(index, type);
+
+        var num = car.getNum(index);
+        if(num == 0){
+            $('#carList').html('');
+            carHtml();
+            car.Spec={};
+        }else{
+            $(obj).next().text(num);
+        }
+        // changeMenuNum(mid);
+        type == 'meal' ? name ='mealFood' : name ='food';
+        var tnum = $('#'+ name + id).find('.selNum').text();
+        if(id !== '' && food.list[id]._spec && food.list[id]._spec.length !== 0){
+            //更改菜品总数量
+            tnum--;
+            addFoodSpecHtml(id, tnum, type);
+        }
+        changeSetOrder(type);
+        if(car.count() == 0){
+            $(".shopcart-container").slideUp();
+            $("#shield").removeClass('shield-div');
+            $(".right").removeClass('nomove');
+            return false;
+        }
+    }
+
+
+
+    // 购物车收缩展开
+    function showCar(){
+        if($(".shopcart-container").css("display")=='none'){
+            carHtml();
+            $(".shopcart-container").slideDown();
+            $("#shield").addClass('shield-div');
+            // $('body').css('position','fixed');
+            scrollTop = document.scrollingElement.scrollTop;
+            document.body.style.top = -scrollTop + 'px';
+        }else{
+            $(".shopcart-container").slideUp();
+            $("#shield").removeClass('shield-div');
+            // $('body').css('position','relative');
+            document.scrollingElement.scrollTop = scrollTop;
+        }
+    }
+
+    // 查看购物车列表
+    $(".cart-wrap").click(function(){
+        if(car.count() == 0){
+            $(".shopcart-container").slideUp();
+            $("#shield").removeClass('shield-div');
+            return false;
+        }
+        $('#carList').html('');
+        showCar();
+    });
+
+    $('#shield').bind("touchend", function (e) {
+        showCar();
+        e.preventDefault();
+    });
+
+    // 购物车列表
+    function carHtml(){
+        var cars = car.order;
+        var html = '';
+        $.each(cars, function(i, obj){
+            var btnHtml = '';
+            var listHtml = '';
+            var str = '';
+            if(obj.type == 3){
+                var list = obj.foods;
+                var category = obj.category;
+                $.each(category, function(i, c){
+                    var n = 0;
+                    listHtml += '<div class="item">'
+                        + '<div class="item-l">' + c.name + ':</div><div class="item-r">';
+                    $.each(list, function(i, l){
+                        if(l.cid == c.id){
+                            var numStr = '';
+                            var icon = '';
+                            if(l.counter > 1){
+                                numStr = '*' + l.counter;
+                            }
+                            if(n > 0){
+                                icon = ',';
+                            }
+                            listHtml += icon + '<span class="r-li">' + l.name + l.specNames + numStr + '</span>';
+                            n++;
+                        }
+                    });
+                    listHtml += '</div></div>';
+                });
+                str = '<div class="cart-li">'
+                    + '<div class="cart-name">' + obj.name
+                    + '<div class="cart-li-list">' + listHtml + '</div></div>'
+                    + '<div class="cart-price">HKD$&nbsp;<em>'+Number(obj.price).toFixed(2)+'</em></div>'
+                    + '<div class="cart-num">'
+                    + '<i class="fab-reduce-b" style="opacity: 1; transform: translate3d(0px, 0px, 0px) rotate(0deg);" onclick="redcar(\'' + obj.orderIndex + '\', this,\'' + obj.id + '\', \'redMealCar\',\''+'\')"></i>'
+                    + '<span class="num-text" >' + obj.counter + '</span>'
+                    + '<i class="fab-add-b" onclick="pluscar(\'' + obj.orderIndex + '\',this,\'' + obj.id + '\',\'addMealCar\',\''+'\')"></i>'
+                    + '</div></div>';
+            }else{
+                var numStr = '';
+                btnHtml = '<i class="fab-reduce-b" style="opacity: 1; transform: translate3d(0px, 0px, 0px) rotate(0deg);" onclick="redcar(\'' + obj.orderIndex + '\', this, \'' + obj.category + '\',\'food\','+obj.id+')"></i>'
+                        + '<span class="num-text" >' + obj.counter + '</span>'
+                        + '<i class="fab-add-b" onclick="pluscar(\'' + obj.orderIndex + '\',this,\'' + obj.category + '\',\'food\','+obj.id+')"></i>';
+
+
+                var spesArr = obj.specNames=='[]' ? "" : obj.specNames;
+                str = '<div class="cart-li">'
+                    + '<div class="cart-name">' + obj.name + spesArr + numStr +  '</div>'
+                    + '<div class="cart-price">HKD$&nbsp;<em>' + Number(obj.price).toFixed(2) + '</em></div>'
+                    + '<div class="cart-num">'
+                    + btnHtml
+                    + '</div></div>';
+            }
+
+            html += str;
+        });
+        $('.cart-list').html(html);
+    }
+
+    // 關閉規格彈窗
+    $('.dialog-wrapper').on('click', function () {
+        $('.dialog-wrapper,.dialog-main').fadeOut();
+    })
+
+    function checkMealInfo(id){
+        var cid = mealinfo.list[id].cid;
+        return checkMealCategory(cid, 'btn',id);
+    }
+
+    function checkMealCategory(cid, type, id){
+        var mc = mealcategory.list[cid];
+        var categoryNum = 0;
+        var goodsNum = 0;
+        $.each(mealList.list[mc.mid].car.order,function(i, obj){
+            if(cid == obj.cid){
+                if(obj.counter > 1){
+                    categoryNum += obj.counter;
+                }else{
+                    categoryNum++;
+                }
+            }
+            if(id == obj.index){
+                if(obj.counter > 1){
+                    goodsNum += obj.counter;
+                }else{
+                    goodsNum++;
+                }
+            }
+
+        });
+        $('#maxNumber_' + mc.mid + '_' + mc.id).text(mc.categoryMaxNumber - categoryNum);
+        if(categoryNum == mc.categoryMaxNumber){
+            if(type == 'btn'){
+                var html = '';
+                html += '<div class="title">提交失敗</div><div class="text"></div>';
+                html += '<div class="content" style="text-align: left;">' + mc.name + '菜式可選數:<span style="color: #ae0400;">' + mc.categoryMaxNumber + '</span></div>'
+                tipOpen(html);
+            }
+            return 2;
+        }else if(goodsNum == mc.goodsMaxNumber){
+            if(type == 'btn'){
+                var html = '';
+                html += '<div class="title">提交失敗</div><div class="text"></div>';
+                html += '<div class="content" style="text-align: left;">' + mc.name + '單個菜式最多可選數:<span style="color: #ae0400;">' + mc.goodsMaxNumber + '</span></div>'
+                tipOpen(html);
+            }
+            return 2;
+        }else if(categoryNum < mc.categoryMaxNumber){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+
+    $('#setorderMeal').click(function(){
+        if(mealBtn){
+            var m_id = '#meal'+selMid;
+            $(m_id).find('.fab-reduce').css({
+                opacity: 0,
+                transform: 'translate3d(46px,0,0) rotate(180deg)',
+            });
+            $(m_id).find('.num-text').css('display','none');
+            car.addMealCar();
+            car.addCate(selMid);
+            // changeMenuNum(selMid);
+        }else{
+            var message = '';
+            message += '<div class="title">提交失敗</div><div class="text">套餐內含有多個菜式，不支持單點請在套餐內</div>';
+            if(mcIdNotMeet == 0){
+                message += '请选择菜品';
+            }else{
+                var mc = mealcategory.list[mcIdNotMeet];
+                message += '<div class="content" style="text-align: left;">已選'+ mc.name +'菜式不足：<span style="color: #FF5901;">' + mc.categoryMaxNumber + '</span>個</div>';
+            }
+            tipOpen(message);
+        }
+    });
+
+
+
+    function tipOpen(text){
+        $('#tip-content').html(text);
+        $('#tipModal').modal('show');
+    }
+
+    function tipClose(){
+        $('#tip-content').text('');
+        $('#tipModal').modal('hide');
+    }
+
+    // 规格选项
+    function selSpec(gid,type){
+        var specHtml = "";
+        var id = gid;
+        if(type==2){
+            if(checkMealInfo(gid) == 1){
+                gid = mealinfo.list[gid].gid;
+            }else{
+                return false;
+            }
+        }
+
+        var good = food.list[gid];
+        var specArr = good._spec;
+        var flag = true;
+        $spAr = Object.keys(specArr);
+        var nsp = $spAr.sort(function(a,b){
+            return specArr[a]['spec_order']-specArr[b]['spec_order'];
+        });
+        $('#spec-dialog').html("");
+        specHtml = '<h1 class="name">'+good.name+'</h1><div class="spec-list-wrap" id="specContent">';
+        $.each(nsp, function(key, value){
+            var spec = specArr[value];
+            var min = spec.min;   //至少选几项
+            var max = spec.max;   //最多选几项
+            if(min == ''){
+                min = 0;     //如果未设置最小值默认为0
+            }
+            if(max == ''){
+                max = 1;    //如果未设置最大值默认为1
+            }
+            var remind = '(必選)';
+            if(min == 0){
+                remind = ' (最多選'+ max +'項)';
+            }else if(min == max){
+                remind = ' (至少選'+ min +'項)';
+            }else{
+                remind = ' (至少選'+ min +'項,最多選'+ max +'項)';
+            }
+            specHtml += '<div class="title">'+spec.name+'<span>'+remind+'</span></div><ul class="spec-list" id="spec'+spec.id+'">';
+
+            var childArr = spec._child;
+            var n = 0,r = 0;
+            $.each(childArr, function(j, child){
+                var checked = '',
+                    show = '',
+                    num = 0;
+
+                if(child.is_default===1) {
+                    checked = 'checked';
+                    childNum = 1;
+                    r++;
+                    car.Spec['spec_child_'+gid+'_'+j] = childNum;
+                }
+
+                n++;
+                specHtml += '<li class="spec-item">';
+                if(child.is_repeat===1){
+                    specHtml += "<input id='input" + child.id + "'  type='checkbox' " + checked + " name='type" + spec.id + "' value='" + JSON.stringify(child) + "' disabled >";
+                }else{
+                    specHtml += "<input id='input" + child.id + "' onchange='onclickChild(" + gid + "," + spec.id + "," + j + "," + min + "," + max +")' type='checkbox' " + checked + " name='type" + spec.id + "' value='" + JSON.stringify(child) + "'>";
+                }
+
+
+                specHtml +=  '<label for="input'+child.id+'"><div class="spec-name">'+child.name+'</div>'
+                    + '<div class="info"><div class="spec-price">HKD$<em>'+child.price+'</em></div>';
+                if(child.is_repeat===1){
+                    child.is_default === 1 ? show='show' : '';
+                    child.is_default === 1 ? num=1 : num=0;
+                    specHtml += '<div class="spec-num ">' +
+                        '<i class="fab-reduce '+show+'" onclick="onclickChild('+gid+','+spec.id+','+ j + ',' + min + ',' + max +',1,-1)"></i>' +
+                        '<span class="num-text childnum_'+child.id+'  '+show+'">'+num+'</span>' +
+                        '<i class="fab-add" onclick="onclickChild('+gid+','+spec.id+','+j+ ',' + min + ',' + max +',1,1)"></i>' +
+                        '</div>';
+                }
+
+                specHtml += '</div></label></li>';
+            });
+            r < min ? flag = false : "";
+            specHtml += '</ul>';
+
+        });
+
+        specHtml += '</div><div class="btn-wrap"><div class="price">HKD$<em class="specTotal"></em></div><div class="spec-add" onclick="specCar(\''+id+'\',\''+type+'\')">加入訂單</div></div>';
+        $('#spec-dialog').html(specHtml);
+        flag ? "" : $('.spec-add').addClass('disable').css('pointer-events','none');
+        selectChild(gid,1);
+        $('.dialog-wrapper,.dialog-main').fadeIn();
+
+    }
+
+
+    /** 初始化规格选中每项的第1个值 和 选中改变规格重新计算 **/
+    function selectChild(gid){
+        var row = food.list[gid];
+        var arr = $('#specContent').find('input[type="checkbox"]:checked');
+        var price = parseFloat(row.originalPrice,2);
+        var specIds = '',
+            specNames = '',
+            specCounts = '';
+        $.each(arr, function(i, obj){
+            var sCount = 0;
+            var child = JSON.parse(obj.value);
+            var num = $('.childnum_'+child.id).html();
+            num ? price += parseFloat(child.price * num,2) : price += parseFloat(child.price,2);
+            if(i != 0){
+                specIds += ',';
+                specNames += ',';
+                specCounts += ',';
+            }
+            $('.childnum_'+child.id).text() ? sCount = $('.childnum_'+child.id).text() : sCount;
+            // var sCount = car.getSChildNum(gid,child.id);
+            specCounts += child.id+'_'+sCount;
+            specIds += child.id;
+            if(sCount>1){
+                specNames += child.name +'*'+sCount;
+            }else{
+                specNames += child.name;
+            }
+
+        });
+        var ids = specIds.split(',');
+        ids = ids.sort(function(a,b) {
+            return a - b;      //升序，如降序，把“a - b”该成“b - a”
+        });
+        specIds = ids.join(',');
+        price = parseFloat(price).toFixed(2);    //四舍五入取2位小数转成字符串格式
+        food.list[gid].price = price;
+        food.list[gid].specIds = specIds;
+        food.list[gid].specNames = specNames != "" ? '[' + specNames + ']' : "";
+        food.list[gid].specCounts = specCounts;
+        $('.specTotal').text(price);
+    }
+
+    //选择规格加入订单
+    function specCar(gid,type){
+        addCar(gid,type);
+        // 显示规格菜单数量
+        addFoodSpec(gid,type);
+        $('.dialog-wrapper,.dialog-main').fadeOut();
+    }
+
+    // 添加套餐規格菜單數量
+    function addFoodSpec(gid,type){
+        var num  = "";
+        if(type==2){
+            num = getSelMealFoodS(gid, 'num');
+        }else{
+            num = getSelFood(gid,'num');
+        }
+        addFoodSpecHtml(gid, num ,type);
+    }
+
+    function addFoodSpecHtml(index, num, type){
+        var name = "";
+        type == 2 ? name ='mealFood' : name ='food';
+        var parent = $('#'+ name + index);
+        var html = '<div class="selNum" onclick="showSelMealFood(' + index + ',\'' + type + '\')">' + num + '</div>';
+        parent.find(".selNum").remove();
+        if(num > 0){
+            parent.prepend(html);
+        }
+    }
+
+    function showSelMealFood(index,type){
+        updateSelMealFoods(index,type);
+        $('#selMealFoodModal').modal('show');
+    }
+
+    function updateSelMealFoods(index,type){
+        var html = '';
+        var list;
+        if(type == 2){
+            list = getSelMealFoodS(index, 'list');
+        }else{
+            list = getSelFood(index, 'list');
+        }
+
+        $.each(list, function(i, obj){
+            var btnHtml = '';
+            var listHtml = '';
+            var str = '';
+            var numStr = '';
+            if(obj.type == 2){
+                btnHtml += '<div class="del-weight" onclick="redMealCar(\'' + obj.index + '\', \'' + obj.orderIndex + '\', this)">删除</div>';
+                if(obj.counter > 1){
+                    numStr = '*' + obj.counter;
+                }
+            }else{
+                if(type == 2){
+                    btnHtml = '<i class="fab-reduce" style="opacity: 1; transform: translate3d(0px, 0px, 0px) rotate(0deg);" onclick="redMealCar(\'' + obj.index + '\', \'' + obj.orderIndex + '\', this)"></i>'
+                        + '<span class="num-text">' + obj.counter + '</span>'
+                        + '<i class="fab-add" onclick="plusMealCar(\'' + obj.index + '\', \'' + obj.orderIndex + '\', this)"></i>';
+                }else{
+                    btnHtml = '<i class="fab-reduce" style="opacity: 1; transform: translate3d(0px, 0px, 0px) rotate(0deg);" onclick="redFoodCar(\'' + obj.orderIndex + '\', this, \'' + obj.category + '\', \''+'\', \''+obj.id+'\')"></i>'
+                        + '<span class="num-text">' + obj.counter + '</span>'
+                        + '<i class="fab-add" onclick="pluscar(\'' + obj.orderIndex + '\', this, \'' + obj.category + '\', \''+'\', \''+obj.id+'\')"></i>';
+                }
+
+            }
+            str = '<div class="car-li">'
+                + '<div class="tit">' + obj.name + obj.specNames + numStr + '</div>'
+                + '<div class="price">HkD$&nbsp;' + Number(obj.price).toFixed(2) + '</div>'
+                + '<div class="num">'
+                + btnHtml
+                + '</div></div>';
+            html += str;
+        });
+        $('#selMealFoods').html(html);
+
+    }
+
+    function getSelFood(index,type) {
+        var list = [];
+        var Foods = car.order;
+        var num = 0;
+        $.each(Foods,function (i, item) {
+            if(index == item.id){
+                list.push(item);
+                if(item.counter > 1){
+                    num += item.counter;
+                }else{
+                    num++;
+                }
+            }
+        });
+
+        if(type == 'num'){
+            return num;
+        }else{
+            return list;
+        }
+    }
+
+    function getSelMealFoodS(index, type){
+        var list = [];
+        var mealFoods = mealList.list[selMid].car.order;
+        var num = 0;
+        $.each(mealFoods,function(i, obj){
+            if(index == obj.index){
+                list.push(obj);
+                if(obj.counter > 1){
+                    num += obj.counter;
+                }else{
+                    num++;
+                }
+            }
+        });
+
+        if(type == 'num'){
+            return num;
+        }else{
+            return list;
+        }
+    }
+
+    // 套餐規格菜單數量添加
+    function plusMealCar(index, orderIndex, obj){
+        if(checkMealInfo(index) == 1){
+            mealList.list[selMid].car.addCar(orderIndex);
+            var num = mealList.list[selMid].car.getNum(orderIndex);
+            $(obj).prev().text(num);
+            changeSetOrder(2);
+            addFoodSpecHtml(index, num, 2);
+        }
+    }
+
+    // 规格菜单删除
+    function redFoodCar(index, obj, mid, type, id) {
+        var fnum = car.removeCar(index,mid);  //菜品单个规格数量
+        var cnum = getSelFood(id, 'num');   //菜品总数量
+        if(cnum == 0){
+            $('#selMealFoodModal').modal('hide');
+        }else{
+            if(fnum == 0){
+                updateSelMealFoods(id,type);
+            }else{
+                $(obj).next().text(fnum);
+            }
+        }
+        changeNum(id, type);
+        changeSetOrder();
+        addFoodSpecHtml(id, cnum, type);
+    }
+
+    // 套餐规格菜单删除
+    function redMealCar(index, orderIndex, obj){
+        var num = mealList.list[selMid].car.removeCar(orderIndex);
+        var snum = getSelMealFoodS(index, 'num');
+        if(snum == 0){
+            $('#selMealFoodModal').modal('hide');
+        }else{
+            if(num == 0){
+                list = getSelMealFoodS(index, 'list');
+                updateSelMealFoods(index,2);
+            }else{
+                $(obj).next().text(num);
+            }
+        }
+        addFoodSpecHtml(index, snum, 2);
+        changeSetOrder(2);
+    }
+
+
+    /** 单击规格选项选中事件 gid菜id,specId规格id,childId规格子选项id,min最小选几个,max最多选几个 ,stype弹出类型**/
+    function onclickChild(gid, specId, childId, min, max, stype,type){
+        var name = '#spec'+specId;
+        var childNode = food.list[gid]._spec[specId]._child[childId];
+        if(childNode.is_repeat===1){
+            var childText = '.childnum_'+childId;
+            var inputChild = '#input'+childId;
+            var num = $(childText).text();
+            type>0 ? num++ : num--;
+            num>0 ? $(inputChild).prop("checked",true) : $(inputChild).prop("checked",false);
+        }
+
+        //判断选择是否满足最小和最大条件
+        var number = $(name).find('input[type="checkbox"][name=type'+specId+']:checked').length;
+
+        // 判断规格数量是否可多选
+        if(number < min){
+            //选中项少于最小值时,不能取消已经选中的项
+            $(name).find('input[type="checkbox"][id=input' + childId+ ']').prop("checked",true);
+                // 弹窗提示信息,1.5秒自动消失
+                $('.alert-fail').remove();
+                $('<div>').appendTo('body').addClass('alert alert-fail').html('至少选择'+ min +'项').show().delay(1500).fadeOut();
+                return false;
+        }
+        if(number > max){
+            //判断处理单选与多选的情况
+            if(max == 1) {
+                //处理最小值和最大值都是1时为单选
+                //第1步:把所有勾选都去掉（如果不可复选）
+                $(name).find('input[type="checkbox"]').prop("checked", false);
+                var allChild = food.list[gid]._spec[specId]._child;
+                for(var cid in allChild){
+                    if(allChild[cid].is_repeat===1){
+                        delSpec(gid,specId,cid);
+                    }
+                }
+                if(childNode.is_repeat == 1){
+                    // addSpecNum(gid,specId,childId);
+
+                }else {
+                    //第2步:选中本次选中项
+                    $(name).find('#input' + childId).prop("checked",true);
+                }
+            }else{
+                //处理最大值大于1时为多选情况
+                $(name).find('input[type="checkbox"][id=input' + childId +']').prop("checked",false);
+                // $("#childContent"+ specId).find('input[type="checkbox"][id=child' + childId + ']').prop("checked",false);
+                //弹窗提示信息,1.5秒自动消失
+                $('<div>').appendTo('body').addClass('alert alert-fail').html('最多选择'+ max +'项').show().delay(1500).fadeOut();
+                return false;
+            }
+        }
+
+
+        // 加减显示判断
+        type ? changeSpecNum(gid,specId,childId,type) : "";
+        //调用计算总价方法
+        selectChild(gid);
+        //判断最少选择项
+        checkInput(gid);
+    };
+
+    function delSpec(index,specId,childId){
+        car.delSpecChild(index,childId);
+        changeSpeBtn(index,specId,childId);
+        //调用计算总价方法
+        selectChild(index);
+    }
+
+    function addSpecNum(index,specId, childId) {
+        var count = $('.childnum_'+childId).html();
+        car.addSpecChild(index, childId);
+        changeSpeBtn(index,specId,childId);
+
+        //调用计算总价方法
+        selectChild(index);
+
+        //判断最少选择项
+        checkInput(index);
+    }
+
+    function reduceSpecNum(index,specId,childId) {
+        car.removeSpecChild(index,childId);
+        changeSpeBtn(index,specId,childId);
+        //调用计算总价方法
+        selectChild(index);
+    }
+
+    function changeSpeBtn(index, specId,childId) {
+        var	count = car.getSChildNum(index, childId);
+        var Obj = $('.childnum_'+childId);
+        if(count===0){count=0}
+        // 修改规格数量
+        Obj.text(count);
+
+        if(count>0){
+            $('#input'+childId).prop('checked',true);
+            Obj.show();
+        }else{
+            $('#input'+childId).prop('checked',false);
+            Obj.hide();
+            Obj.removeClass('show');
+        }
+        if(specId){
+            var arrL = $(name).find('input[type="checkbox"][name=type'+ specId + ']:checked').length,
+                min = food.list[index]._spec[specId].min;
+            max = food.list[index]._spec[specId].max;
+        }
+        if((arrL===min && count===1 && min && arrL) || (arrL<max && count===0 && min)){
+            Obj.prev('.fab-reduce').css({
+                opacity: 0,
+                transform: 'translate3d(50px,0,0) rotate(0)',
+            });
+        }else {
+            Obj.prev('.fab-reduce').css({
+                opacity: 1,
+                transform: 'translate3d(0,0,0) rotate(0)',
+            });
+        }
+
+    }
+
+
+    // 判断最少选择信息
+    function checkInput(gid) {
+        var sList = food.list[gid]._spec;
+        var flag = true;
+        $.each(sList,function (key,value) {
+            var arr = $('#spec'+key).find('input[type="checkbox"]:checked');
+            if(arr.length<sList[key].min){
+                flag = false;
+            }
+        });
+        if(flag){
+            $('.spec-add').removeClass('disable').css('pointer-events','auto');
+        }
+
+    }
+
+
+    // 清空购物车
+    $('.header-clear').on('click', function () {
+        $('.shopcart-container').slideUp();
+        $('#shield').removeClass('shield-div');
+        $('.selNum').text("").css('display','none');
+        $('#cart-count,.food-num .num-text').text("0").hide();
+        $('#total').text("0.00");
+        $('.fab-reduce').css({
+            transform: 'translate3d(50px,0,0)',
+            opacity: 0
+        });
+        car.order={};
+        car.menu={};
+        car.Spec={};
+        $.each(mealList.list, function(i, obj){
+            obj.car.order = {};
+        });
+        changeSetOrder();
+    });
+
+
+    // 提交订单
+    $('body').on('click','#setorder',function () {
+        $('#configModal').modal('hide');
+        var uType = $('#member-type').text();
+        if(car.count() != 0){
+            var contact = '{$contact.number}';
+            var member = uType==1 ? '{$member.number}' : '';
+            sessionStorage.setItem('car-count',car.count());
+            var order = JSON.stringify(car.order);
+            openloading("STATIC_PATH/assets/img/loading-2.gif");
+            $.ajax({
+                type: "POST",
+                url : "{:url('foodList')}",
+                data: uType==1 ? {contact:contact,member:member,order:order,menu:JSON.stringify(car.menu)} : {contact:contact,order:order,menu:JSON.stringify(car.menu)},
+                async: true,
+                success: function(data){
+                    setTimeout('closeloading()',100);
+                    if (data.code) {
+                        window.location.href = data.url;
+                    }
+                },
+                error: function(errormsg){
+                    console.log(errormsg);
+                }
+            });
+        }
+    })
+
+
+    {if(!empty($order))}
+    // 加载session中的购物车
+    $(function(){
+        car.order = {$order.order};
+        $.each(car.order, function(i, obj){
+            if(obj.type < 3){
+                changeNum(obj.id);
+                if(food.list[obj.id]._spec && food.list[obj.id]._spec.length !== 0){
+                    var num;
+                    if(obj.type==2){
+                        num = getSelMealFoodS(obj.id, 'num');
+                    }else{
+                        num = getSelFood(obj.id,'num');
+                    }
+                    addFoodSpecHtml(obj.id, num, obj.type);
+                }
+            }
+
+        });
+
+       /* $.each(car.menu, function (j, item) {
+            $('#'+j).find('i').text(item).show();
+        });*/
+        changeNum('');
+        changeSetOrder();
+    });
+    {/if}
+
+
+
+    // 懒加载
+    var lazyload = {
+        init : function(opt){
+            var that = this,
+                op = {
+                    anim: true,
+                    extend_height:0,
+                    selectorName:"img",
+                    realSrcAtr:"dataimg"
+                };
+            // 合并对象，已有的{anim:true}+用户自定义对象。也就是op = op + opt
+            $.extend(op,opt);
+            // 调用lazyload.img.init(op)函数
+            that.img.init(op);
+        },
+
+        img : {
+            init : function(n){
+                var that = this,
+                    selectorName = n.selectorName,
+                    realSrcAtr = n.realSrcAtr,
+                    anim = n.anim;
+
+                // 要加载的图片是不是在指定窗口内
+                function inViewport( el ) {
+                    // 当前窗口的顶部
+                    var top = window.pageYOffset,
+                        // 当前窗口的底部
+                        btm = window.pageYOffset + window.innerHeight,
+                        // 元素所在整体页面内的y轴位置
+                        elTop = $(el).offset().top;
+                    // 判断元素，是否在当前窗口，或者当前窗口延伸400像素内
+                    return elTop >= top && elTop - n.extend_height <= btm - 100;
+                }
+
+                // 滚动事件里判断，加载图片
+                $(".ul-content").on('scroll', function() {
+                    $(selectorName).each(function(index,node) {
+                        var $this = $(this);
+                        if(!$this.attr(realSrcAtr) || !inViewport(this)){
+                            return;
+                        }
+                        act($this);
+                    })
+                }).trigger('scroll');
+
+                // 展示图片
+                function act(_self){
+                    // 已经加载过了，则中断后续代码
+                    if (_self.attr('lazyImgLoaded')) return;
+                    var img = new Image(),
+                        original = _self.attr('dataimg');
+                    // 图片请求完成后的事件，把dataimg指定的图片，放到src里面，浏览器显示
+                    img.onload = function() {
+                        _self.attr('src', original);
+                        anim && _self.css({ opacity: .2 }).animate({ opacity: 1 }, 280);
+                    };
+                    // 当你设置img.src的时候，浏览器就在发送图片请求了
+                    original && (img.src = original);
+                    _self.attr('lazyImgLoaded', true);
+                }
+            }
+        }
+    };
+
+    /*
+     * selectorName，要懒加载的选择器名称
+     * extend_height  扩展高度
+     * anim  是否开启动画
+     * realSrcAtr  图片真正地址*/
+    lazyload.init({
+        anim:false,
+        selectorName:".lazy"
+    });
+
+    $('.lazy').on('onerror', function (e) {
+        var img = e.srcElement;
+        img.src="STATIC_PATH/assets/wxweb/images/lazyloadImg.png";
+        img.onerror=null;
+    });
+</script>
+</body>
+</html>

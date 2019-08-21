@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('茶位費')}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/md5.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+    <style type="text/css">
+        .container {
+            width: 100%;
+            padding-top: 50px;
+            background: #F6F8F8;
+        }
+        .title-div{
+            height: 50px;
+        }
+        .member-cate-li .input-check{
+            float:right;
+            margin:15px 3.7vw 0 0;
+            outline: none !important;
+        }
+        .member-cate-add-btn {
+            position: relative;
+            width: 37.3vw;
+            margin: 15.2vw 28vw 14vw;
+            float: left;
+            border-radius: 2vw;
+            font-size: 3.7vw;
+            line-height: 10.7vw;
+            background-color: #87C6AF;
+            text-align: center;
+            border: 1px solid transparent;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title-div">
+        <div class="title" onclick="javascript:location.href='{:url(\'manage/index\')}';">
+            <i class="fab-left"></i>{:lang('茶位費')}
+        </div>
+    </div>
+    <div class="register-main">
+        <div class="register-scroll">
+            <form  action="{:url('saveCoverCharge')}" method="post" id="saveCoverCharge">
+                <div class="member-cate-li interface">
+                    <div class="member-cate-add-name">{:lang('費用')}</div><input name="fee" type="text" maxlength="32" value="{$contact['fee']}">
+                </div>
+                <div class="member-cate-li interface">
+                {if condition="$contact['is_cover_charge'] eq 1"}
+                    <div class="member-cate-add-name">{:lang('開啟')}</div><input class="input-check" name="is_cover_charge" type="checkbox" value="1" checked>
+                {else}
+                    <div class="member-cate-add-name">{:lang('開啟')}</div><input class="input-check" name="is_cover_charge" type="checkbox" value="1">
+                {/if}
+                </div>
+                <button class="member-cate-add-btn">{:lang('確認')}</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('餐枱分類修改')}</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="container">
+	<div class="main">
+		<form  action="{:url('editmembercate')}" method="post" id="edit">
+		<div class="member-cate-li">
+			<input name="id" type="hidden" value="{$category.id}">
+			<div class="member-cate-add-name">{:lang('分類名')}：</div>
+			<input name="name" type="text" value="{$category.name}" />
+		</div>
+		<div class="member-cate-add-btn-left">{:lang('確認')}</div>
+    	<div class="member-cate-del-btn-right">{:lang('删除')}</div>
+		</form>
+	</div>
+	{include file="common:footer"}
+</div>
+	
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+	$('.member-cate-add-btn-left').click(function () {
+        $.ajax({
+          
+          type: "POST",
+          url : "{:url('editmembercate')}",
+          data: $('#edit').serialize(),
+          async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+                swal({
+					'text':'{:lang(\'頁面錯誤\')}',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+    $('.member-cate-del-btn-right').click(function () {
+		swal({
+            text: '{:lang(\'是否確認删除餐枱分類\')}?',
+            imageUrl: 'STATIC_PATH/assets/mobile/images/shanchu.png',
+            showCancelButton: true,
+            confirmButtonText: '{:lang(\'確認\')}',
+            confirmButtonColor: '#e07a0a',
+            cancelButtonText: '{:lang(\'取消\')}',
+			imageSize: '16x16',
+			customClass: 'del'
+        }).then(function(isConfirm) {
+          if (isConfirm === true) {
+            $.ajax({
+                
+                type: "POST",
+                url : "{:url('delCategory')}",
+                data: {'id':{$category['id']},'type':'contactMember'},
+                async: true,
+                success: function(data) {
+                    if (data.code) {
+                      swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                          location.href = data.url;
+                      });
+                    } else {
+						swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+                    swal({
+						'text':'{:lang(\'頁面錯誤\')}',
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+          }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <title>{:config('web_title')}</title>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+	<script src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/summernote.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/lang/summernote-zh-CN.min.js"></script><!-- 移动端富文本 -->
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+	<link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+	<link href="STATIC_PATH/assets/wxweb/css/reply.css" rel="stylesheet">
+	<!-- <link href="STATIC_PATH/assets/wxweb/css/order.css" rel="stylesheet"> -->
+	<link href="STATIC_PATH/assets/css/dropload.css" rel="stylesheet" >
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/summernote.css">
+
+
+</head>
+<div class="head-div">
+	<img class="food-detail-close" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="window.location.href='{$prevurl}'"/>
+	<div class="food-detail-title">提交問題</div>
+</div>
+<div class="scroll-main" id="scroll-main">
+<form  action="{:url('sendReply')}" method="post" id="add">
+<div class="container-div" id="container-div">
+	<div class="send-div-t">
+		<input type="hidden" name="id" value="{$id}">
+		<div class="send-label">問題<span class="#ce3815">*</span></div>
+		<div class="content-div"><div name="content" class="form-input" id="content"></div></div>
+		<input type="hidden" name="content" id="inputcontent">
+	</div>
+</div>
+</form>
+</div>
+<div class="foot-div" onclick="postform()">继续提问</div>
+<script type="text/javascript">
+	function opentips(text){
+		$("#tips-text").text(text);
+		$('#tips').modal('show');
+	}
+	var url = '';
+	function closetips(){
+		$('#tips').modal('hide');
+		if(url){
+			location.href = url;
+		}
+	}
+	function postform(){
+        var detail = $('#content').summernote('code');
+        $("#inputcontent").val(detail);
+		$.ajax({
+            type: "POST",
+            url : '{:url('index/sendReply')}',
+            data: $('#add').serialize(),
+            async: true,
+            success: function(data) {
+                if (data.code) {
+                	url = data.url;
+                    opentips(data.msg);
+                } else {
+                	url = '';
+                    opentips(data.msg);
+                }
+            },
+            error: function(request) {
+                url = '';
+                opentips('頁面錯誤');
+            }
+        });
+	}
+	$("#content").summernote({
+        minHeight : 250,
+        lang:'zh-CN',
+        disableDragAndDrop: true,
+        dialogsInBody: true,
+        dialogsFade : true,
+        toolbar: [
+            // ['style', ['style']],
+            ['font', ['bold', 'underline']],
+            // ['font', ['bold', 'underline', 'clear']],
+            // ['fontname', ['fontname']],
+            ['color', ['color']],
+            // ['para', ['ul', 'ol', 'paragraph']],
+            // ['table', ['table']],
+            ['insert', ['link', 'picture']],
+            // ['insert', ['link', 'picture', 'video']],
+            // ['view', ['fullscreen', 'codeview', 'help']]
+        ],
+        callbacks : {
+            // onImageUpload的参数为files，summernote支持选择多张图片
+            onImageUpload : function(files) {
+                var $files = $(files);
+                // 通过each方法遍历每一个file
+                $files.each(function() {
+                    var file = this;
+                    // FormData，新的form表单封装，具体可百度，但其实用法很简单，如下
+                    var data = new FormData();
+                    // 将文件加入到file中，后端可获得到参数名为“file”
+                    data.append("image", file);
+                    // ajax上传
+                    $.ajax({
+                        data : data,
+                        type : "POST",
+                        url : '{:url('index/uploadImg')}',// div上的action
+                        cache : false,
+                        contentType : false,
+                        processData : false,
+         
+                        // 成功时调用方法，后端返回json数据
+                        success : function(data) {
+                            // 状态ok时
+                            if (data.code == 1) {
+                                // 获取后台数据保存的图片完整路径
+                                var imageUrl = data.msg;
+         
+                                // 插入到summernote
+                                $("#content").summernote('insertImage', imageUrl, function($image) {
+                                    // todo，后续可以对image对象增加新的css式样等等，这里默认
+                                    $image[0].style.width="100%";
+                                });
+                            }
+         
+                        },
+                        // ajax请求失败时处理
+                        error : function(res){
+
+                        }
+                    });
+                });
+            }
+        }
+    })
+
+	
+</script>
+<!-- <script type="text/javascript">
+
+	var allpage = 1;
+
+	var dropload = $('#scroll-main').dropload({
+		domUp : {
+			domClass   : 'dropload-up',
+			domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加载中...</div>'
+		},
+		domDown : {
+			domClass   : 'dropload-down',
+			domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加载中...</div>',
+			domNoData  : '<div class="dropload-noData"></div>'
+		},
+		loadUpFn : function(me){
+			return;
+		},
+		loadDownFn : function(me){
+			$.ajax({ 
+			    type: "POST",  
+			    url: "{:url('index/getOrder')}",
+			    dataType: 'json',  
+			    data:{  
+			        'page':allpage,
+			    },
+			    success: function (res) {
+					if(res.code==1){
+						if(!$.isEmptyObject(res.msg)){
+							var addorder = '';
+							$.each(res.msg,function(n,vo) {
+							});
+							allpage = allpage+1;
+							$("#order-list").append(addorder);
+							me.resetload();
+						}else{
+							me.lock();
+							me.noData(true);
+							me.resetload();
+							if(allpage==1){
+								var notorder = '<img src="STATIC_PATH/assets/wxweb/images/no-order.png" style="width:50vw;margin-left:25vw;">';
+								$("#container-div").append(notorder);
+							}else{
+								$(".dropload-noData").text('暂无更多');
+							}
+						}
+					}else{
+						me.lock();
+						me.noData();
+						me.resetload();
+						if(allpage==1){
+							var notorder = '<img src="STATIC_PATH/assets/wxweb/images/no-order.png" style="width:50vw;margin-top:25vw;">';
+							$("#container-div").append(notorder);
+						}else{
+							$(".dropload-noData").text('暂无更多');
+						}
+					}
+
+				}
+			});
+		}
+	});
+	dropload.lock('up');
+
+</script> -->
+<div class="modal fade" id="tips" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true" style="margin-top:calc(50vh - 71.5px);">
+    <div class="modal-dialog">
+        <div class="modal-content" id="tips-cont">
+            <div class="modal-body" id="tips-text">
+            	
+			</div>
+			<div class="modal-footer" id="tips-foot" onclick="closetips();">
+				<div class="ok" id="tips-btn">確認</div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</body>
+</html>
+</body>
+</html>

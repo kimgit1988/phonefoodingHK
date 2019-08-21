@@ -1,0 +1,132 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">銀行账号添加</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Bank/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+ -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Banknumber/add')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="add">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">银行選擇</label>
+										<div class="col-sm-5">
+											<select id="bank" class="form-control select2" name="bank">  
+											    <option value="">请选择</option>
+												{volist name="bank" id="vo"}
+												<option value="{$vo.id}">{$vo.bankname}</option>
+												{/volist} 
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">银行账号</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="number" id="number" value="" maxlength="80">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">户主名称</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="name" value="" maxlength="40">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for=""> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="disable" id="disable1" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="disable" id="disable0" value="0" />停用</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style>
+	.select2{
+		background: rgba(0, 0, 0, 0.05);
+	    border: 1px solid rgba(255, 255, 255, 0.3);
+	    text-shadow: none;
+	    color: #000;
+	    box-shadow: none;
+	    font-family: open-sans-regular;
+	}
+	.select2-results{
+		color:#000;
+	}
+	.select2-search__field{
+		color:#000;
+	}
+	.note-toolbar-wrapper,.note-toolbar{
+		background-color: #666 !important;
+	}
+</style>
+<script type="text/javascript">  
+    //页面加载完成后初始化select2控件  
+    $(function () {
+        $("#bank").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该银行";
+		        }
+		    }
+		});
+		$(".submit").click(function(){
+			$.ajax({
+                type: "POST",
+                url : '{:url('banknumber/add')}',
+                data: $("#add").serialize(),
+                async: true,
+                success: function(data) {
+                	if(data.code){
+	                    alert(data.msg);
+	            		window.history.go(-1);
+                	}else{
+	                    alert(data.msg);
+                	}
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+		});
+	});
+</script> 

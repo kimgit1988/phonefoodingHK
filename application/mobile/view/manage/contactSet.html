@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('餐廳設置')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_date.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/manage.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll_date.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="title-div">
+        <div class="title" onclick="javascript:location.href='/index.php/mobile/manage/index.html';">
+            <i class="fab-left"></i>{:lang('餐廳設置')}
+        </div>
+    </div>
+    <div class="contact-main">
+        <form  action="{:url('contactset')}" method="post" id="notice">
+        <div class="table-box b-3">
+            <div class="item-tr-5 border-b item-title">{:lang('付款模式')}</div>
+            <div class="item-tr">
+                <input type="radio" name="laterpay" value="1" {if($contact.laterPay)} checked {/if} id="before"  disabled="disabled">
+                <label for="before">
+                    <span class="item-text">{:lang('先付款模式')}</span>
+                    <div class="item-text-s">{:lang('客人點完單之後，需要先埋單才能上菜，支持拼桌，客人可以多人使用同一個餐桌')}</div>
+                </label>
+            </div>
+            <div class="item-tr">
+                <input type="radio" name="laterpay" value="0" {if(!$contact.laterPay)} checked {/if} id="after"  disabled="disabled">
+                <label for="after">
+                    <span class="item-text">{:lang('後付款模式')}</span>
+                    <div class="item-text-s">{:lang('客人在用餐完畢之後才進行支付')}</div>
+                </label>
+            </div>
+        </div>
+        <div class="item-tr-6 b-3">
+            <span class="item-text">{:lang('營業時間')}</span>
+            <div type="text" class="cleartime" id="selectVaild1" onclick="openVaild(1);" >00:00:01-23:59:59</div>
+        </div>
+        <div class="table-box b-3">
+            <div class="item-tr-5 border-b item-title b-3">{:lang('附加費用')}</div>
+            <div class="table-item">
+                <input type="checkbox" name="is_cover_charge" value="1" id="tea" {if($contact.is_cover_charge)}checked{/if}>
+                <div class="cover border item-tr-5">
+                    <span class="item-text">{:lang('茶位費（按人數收取）')}</span>
+                    <div class="check-box">
+                        <label for="tea">
+                        <span class="check-div">
+                            <span class="inner"></span>
+                        </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="item-ul">
+                    <div class="item-li">
+                        <span class="item-text-s">{:lang('收取金額(HK$)')}</span>
+                        <input type="text" name="fee" value="{$contact.fee}" id="tea-price" />
+                    </div>
+                </div>
+            </div>
+            <div class="table-item">
+                <input type="checkbox" name="is_service_fee" value="1" id="service" {if($contact.is_service_fee)}checked{/if}>
+                <div class="cover border item-tr-5 t-3">
+                    <span class="item-text">{:lang('服務費（根據訂單金額按比例計算）')}</span>
+                    <div class="check-box">
+                        <label for="service">
+                        <span class="check-div">
+                            <span class="inner"></span>
+                        </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="item-ul">
+                    <div class="item-li">
+                        <span class="item-text-s">{:lang('收取比例')}</span>
+                        <input type="text" class="percent" name="service_fee" value="{$contact.service_fee}" id="service-percent" />
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="item-tr-6 b-3">
+            <span class="item-text">{:lang('設置餐盒費')}</span>
+            <input type="text" class="text" name="box_fee" value="{$contact.box_fee}" placeholder="0">
+            </div>    
+        <div class="item-tr-6 b-3">
+            <span class="item-text">{:lang('是否開啟自動打印')}</span>
+            <div class="check-box">
+                <input type="checkbox" name="autoOrder" id="print" value="1" {if($contact.autoOrder)}checked {/if}>
+                <label for="print">
+                        <span class="check-div">
+                            <span class="inner"></span>
+                        </span>
+                </label>
+            </div>
+        </div>
+        <div class="item-tr b-3 ">
+            <div class="item-text">
+                <span class="item-text">{:lang('是否開啟加菜小票打印')}</span>
+                <div class="item-text-s mr-0">{:lang('開啟此功能後，打印客戶聯加菜小票時將打印該訂單 下所有菜品清單（含已下單菜品清單）')}</div>
+            </div>
+            <div class="check-box">
+                <input type="checkbox" name="addOrderPrint" value="1" id="print2" {if($contact.addOrderPrint)} checked {/if}>
+                <label for="print2">
+                        <span class="check-div">
+                            <span class="inner"></span>
+                        </span>
+                </label>
+            </div>
+        </div>
+        <div class="button">
+            <div class="button-normal confirm">{:lang('保存')}</div>
+        </div>
+        </form>
+    </div>
+    <div class="modal fade" id="validityTime1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="validityTime-checked-2">
+                        <div class="validity-datetime-div">
+                            <input id="starttime1" name="starttime" type="text" onfocus="this.blur()" readonly="readonly" unselectable="on" placeholder="{:lang('開始時間')}" value="{$category.startTime}">
+                        </div>
+                        <div class="validity-datetime-div">
+                            <input id="endtime1" name="endtime" type="text" onfocus="this.blur()" readonly="readonly" unselectable="on" placeholder="{:lang('結束時間')}" value="{$category.endTime}">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border:0;text-align: center;">
+                    <button type="button" class="btn btn-primary" style="margin-right: 5vw;" onclick="closeVaild(1);">{:lang('確認')}</button>
+                    <button type="button" class="btn btn-default" style="margin-left: 5vw;" onclick="closeVaild(0,1);">{:lang('重置')}</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="validityTime2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="validityTime-checked">
+                        <div class="validity-datetime-div">
+                            <input id="starttime2" name="starttime" type="text" onfocus="this.blur()" readonly="readonly" unselectable="on" placeholder="{:lang('開始時間')}" value="{$category.startTime}">
+                        </div>
+                        <div class="validity-datetime-div">
+                            <input id="endtime2" name="endtime" type="text" onfocus="this.blur()" readonly="readonly" unselectable="on" placeholder="{:lang('結束時間')}" value="{$category.endTime}">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border:0;text-align: center;">
+                    <button type="button" class="btn btn-primary" style="margin-right: 5vw;" onclick="closeVaild(2);">{:lang('確認')}</button>
+                    <button type="button" class="btn btn-default" style="margin-left: 5vw;" onclick="closeVaild(0,2);">{:lang('重置')}</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="validityTime3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="validityTime-checked-3">
+                        <div class="validity-datetime-div">
+                            <input id="starttime3" name="starttime" type="text" onfocus="this.blur()" readonly="readonly" unselectable="on" placeholder="{:lang('開始時間')}" value="{$category.startTime}">
+                        </div>
+                        <div class="validity-datetime-div">
+                            <input id="endtime3" name="endtime" type="text" onfocus="this.blur()" readonly="readonly" unselectable="on" placeholder="{:lang('結束時間')}" value="{$category.endTime}">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border:0;text-align: center;">
+                    <button type="button" class="btn btn-primary" style="margin-right: 5vw;" onclick="closeVaild(3);">{:lang('確認')}</button>
+                    <button type="button" class="btn btn-default" style="margin-left: 5vw;" onclick="closeVaild(0,3);">{:lang('重置')}</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</div>
+<script type="text/javascript">
+    var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+    window.onload=function(){ //在页面整体加载完毕时
+        $('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+        var currYear = (new Date()).getFullYear();
+        var opt={};
+        opt.date = {preset : 'date'};
+        opt.datetime = {preset : 'datetime'};
+        opt.time = {preset : 'time'};
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式
+            mode: 'scroller', //日期选择模式
+            lang: 'zh',
+            dateFormat: 'yy-mm-dd',
+            dateOrder: 'yymmdd', //面板中日期排列格式
+            timeFormat: 'HH:ii:ss',
+            // timeOrder: 'HHiiss',
+            timeWheels: 'HHiiss',
+            cancelText: "{:lang('取消')}",
+            startYear: currYear - 50, //开始年份
+            endYear: currYear, //结束年份
+            showLabel: false, // 是否显示 年月日标签
+        };
+        $("#starttime1").mobiscroll($.extend(opt['time'], opt['default']));
+        $("#endtime1").mobiscroll($.extend(opt['time'], opt['default']));
+        $("#starttime2").mobiscroll($.extend(opt['time'], opt['default']));
+        $("#endtime2").mobiscroll($.extend(opt['time'], opt['default']));
+        $("#starttime3").mobiscroll($.extend(opt['time'], opt['default']));
+        $("#endtime3").mobiscroll($.extend(opt['time'], opt['default']));
+    };
+    $('.confirm').click(function () {
+        $.ajax({
+            type: "POST",
+            url : '{:url("contactset")}',
+            data: $('#notice').serialize(),
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function(data) {
+                closeloading();
+                if (data.code) {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function(request) {
+                closeloading();
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    });
+
+    function openVaild(method){
+        $(".modal-body").show();
+        $("#validityTime"+method).modal('show');
+    }
+
+
+    function closeVaild(method,type){
+        if(method==0){
+            $("#starttime"+type).val('');
+            $("#endtime"+type).val('');
+            $("#selectVaild"+type).text('');
+        }else{
+            var start = $("#starttime"+method).val();
+            var end = $("#endtime"+method).val();
+            if(start!=''&&end!=''){
+                $("#selectVaild"+method).text(start+'-'+end);
+            }else if(start==''){
+                swal({
+                    'text':'{:lang(\'請選擇開始時間\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+                return;
+            }else{
+                swal({
+                    'text':'{:lang(\'請選擇結束時間\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+                return;
+            }
+            $("#validityTime"+method).modal('hide');
+        }
+    }
+
+
+    $('input[type="checkbox"][name="is_cover_charge"]').on('click',function () {
+        var ftea = $(this).is(":checked");
+        ftea ? "" : $('#tea-price').val("0");
+    });
+    $('input[type="checkbox"][name="is_service_fee"]').on('click',function () {
+        var fser = $(this).is(":checked");
+        fser ? "" : $('#service-percent').val("0");
+    });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<title>api测试-获取餐厅信息</title>
+    <link href="./assets/css/style.css" rel="stylesheet">
+	<script src="./assets/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+	<div class="main">
+		<div class="form-div">
+        <div class="input-div"><a href="./demo.html"><label for="number" class="input-label">返回首页</label></a></div>
+		<form action="./demo1.php" id="selectcontact">
+			<div class="input-div"><label for="number" class="input-label">餐厅编号:</label><input type="text" name="number" value="testmer002"></div>
+            <div class="input-div"><label for="number" class="input-label">令牌:</label><input type="text" name="token" value=""></div>
+            <div class="reset">重置</div>
+			<div class="submit">提交</div>
+		</form>
+		</div>
+        <textarea class="result-info" style="display: none;" id="post"></textarea>
+        <textarea class="result-info" style="display: none;" id="get"></textarea>
+	</div>
+</body>
+<script type="text/javascript">
+	$(".submit").click(function(){
+		$.ajax({
+            type: "POST",
+            url : './demo1.php',
+            data: $("#selectcontact").serialize(),
+            async: true,
+            success: function(res) {
+            	data = JSON.parse(res);
+                $(".result-info").show();
+                $("#post").append('發送:'+JSON.stringify(data.post));
+                $("#get").append('獲取:'+JSON.stringify(data.msg));
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	});
+    $(".reset").click(function(){
+        $("#selectcontact")[0].reset();
+    });
+</script>
+</html>

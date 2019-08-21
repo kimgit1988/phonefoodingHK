@@ -1,0 +1,181 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- 调用select2需要新版jquery -->
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">添加餐厅</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Contact/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header> -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('Contact/add')}" enctype="multipart/form-data" class="form-horizontal ajax-form" method="post">
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">餐厅分类</label>
+										<div class="col-sm-11">
+											<select name="cCategory" class="form-control">
+												<option value="">请选择</option>
+												{volist name="type" id="vo"}
+												<option value="{$vo.id}">{$vo.name}</option>
+												{if(isset($vo.child))}{:getChildOption($vo.child)}{/if}
+												{/volist}
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">餐厅名</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="name" id="inputname" placeholder="餐厅名"maxlength="40">
+										</div>
+									</div>
+									<!-- <div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">商家编号</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="number" id="inputnumber" placeholder="商家编号">
+										</div>
+									</div> -->
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputurl"> 联系电话 </label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="linkMans" id="inputurl" placeholder="联系方式" maxlength="40">
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">logo图片</label>
+										<div class="col-sm-11">
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<div class="fileupload-new thumbnail big form-control"></div>
+												<div class="fileupload-preview form-control fileupload-exists thumbnail big">
+													<img src="">
+												</div>
+												<span class="btn btn-file btn-alt btn-sm">
+                            <span class="fileupload-new">Select image</span>
+												<span class="fileupload-exists">Change</span>
+												<input type="file" name="image" />
+												</span>
+												<a href="#" class="btn-sm btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+											</div>
+										</div>
+									</div>
+									<div id="contact_number">
+										<div class="form-group">
+											<label class="col-sm-1 control-label" for="method">商家编号</label>
+											<div class="col-sm-5" style="margin-top: 7px;">
+												<label><input type="radio" name="method" id="inputmethod0" value="0" checked="checked" />选定用户</label>
+												<label><input type="radio" name="method" id="inputmethod1" value="1" />手动输入</label>
+											</div>
+										</div>
+										<div id="contact_list">
+											<div class="form-group">
+												<label for="inputname" class="col-sm-1 control-label">选中用户</label>
+												<div class="col-sm-5">
+													<select id="selectnumber" class="form-control select2" name="selectnumber">  
+													    <option value="">请选择</option>
+														{volist name="list" id="vo"}
+														<option value="{$vo.contact_number}">{$vo.nick}</option>
+														{/volist} 
+													</select>
+												</div>
+											</div>
+										</div>
+										<div id="number_input" style="display: none;">
+											<div class="form-group">
+												<label class="col-sm-1 control-label" for="setnumber">商家编号</label>
+												<div class="col-sm-5" style="margin-top: 7px;">
+													<input type="text" class="form-control" name="setnumber" id="setnumber" value="" placeholder="商家编号">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="disable" id="inputstatus" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="0" />停用</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputremark"> 备注 </label>
+										<div class="col-sm-11">
+											<textarea name="remark" class="form-control"></textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-9">
+											<button type="submit" class="btn btn-primary">提交</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style>
+	.select2{
+		background: rgba(0, 0, 0, 0.05);
+	    border: 1px solid rgba(255, 255, 255, 0.3);
+	    text-shadow: none;
+	    color: #000;
+	    box-shadow: none;
+	    font-family: open-sans-regular;
+	}
+	.select2-results{
+		color:#000;
+	}
+	.select2-search__field{
+		color:#000;
+	}
+</style>
+<script type="text/javascript">  
+    //页面加载完成后初始化select2控件  
+    $(function () {  
+        $("#selectnumber").select2({
+        	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该商家";
+		        }
+		    }
+		});
+		$("input[name='method']").on('ifChecked', function(event){
+		    if($("input[name='method']:checked").val()==0){
+				$('#contact_list').show();
+				$('#number_input').hide();
+		    }else{
+		    	$('#contact_list').hide();
+				$('#number_input').show();
+		    }
+		});
+	});
+</script> 

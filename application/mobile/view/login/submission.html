@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('審核信息')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/icon.css"><!-- 图标库css-->
+
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="title-div">
+    <div class="title" onclick="javascript:location.href='{:url('login/index')}';"><i class="icon-fab-chevron-left"></i>
+        {:lang('審核信息')}
+    </div>
+</div>
+<div class="container">
+	<div class="register-main">
+        <div class="register-scroll">
+		<form  action="{:url('review')}" method="post" id="review">
+            <div class="register-info">
+                <input type="hidden" name="contactid" value="{$contact.id}">
+                <input type="hidden" name="userid" value="{$user.zid}">
+                <div class="register-input-li-small">
+                    <div class="register-small-label">{:lang('狀態')}</div><input type="text" value="已拒绝" readonly="readonly">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-small-label">{:lang('原因')}</div><input type="text" value="{$contact.reason}" readonly="readonly">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-small-label">{:lang('用戶名稱')}</div><input name="username" type="text" value="{$user.name}" maxlength="20">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-long-label">{:lang('商家編號')}</div><input name="number" type="text" value="{$contact.number}" maxlength="40">
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">{:lang('餐廳類型')}</div><div id="category">{$contact.cCategoryName}<i class="icon-fab-chevron-down"></i></div>
+                    <input type="hidden" name="categoryId" id="categoryId" value="{$contact.cCategory}">
+                    <input type="hidden" name="categoryName" id="categoryName" value="{$contact.cCategoryName}">
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">{:lang('支付平台')}</div><div id="type">{if(!empty($type[$contact['contactType']]['name']))}{$type[$contact['contactType']]['name']}{/if} <i class="icon-fab-chevron-down"></i></div>
+                    <input type="hidden" name="typeId" id="typeId" value="{if(!empty($type[$contact['contactType']]['contact_type']))}{$type[$contact['contactType']]['contact_type']}{/if}">
+                    <input type="hidden" name="typeName" id="typeName" value="{if(!empty($type[$contact['contactType']]['name']))}{$type[$contact['contactType']]['name']}{/if}">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-long-label">{:lang('餐廳名稱')}</div><input name="contact" type="text" value="{$contact.name}" maxlength="40">
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">{:lang('餐廳')}logo<span class="comment">（{:lang('建議解像度300*300')}）</span></div>
+                    <div class="upload-img" id="upload-logo">
+                        <img src="{$contact.logoUrl}" class="food-img" id="show-logo">
+                        <input type="hidden" name="pic_path" id="logo_path" value="{$contact.logoUrl}">
+                    </div>
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">{:lang('餐廳背景圖')}<span class="comment">（{:lang('建議解像度500*300')}）</span></div>
+                    <div class="upload-img" id="upload-img">
+                        <img src="{$contact.bgImageUrl}" class="food-img" id="show-img">
+                        <input type="hidden" name="img_path" id="img_path" value="{$contact.bgImageUrl}">
+                    </div>
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-long-label">{:lang('餐枱數')}</div><input name="member" type="text" value="{$contact.member}">
+                </div>
+            </div>
+            <div class="register-info">
+                <div class="register-input-li-small">
+                    <div class="register-small-label">{:lang('聯繫人')}</div><input name="person" type="text" value="{$user.nick}" maxlength="20">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-long-label">{:lang('聯繫電話')}</div><input name="phone" type="text" value="{$contact.linkMans}" maxlength="40">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-long-label">{:lang('銀行賬號')}</div><input name="bankNumber" type="text" value="{$contact.account_number}" maxlength="20">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-long-label">{:lang('開戶人姓名')}</div><input name="bankUser" type="text" value="{$contact.account_name}" maxlength="20">
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">{:lang('開戶銀行')}</div><div class="select" id="bank">{$contact.bank_name}<i class="icon-fab-chevron-down"></i></div>
+                    <input type="hidden" name="bankId" id="bankId" value="{$contact.bank_id}">
+                    <input type="hidden" name="bankName" id="bankName" value="{$contact.bank_name}">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-small-label">{:lang('電郵地址')}</div><input name="mail" type="text" value="{$user.email}" maxlength="30">
+                    <div class="register-error-div">
+                        <img class="register-error-img" src="STATIC_PATH/assets/mobile/images/error.png">
+                        <div class="register-error-span">{:lang('格式錯誤')}</div>
+                    </div>
+                </div>
+                <div class="register-textarea-li-small">
+                    <div class="register-small-label">{:lang('備註')}</div><textarea name="detail">{$contact.remark}</textarea>
+                </div>
+            </div>
+			<div class="register-info">
+                <div class="register-input-li-small">
+                    <div class="register-label">{:lang('地址')}</div>
+                    <input name="address" value="{if(!empty($contact.address))}{$contact.address}{/if}" type="text" maxlength="80" id="address">
+                    <input name="Latitude" type="hidden" maxlength="64" id="Latitude">
+                    <input name="Longitude" type="hidden" maxlength="64" id="Longitude">
+                </div>
+            </div>
+            <div class="register-info">
+                <div class="map" id="map"></div>
+            </div>
+        </form>
+        </div>
+        <div class="member-cate-add-btn">{:lang('重新提交')}</div>
+	</div>
+</div>
+<div class="clipbg clipbg-img displaynone">
+    <div id="clipArea1"></div>
+    <div class="loading loading-img displaynone">{:lang('正在載入圖片')}...</div>
+    <div class="footer">
+    <dl>
+        <dd>{:lang('打開相簿')}<input type="file" id="img" accept="image/*" ></dd>
+        <dd id="clipBtn-img">{:lang('完成裁剪')}</dd>
+    </dl>
+    <div class="back back-img">{:lang('取消')}</div>
+    </div>
+</div>
+
+<div class="clipbg clipbg-logo displaynone">
+    <div id="clipArea2"></div>
+    <div class="loading loading-logo displaynone">{:lang('正在載入圖片')}...</div>
+    <div class="footer">
+    <dl>
+        <dd>{:lang('打開相簿')}<input type="file" id="logo" accept="image/*" ></dd>
+        <dd id="clipBtn-logo">{:lang('完成裁剪')}</dd>
+    </dl>
+    <div class="back back-logo">{:lang('取消')}</div>
+    </div>
+</div>
+<div id="searchMapDiv">
+	<div class="row content">
+		<div class="row head">
+			<label class="tit">{:lang('搜索地址')}</label>
+			<div class="cancel" onclick='$("#searchMapDiv").slideUp();'>{:lang('取消')}</div>
+		</div>
+		<div class="row input">
+			<input type="text" id="search" oninput="getResult()" placeholder="{:lang('輸入搜索地址')}">
+		</div>
+		<div id="infoDiv" class="row">
+		</div>
+	</div>
+</div>
+<script>
+    $("#upload-img").click(function(){
+        $(".clipbg-img").fadeIn()
+    })
+    $("#upload-logo").click(function(){
+        $(".clipbg-logo").fadeIn()
+    })
+    var clipAreaImg = new  PhotoClip("#clipArea1", {
+        size: [300, 174],//裁剪框大小
+        outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+        file: "#img",
+        ok: "#clipBtn-img",
+        loadStart: function() {
+        //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+            var size = document.getElementById("img").files[0].size;
+            if(size> {:config('UploadSize.img')}){
+                swal({
+                    'text':'{:lang(\'背景圖片大小不能超過\')}{:config(\'UploadSize.img\')/1024/1024}M！',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'customClass': 'default'
+                });
+                return false;
+            }
+            $(".loading-img").removeClass("displaynone");
+
+        },
+        loadComplete: function() {
+        //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+            $(".loading-img").addClass("displaynone");
+
+        },
+        done: function(dataURL) { 
+        //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。        
+            $(".clipbg-img").fadeOut();
+            $("#show-img").attr("src",dataURL);
+            $("#img_path").val(dataURL);
+        }
+    });
+
+    var clipAreaLogo = new  PhotoClip("#clipArea2", {
+        size: [120,120],//裁剪框大小
+        outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+        file: "#logo",
+        ok: "#clipBtn-logo",
+        loadStart: function() {
+        //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+            var size = document.getElementById("logo").files[0].size;
+            if(size> {:config('UploadSize.logo')}){
+                swal({
+                    'text':'logo{:lang(\'圖片大小不能超過\')}{:config(\'UploadSize.logo\')/1024/1024}M！',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'customClass': 'default'
+                });
+                return false;
+            }
+            $(".loading-logo").removeClass("displaynone");
+
+        },
+        loadComplete: function() {
+        //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+            $(".loading-logo").addClass("displaynone");
+
+        },
+        done: function(dataURL) { 
+        //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。   
+            $(".clipbg-logo").fadeOut();
+            $("#show-logo").attr("src",dataURL);
+            $("#logo_path").val(dataURL);
+        }
+    });
+
+    $(".back-logo").click(function(){
+        $(".clipbg-logo").fadeOut()
+    })
+    $(".back-img").click(function(){
+        $(".clipbg-img").fadeOut()
+    })
+	setLatitude(22.219279685846963);
+    setLongitude(113.53977837265015);
+    var center = new qq.maps.LatLng(Latitude,Longitude);
+    map = new qq.maps.Map(document.getElementById("map"));
+    map.panTo(center);
+    map.zoomTo(17);
+    var marker = new qq.maps.Marker({
+        position: center,
+        map: map
+    });
+
+    qq.maps.event.addListener(map, 'center_changed', function() {
+        var newCenter = map.getCenter();
+        setLatitude(newCenter.lat);
+        setLongitude(newCenter.lng);
+        deletemarket();
+        addmarker(Latitude,Longitude);
+    });
+    qq.maps.event.addListener(map,'click',function(event) {
+        setLatitude(event.latLng.getLat());
+        setLongitude(event.latLng.getLng());
+        center = new qq.maps.LatLng(Latitude,Longitude);
+        map.panTo(center);
+        deletemarket();
+        addmarker(Latitude,Longitude);
+    });
+	$('#address').click(function(){
+		$("#searchMapDiv").slideDown();
+		$("#search").val('');
+		$("#search").focus();
+	});
+	function isEmpty(str){
+		if(str == undefined || str == null || str == ''){
+			return true;
+		}
+		return false;
+	}
+	//调用Poi检索类
+	function getResult() {
+		var poiText = document.getElementById("search").value;
+		$('#infoDiv').html('');
+		searchService.search(poiText);
+	}
+	var searchPois = [];
+	var searchService = new qq.maps.SearchService({
+		pageCapacity: 100,
+		complete: function(results) {
+			searchPois = results.detail.pois;
+			var htmlStr = '<ul>';
+			$.each(searchPois, function(i, obj){
+				var name = '', address = '', phone = '';
+				if(!isEmpty(obj.name)){
+					name = obj.name;
+				}
+				if(!isEmpty(obj.address)){
+					address = obj.address;
+				}
+				if(!isEmpty(obj.phone)){
+					phone = obj.phone;
+				}
+				htmlStr += '<li onclick="selectAddress(' + i + ')">'
+						+ '<span class="title">' + name + '</span>'
+						+ '<span class="address">' + address + '</span>'
+						+ '<span class="tel">' + phone + '</span>'
+						+ '</li>';
+			});
+			htmlStr += '</ul>';
+			$('#infoDiv').html(htmlStr);
+		}
+	});
+	
+	function selectAddress(index){
+		$("#searchMapDiv").slideUp();
+		var obj = searchPois[index];
+		$('input[name="address"]').val(obj.name);
+		setLatitude(obj.latLng.lat);
+		setLongitude(obj.latLng.lng);
+		center = new qq.maps.LatLng(Latitude,Longitude);
+		map.panTo(center);
+		deletemarket();
+		addmarker(Latitude,Longitude);
+	}
+    function addmarker(lat,lng){
+        var markerCenter = new qq.maps.LatLng(lat,lng);
+        marker = new qq.maps.Marker({
+            position: markerCenter,
+            map: map
+        });
+    }
+    function deletemarket() {
+        if (marker) {
+            marker.setMap(null);
+        }
+    }
+    function setLatitude(number){
+        Latitude = number;
+        $("#Latitude").val(Latitude);
+    }
+    function setLongitude(number){
+        Longitude = number;
+        $("#Longitude").val(Longitude);
+    }
+</script>
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+    var submitInfo = true;
+	$('.member-cate-add-btn').click(function () {
+        if(submitInfo){
+            $.ajax({
+                type: "POST",
+                url : '{:url(\'review\')}',
+                data: $('#review').serialize(),
+                async: true,
+                beforeSend: function(){
+                    openloading("STATIC_PATH/assets/img/loading-2.gif");
+                },
+                success: function(data) {
+                    closeloading();
+                    if (data.code) {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+							'imageSize': '16x16',
+							'customClass': 'success'
+						}).then(function(isConfirm) {
+                            window.location.reload();
+                        });
+                    } else {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+                    closeloading();
+                    swal({
+						'text':'{:lang(\'頁面錯誤\')}',
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+        }else{
+            swal({
+                'text':'{:lang(\'圖片上傳中,請稍後\')}',
+                'confirmButtonText': '{:lang(\'確認\')}',
+				'confirmButtonColor':'#e07a0a',
+				'customClass': 'default'
+            });
+        }
+        
+    });
+    function setCategory(){
+        var selectOption = mobileSelect1.getValue();
+        $("#categoryId").val(selectOption[0]['id']);
+        $("#categoryName").val(selectOption[0]['value']);
+    }
+    function setType(){
+        var selectOption = mobileSelect2.getValue();
+        $("#typeId").val(selectOption[0]['id']);
+        $("#typeName").val(selectOption[0]['value']);
+    }
+    function setBank(){
+        var selectOption = mobileSelect3.getValue();
+        $("#bankId").val(selectOption[0]['id']);
+        $("#bankName").val(selectOption[0]['value']);
+    }
+    // 設置分類選項數組
+    var option = [];
+    var types = [];
+    var bank = [];
+    // 設置默認值名稱
+    var positionKey = 0;
+    var typeKey = 0;
+    var positionBank = 0;
+    {volist name="category" id="vo" key="i"}
+    // 設置分類選項
+    option.push({id:{$vo.id},value:'{$vo.name}'});
+    {if($vo.id==$contact.cCategory)}
+    // 設置默認值
+    positionKey = {$key};
+    {/if}
+    {/volist}
+    //分类组
+
+    var typeNum = 0;
+    {volist name="type" id="vo"}
+    // 設置分類選項
+    types.push({id:{$vo.contact_type},value:'{$vo.name}'});
+    {if($vo.contact_type==$contact.contactType)}
+    // 設置默認值
+    typeKey = typeNum;
+    {/if}
+    typeNum += 1;
+    {/volist}
+
+    {volist name="bank" id="vo" key="i"}
+    // 設置分類選項
+    bank.push({id:{$vo.id},value:'{$vo.bankname}'});
+    {if($vo.id==$contact.bank_id)}
+    // 設置默認值
+    positionBank = {$key};
+    {/if}
+    {/volist}
+
+    var mobileSelect1 = new MobileSelect({
+        trigger: '#category', 
+        title: '{:lang(\'餐廳類型\')}',
+        wheels: [
+            {data:option,},
+        ],
+        callback:setCategory,
+        position:[positionKey], //初始化定位
+    });
+    var mobileSelect2 = new MobileSelect({
+        trigger: '#type', 
+        title: '{:lang(\'支付平台\')}',
+        wheels: [
+            {data:types,},
+        ],
+        callback:setType,
+        position:[typeKey], //初始化定位
+    });
+    var mobileSelect3 = new MobileSelect({
+        trigger: '#bank', 
+        title: '{:lang(\'開戶銀行\')}',
+        wheels: [
+            {data:bank,},
+        ],
+        callback:setBank,
+        position:[positionBank] //初始化定位
+    });
+</script>
+<script type="text/javascript" src="STATIC_PATH/assets/js/scale.js"></script>
+</body>
+</html>

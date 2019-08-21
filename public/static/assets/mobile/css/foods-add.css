@@ -1,0 +1,984 @@
+*{
+    font-family: "微软雅黑";
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.btnF{
+	padding-bottom: 14vw;
+	height: auto;
+}
+
+/*编辑菜品*/
+.container-div{
+	width: 100%;
+	height: auto;
+	position:absolute;
+	margin-top:0;
+}
+
+.main{
+	position: relative;
+	background-color: #fff;
+	top: 0;
+	bottom: 0;
+	overflow: hidden;
+	width: 100vw;
+}
+
+#ptselect2{
+	display: none;
+}
+
+
+.food-input-li{
+	position:relative;
+	padding:0.3rem;
+	float:left;
+	background-color: #fff;
+}
+
+.food-input-li .fab-down{
+	position:absolute;
+	right: 0.3rem;
+	top:50%;
+	font-size: 0.32rem;
+	color: #ABABAB;
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+.food-cate-label{
+	margin-left: 0;
+}
+
+.img-div{
+	height: 1rem;
+}
+.img-div .upload-img{
+	width: max-content;
+	margin-left: 0;
+	height: auto;
+	line-height: 2;
+	text-align: right;
+	padding: 0 5vw;
+}
+.f-l{
+	width: 65vw;
+}
+.f-r{
+	float:right;
+}
+.img-div .food-cate-img{
+	width: 0.8rem;
+	height: 0.8rem;
+	font-size: 0;
+}
+.food-cate-img .food-img{
+	position:relative;
+	width: 0.8rem;
+	height: 0.8rem;
+	right: 0;
+	border-radius: 2vw;
+}
+
+/*套餐配置中基本资料*/
+.food-input-li>input, .food-input-li>.select{
+	color: #ABABAB;
+	text-align: right!important;
+	float: right !important;
+	padding-right: 0;
+}
+.food-input-li>.select{
+	padding-right: 0.4rem;
+}
+
+.fab-chevron-down{
+	margin-left:2vw;
+	vertical-align:middle;
+}
+ .food-arrow{
+	right: 3.1vw;
+ }
+.remark-div{
+	flex-direction: column;
+	align-items: normal;
+	height: auto;
+}
+.remark-div .food-cate-label{
+	line-height: 2;
+	height: auto;
+}
+.remark-div textarea{
+	position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 1rem;
+    font-size: 0.24rem;
+    outline: none;
+    border: none;
+    resize: none;
+    box-sizing: inherit;
+	color: #B6B6B6;
+}
+.remark-div textarea:focus{
+	outline-offset: 0;
+}
+
+.remark-div.spec{
+	border-bottom:none;
+}
+
+.spec-div{
+	padding:0;
+
+}
+
+.member-cate-add-btn{
+	position: relative;
+	width: 40%;
+	margin:8vw 30% 14vw;
+	float: left;
+	border-radius: 6px;
+	font-size: 0.28rem;
+	line-height: 0.8rem;
+	background-color: #87C6AF;
+	text-align: center;
+}
+/*编辑分类*/
+.member-cate-add-btn.save{
+	margin: 12vw auto;
+	font-size: 0.28rem;
+	line-height: 0.8rem;
+	color: #fff;
+	float:none;
+}
+.food-edit{
+	background-color: #f6f8f8;
+}
+.b-n{
+	margin-top: 1.6vw;
+	border-bottom: none!important;
+}
+.bottomnav{
+	position: fixed;
+	bottom: 0;
+	background-color:#fff;
+	z-index: 10;
+}
+.food-detail{
+	position: relative;
+	width: 100%;
+	height: auto;
+    font-size: 0.24rem;
+    float: left;
+	background-color: #fff;
+	padding: 0.3rem;
+	margin: 0.3rem 0;
+}
+
+.food-detail .panel{
+	margin-bottom:0;
+}
+
+
+
+/*编辑菜品下菜品规格*/
+.food-cate-label-detail{
+	margin: 0 0 0.1rem;
+}
+.food-radio-div{
+	line-height: 1.6;
+	color: #333333;
+	padding: 0;
+	float: right !important;
+}
+.food-radio-div label{
+	display: inline-block;
+	margin-bottom: 0;
+	white-space: nowrap;
+}
+.food-radio-div input{
+	display: inline-block;
+	vertical-align: middle;
+}
+.add-spec-btn{
+	position: relative;
+	margin: 3vw 0 3vw 30vw;
+	width: 30vw;
+	height: 9vw;
+	line-height: 9vw;
+	color: #fff;
+	text-align: center;
+	border-radius: 1vw;
+	background-color: #A50101;
+}
+.food-spec{
+	position: relative;
+    height: auto;
+    font-size: 0.24rem;
+    text-align: left;
+}
+.food-spec-edit .icon-fab-edit{
+	margin-right: 0.2rem;
+	font-size: 0.4rem;
+}
+
+/*编辑菜品、菜品规格*/
+.food-spec-title{
+	display: flex;
+	margin-bottom: 0.2rem;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    overflow:hidden;
+}
+/*编辑菜品下菜品规格*/
+.food-spec-body{
+	display: flex;
+	overflow: hidden;
+}
+/*规格内容*/
+.food-spec-label{
+	flex:1;
+    height: 0.5rem;
+    line-height: 0.5rem;
+	margin-right: 0.3rem;
+}
+/*规格内容填充*/
+.food-spec-pname{
+	float: left;
+	width: 60vw;
+    height: 0.5rem;
+    line-height: 0.5rem;
+	color: #999999;
+}
+/*菜品编辑下菜品规格*/
+.food-spec-div{
+	position: relative;
+	margin-top: 0.3rem;
+	padding-bottom: 0.3rem;
+}
+
+.food-spec-div:not(:last-child){
+	border-bottom: 0.3vw solid #F6F8F8;
+}
+
+.food-spec-detail{
+	float: left;
+	width: 60vw;
+	line-height: 6vw;
+}
+.food-spec-tr{
+	float: left;
+	width: 60vw;
+	height: 0.5rem;
+	line-height: 0.5rem;
+	margin-bottom: 0.25rem;
+}
+.food-spec-name,.food-spec-price{
+	display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+	color: #999999;
+}
+.food-spec-name{
+	text-align: left;
+    width: 26vw;
+	margin: 0 2vw 0 1vw;
+}
+.food-spec-price{
+	width: auto;
+	height: 0.5rem;
+	left: 6vw;
+}
+/*菜品规格编辑按钮*/
+.food-spec-edit{
+	float: right;
+	margin-top: 1vw;
+}
+.food-spec-edit>img{
+	width: 6vw;
+	height: 6vw;
+	vertical-align: top;
+}
+.food-spec-edit>span{
+	width: 8vw;
+	height: 6vw;
+	line-height: 6vw;
+	vertical-align: top;
+}
+.add-spec-pdiv{
+	display: flex;
+	position: relative;
+	height: 0.8rem;
+	overflow: hidden;
+	margin-top: 2vw;
+	margin-bottom: 2vw;
+}
+.add-spec-div{
+	position: relative;
+	display: flex;
+	height: auto;
+	overflow: hidden;
+	margin-top: 2vw;
+	margin-bottom: 2vw;
+}
+.add-spec-label{
+	position: relative;
+	float: left;
+	flex:1;
+    height: 0.8rem;
+	color: #696969;
+    line-height: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+	margin-right: 2vw;
+}
+/*添加菜品规格名称*/
+.add-spec-pselect{
+	position: relative;
+	float: left;
+	width: 60vw;
+	height: 0.8rem;
+	line-height: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-indent: 5vw;
+	border-radius: 6px;
+	border: 1px solid #D5D5D5;
+}
+.select-down-arrow{
+	position: absolute;
+	width: 4vw;
+	height: 4vw;
+	top: 3vw;
+	right: 9vw;
+	background:url('../images/xiala.png') center center no-repeat;
+	pointer-events: none;
+}
+.add-spec-list{
+	position: relative;
+    float: left;
+	width: 60vw;
+	height: auto;
+}
+.add-spec-tr{
+	position: relative;
+	display: flex;
+	height: 0.8rem;
+	line-height: 0.8rem;
+	margin-bottom: 0.1rem;
+	overflow: hidden;
+}
+/*菜品规格选择下拉框*/
+.spec-price{
+	float: right;
+	width: 25vw;
+	height: 0.8rem;
+	line-height: 0.8rem;
+	border-radius: 6px;
+	text-indent: 2vw;
+	border: 1px solid #D5D5D5;
+}
+
+.add-show{
+	position: relative;
+	overflow: hidden;
+	display: none;
+	width: 100%;
+	padding: 0 0.3rem 0.3rem;
+	box-sizing: border-box;
+}
+
+.add-query-btn,.add-open-btn{
+	position: relative;
+	display: flex;
+	overflow: hidden;
+}
+
+.add-spec-left-btn,.add-spec-right-btn{
+	position: relative;
+	float: left;
+	margin: 0.2rem auto;
+	width: 2.4rem;
+	height: 0.7rem;
+	line-height: 0.7rem;
+	color: #fff;
+	text-align: center;
+	border-radius: 1vw;
+	background-color: #87C6AF;
+}
+
+.add-spec-right-btn{
+	background-color: #FA875D;
+}
+
+.food-spec-price-input{
+	display: none;
+	width: 15vw;
+    height: 0.5rem;
+	line-height: 0.5rem;
+    border-radius: 1vw;
+	border: 0.3vw solid #f9fbfb;
+	padding: 0 0.1rem;
+}
+.food-spec-price span{
+	display: inline-block;
+	width: 15vw;
+    border: 0;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    border-radius: 1vw;
+}
+
+.food-query-btn{
+	display: none;
+	position: relative;
+	overflow: hidden;
+}
+/*套餐添加分类*/
+.setmeal-li{
+   	position: relative;
+	background-color: #fff;
+	padding: 0.2rem 0.3rem;
+	margin-bottom: 0.2rem;
+}
+.setmeal-li .setmeal-icon{
+	width: 2rem;
+	height: 0.6rem;
+	line-height: 0.6rem;
+	background-color: #FF945C;
+	color: #fff;
+	border-radius: 4vw;
+	text-align: center;
+	font-size: 0.24rem
+}
+
+.setmeal-li .setmeal-icon .icon-add{
+	width:0.2rem;
+	height: 0.2rem;
+	margin-right:1.3vw;
+	margin-top:-0.5vw;
+	vertical-align: middle;
+}
+
+.setmeal-icon img{
+	width: 100%;
+}
+.setmeal-head{
+	width: 100%;
+    height: 0.8rem;
+	position: relative;
+}
+
+.setmeal-name{
+    width: 100%;
+	height: 0.8rem;
+    font-size: 0.24rem;
+}
+.setmeal-foot{
+	width: 100%;
+	height: 0.8rem;
+}
+.setmeal-max{
+    width: 30vw;
+    height: 10vw;
+    float: left;
+    line-height: 10vw;
+    font-size: 0.28rem;
+    color: #999;
+}
+#setmeal-category,#setmeal-base{
+    overflow: hidden;
+}
+
+#setmeal-base{
+	/*background-color: #fff;
+	padding: 0 0.3rem;*/
+}
+.setmeal-number{
+	width: 25vw;
+    height: 0.8rem;
+    float: left;
+    text-align: left;
+    line-height: 0.8rem;
+    font-size: 0.24rem;
+    color: #999;
+}
+/*套餐添加分类*/
+.setmeal-left{
+	text-align: left;
+	line-height: 0.8rem;
+	float: left;
+}
+.edit-food{
+	float: right;
+}
+.edit-food>div{
+	margin: 0.1rem 0;
+}
+
+.setmeal-right{
+	width: 2rem;
+	height: 0.6rem;
+	line-height: 0.6rem;
+	text-align: center;
+	float: right;
+	background-color: #87C6AF;
+	color: #fff;
+	position: relative;
+	border-radius: 4vw;
+	font-size: 0.28rem;
+}
+.setmeal-right .tit{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin: auto 0;
+	width: 100%;
+	height: 9vw;
+	text-align: center;
+	font-size: 3vw;
+	line-height: 9vw;
+}
+.setmeal-right .tit div{
+	width: 100%;
+	float: left;
+}
+.setmeal-right .tit div.t{
+	font-size: 0.28rem;
+	color:#ffffff;
+}
+/*菜品添加*/
+.select-foods-btn {
+    position: relative;
+    width: 40%;
+    border-radius: 1.6vw;
+    text-align: center;
+    font-size: 0.28rem;
+    background-color: #87C6AF;
+    bottom: 0;
+    line-height: 0.8rem;
+    color: #FFF;
+    float: left;
+	margin: 18.4vw 31.5vw 0;
+}
+
+.select2-results ul{
+	font-size: 0.28rem !important;
+}
+.select2-search--dropdown,.select2-search--dropdown input{
+	height: 0.8rem;
+	line-height: 0.8rem;
+	font-size: 0.28rem
+}
+
+.add-food{
+	padding-left: 0;
+}
+/*分类菜品添加*/
+.category-food-list{
+	position: relative;
+	float: left;
+	min-height: 10vw;
+	margin-bottom: 3vw;
+	overflow: hidden;
+	background-color: #fff;
+	width: 100%;
+	padding: 0 3.7vw;
+}
+.category-food-empty{
+	position: relative;
+	width: 90vw;
+	height: 10vw;
+	line-height: 10vw;
+	font-size: 4vw;
+	text-align: center;
+	color: #666;
+	margin-top: 5vw;
+}
+#food-relation-list {
+	overflow: hidden;
+    margin-top: 5vw;
+}
+
+.modal-dialog{
+    font-size: 0.28rem;
+}
+
+
+/*菜品添加*/
+
+#food-relation-list li {
+    list-style-type:none;
+    margin:0;
+    position:relative;
+    font-size: 0;
+}
+#food-relation-list li.m-r-3{
+	margin-right: 1.4vw;
+}
+.parent_li .category-food-checked-li img{
+	margin-bottom: 1vw;
+	width: 18vw;
+}
+
+#food-relation-list li.category-food-li{
+	width: 104%;
+}
+.category-food>li ul{
+	overflow: hidden;
+	display: flex;
+	flex-wrap: wrap;
+}
+.category-food>li li{
+    float: left;
+	width: 22.8%;
+}
+
+#food-relation-list li::before, #food-relation-list li::after {
+    left:-4vw;
+    position:absolute;
+    right:auto
+}
+#food-relation-list li::before {
+    border-left:0.3vw solid #999;
+    bottom:12vw;
+    height:100%;
+    top:0;
+    width:0.3vw;
+}
+#food-relation-list li::after {
+    border-top:0.3vw solid #ddd;
+    height:6vw;
+    top:7.5vw;
+    width:7.5vw
+}
+#food-relation-list li span {
+	text-align: center;
+    border-radius:0;
+    display:inline-block;
+    padding:1vw 1.5vw;
+    text-decoration:none;
+	font-size: 4vw;
+}
+#food-relation-list li .icon{
+	line-height: 1.1;
+    width: 0.8rem;
+    height: 0.8rem;
+	float: left;
+}
+#food-relation-list li .icon.minus{
+	background-image: url(../images/shanjian.png);
+	background-size: 100% 100%;
+}
+#food-relation-list li .icon.plus{
+	background-image: url(../images/tianjia.png);
+	background-size: 100% 100%;
+}
+#food-relation-list li>label {
+	text-align: center;
+    border-radius:0;
+    display:inline-flex;
+    text-decoration:none;
+}
+#food-relation-list li>label:not(.category){
+	width: 100%;
+	display: inline-block;
+}
+#food-relation-list li>label.category{
+	border:0;
+}
+#food-relation-list li>label.category .checkbox-div{
+	width: 100%;
+	text-align: center;
+    padding: 0 0.5rem;
+    height: 0.8rem;
+    line-height: 0.8rem;
+	position: relative;
+}
+#food-relation-list li>label.category .checkbox-icon{
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+	border: 1px solid #CCC;
+	top: 0.5vw;
+	left: 0.5vw;
+	position: absolute;
+	z-index: 2;
+}
+#food-relation-list li>label.category .add-checkbox:disabled+div.checkbox-div .checkbox-shelter{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	border-radius:1.5vw;
+	top: 0;
+	left: 0;
+	background-color: rgba(238, 238, 238, 0.6);
+	z-index: 7;
+}
+
+#food-relation-list li>label.category .add-checkbox:checked+div.checkbox-div .checkbox-icon{
+	background-color: #33c30c;
+}
+#food-relation-list li>label:not(.category) .checkbox-div{
+	width: 100%;
+	text-align: center;
+	padding:1vw;
+	border-radius:0;
+	border:0.3vw solid #ddd;
+	position: relative;
+}
+#food-relation-list li>label:not(.category) .checkbox-icon{
+	width: 6vw;
+	height: 6vw;
+	top: 0;
+	right: 0;
+	background-image: url('../images/lv.png');
+	background-size: 100% 100%;
+	position: absolute;
+	display: none;
+}
+#food-relation-list li>label:not(.category) .add-checkbox:disabled+div.checkbox-div .checkbox-shelter{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	border-radius:0;
+	top: 0;
+	left: 0;
+	background-color: rgba(238, 238, 238, 0.6);
+	z-index: 7;
+}
+#food-relation-list li>label:not(.category) .add-checkbox:disabled+div.checkbox-div{
+	border:0.3vw solid #a3dd94 !important;
+}
+#food-relation-list li>label:not(.category) .add-checkbox:checked+div.checkbox-div .checkbox-icon{
+	display: block;
+}
+#food-relation-list li>label:not(.category) .add-checkbox:checked+div.checkbox-div{
+	box-shadow: 0 0 0 2px #33c30c inset;
+	border:0.3vw solid #33c30c;
+}
+#food-relation-list li>label .checkbox-name{
+	width: 100%;
+	text-align: center;
+	font-weight: 100;
+    font-size: 0.24rem;
+	/*word-wrap: break-word;*/
+    /*word-break: normal;*/
+}
+
+#food-relation-list li>label .li-title{
+	padding-left: 20px;
+}
+#food-relation-list li>label .li-title .checkbox-icon{
+	top: 0.22rem;
+}
+#food-relation-list li.parent_li>span {
+    cursor:pointer
+}
+#food-relation-list>ul>li::before, #food-relation-list>ul>li::after {
+    border:0
+}
+#food-relation-list li:last-child::before {
+    height:10vw;
+}
+#food-relation-list li>label>div {
+	width: 100%;
+	text-align: center;
+}
+
+#food-show-list {
+	overflow: hidden;
+    margin-top: 5vw;
+}
+#food-show-list li {
+	width:23.5%;
+    list-style-type:none;
+    margin-right:2%;
+    position:relative;
+	float: left;
+}
+
+#food-show-list li img{
+	width: 100%;
+	height: 100%;
+	border-radius: 1.6vw;
+}
+#food-show-list li:nth-child(4n){
+	margin-right: 0;
+}
+#food-show-list li span,#food-show-list li>label {
+	width: 100%;
+	text-align: center;
+    border-radius:0;
+    display:inline-block;
+    text-decoration:none
+}
+#food-show-list li>label .checkbox-div{
+	width: 100%;
+	text-align: center;
+	position: relative;
+}
+#food-show-list li>label .checkbox-icon{
+	width: 6vw;
+	height: 6vw;
+	top: 0;
+	right: 0;
+	background-image: url('../images/lv.png');
+	background-size: 100% 100%;
+	position: absolute;
+	display: none;
+}
+#food-show-list .del-ts{
+	width: 100%;
+	height: 6vw;
+	line-height: 6vw;
+	margin-bottom: 1vw;
+	display: none;
+}
+
+#food-show-list ul{
+	display: flex;
+	flex-wrap: wrap;
+}
+
+#food-show-list.del li>label .del-checkbox:checked+div.checkbox-div .checkbox-icon{
+	display: block;
+}
+#food-show-list.del li>label .del-checkbox:checked+div.checkbox-div{
+	border:0.3vw solid #4BCA81;
+	border-radius: 1.6vw;
+	width: 100%;
+}
+
+#food-show-list li>label .checkbox-name{
+	width: 100%;
+	margin-top:0.1rem;
+	text-align: center;
+    font-size: 0.28rem;
+	word-wrap: break-word;
+    word-break: normal;
+	color: #333333;
+}
+.del-btn-div{
+	position: fixed;
+	width: 100vw;
+	margin:0 auto;
+	text-align: center;
+	z-index: 9999;
+    bottom: 10vw;
+}
+.del-btn-confirm,.del-btn-cancel{
+	display: inline-block;
+	margin: 0 0.2rem;
+    background: #87C6AF;
+	width: 40%;
+	height: 0.8rem;
+	line-height: 0.8rem;
+	font-size:0.28rem;
+    color: #fff;
+	border-radius: 6px;
+}
+.del-btn-cancel{
+    background: #FF8748;
+}
+/*菜品编辑*/
+.edit-main{
+	background-color:#F6F8F8;
+	padding-left: 0;
+}
+
+#category{
+	width:64vw;
+}
+
+.select{
+	width:64vw;
+}
+
+.add-spec-pselect:after{
+	content: '';
+	position:absolute;
+	right: 0.3rem;
+	top:0.3rem;
+	line-height: 0.8rem;
+	width:0;
+	height: 0;
+	border-left:0.12rem solid transparent;
+	border-right:0.12rem solid transparent;
+	border-top:0.2rem solid #B6B6B6;
+}
+
+.dishes {
+	/*border-bottom: 0.3vw solid #F9F9F9;*/
+}
+
+
+.dishes .fab-add-b{
+	float: right;
+	font-size: 0.4rem;
+	color:#87C6AF;
+}
+
+.icon-fab-down{
+	float: right;
+	line-height: 0.8rem !important;
+	font-size: 0.2rem;
+}
+
+/*套餐配置*/
+#setmeal-info .food-input-li{
+	/*padding-left: 0;*/
+}
+
+
+.food-spec-del{
+	float: left;
+	width: 18vw;
+	height: 8vw;
+	display: none;
+}
+.food-spec-del>img{
+	width: 6vw;
+	height: 6vw;
+	vertical-align: top;
+}
+.food-spec-del>span{
+	width: 8vw;
+	height: 6vw;
+	line-height: 6vw;
+	vertical-align: top;
+}
+/*
+#department{
+	position: relative;
+	width: 64vw;
+	height: 1rem;
+	line-height: 1rem;
+	float:left;
+	text-align: left;
+	z-index: 10;
+}
+*/
+
+.spec-down{
+	position: absolute;
+	right: 0.3rem;
+}
+.sort+.spec-price{
+	float: left;
+}
+.category-list{
+	width: 100%;
+}

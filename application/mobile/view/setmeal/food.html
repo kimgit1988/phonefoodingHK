@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('分類菜式')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/foods-add.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/summernote.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/summernote.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/lang/summernote-zh-CN.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<style type="text/css">
+    .container-div{
+        background-color:#ffffff;
+    }
+</style>
+<body class="btnF">
+<div class="container-div">
+    <div class="title-div">
+        <div class="title" onclick="javascript:location.href='{:url(\'setmeal/edit\',[\'id\'=>$mid,\'action\'=>2])}'">
+            <i class="fab-down"></i>{$mealCategory.name}{:lang('分類菜式')}
+        </div>
+        <div class="text-r del-btn">{:lang('刪除')}</div>
+    </div>
+    <form  action="{:url('edit')}" method="post" id="edit">
+    <input type="hidden" name="mid" value="{$mid}">
+    <input type="hidden" name="cid" value="{$cid}">
+	<div class="">
+        <div class="category-food-list">
+           {if empty($categoryFood)}
+               <div class="category-food-empty">{:lang('暫無菜式')}</div>
+           {else}
+               <div id="food-show-list">
+                   <ul>
+                       {volist name="categoryFood" id="vo" key="i"}
+                           <li class="parent_li category-food-checked-li {if($i % 3 > 0 )}m-r-3{/if}" id="food-{$vo.id}">
+                               <label>
+								   <input type="checkbox" name="delfood[]" style="display: none;" class="del-checkbox" value="{$vo.gid}">
+                                   <div class="checkbox-div">
+									   <div class="checkbox-icon"></div>
+									   <div class="checkbox-shelter"></div>
+                                       <div class="checkbox-img"><img src="{$vo.thumbnailUrl}"></div>
+									   <div class="checkbox-name">{$vo.name}</div>
+                                   </div>
+							   </label>
+                           </li>
+                       {/volist}
+                   </ul>
+               </div>
+           {/if}
+
+        </div>
+        <div class="member-cate-add-btn">{:lang('添加')}</div>
+	</div>
+	<!--<div class="member-cate-add-btn">添加</div>-->
+    <div class="del-btn-div" style="display: none;">
+        <div class="del-btn-confirm">{:lang('確認')}</div>
+        <div class="del-btn-cancel">{:lang('取消')}</div>
+    </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+    var submitInfo = true;
+
+    $('.del-btn').click(function () {
+        opendel();
+    });
+
+    $('.del-btn-cancel').click(function () {
+        closedel();
+    });
+
+    function opendel(){
+        $('#food-show-list').addClass('del');
+        $('.member-cate-add-btn').hide();
+		$(".del-checkbox:checked").prop("checked",false);
+        $('.del-btn-div').show();
+    }
+    function closedel(){
+        $('#food-show-list').removeClass('del');
+        $(".del-checkbox:checked").prop("checked",false);
+        $('.member-cate-add-btn').show();
+        $('.del-btn-div').hide();
+    }
+    $('.del-btn-confirm').click(function () {
+        $.ajax({
+                type: "POST",
+                url : '{:url('delfood')}',
+                data: $('#edit').serialize(),
+                async: true,
+                beforeSend: function(){
+                    openloading("STATIC_PATH/assets/img/loading-2.gif");
+                },
+                success: function(data) {
+                    closeloading();
+                    if (data.code) {
+                        swal({
+                            'text':data.msg,
+                            'confirmButtonText': '{:lang(\'確認\')}',
+                            'confirmButtonColor':'#e07a0a',
+                            'imageUrl': 'STATIC_PATH/assets/mobile/images/a-delete-ful.png',
+                            'imageSize': '16x16',
+                            'customClass': 'success'
+                        }).then(function(isConfirm) {
+                            location.href='{:url(\'setmeal/edit\',[\'id\'=>$mid,\'action\'=>2])}';
+                        });
+                    } else {
+                        swal({
+                            'text':data.msg,
+                            'confirmButtonText': '{:lang(\'確認\')}',
+                            'confirmButtonColor':'#e07a0a',
+                            'imageUrl': 'STATIC_PATH/assets/mobile/images/a-delete.png',
+                            'imageSize': '16x16',
+                            'customClass': 'fail'
+                        });
+                  }
+                },
+                error: function(request) {
+                    closeloading();
+                    swal({
+                        'text':'{:lang(\'頁面錯誤\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-delete.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            });
+    });
+	$('.member-cate-add-btn').click(function () {
+        window.location.href='{:url(\'setmeal/addfood\',[\'mid\'=>$mid,\'cid\'=>$cid])}';
+    });
+</script>
+</body>
+
+</html>

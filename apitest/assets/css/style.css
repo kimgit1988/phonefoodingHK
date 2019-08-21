@@ -1,0 +1,54 @@
+body,dl,dd,ul,ol,h1,h2,h3,h4,h5,h6,p,form,header,section,article,footer{margin:0;}
+body,button,input,select,textarea{font:12px/1.5 tahoma,'\5FAE\8F6F\96C5\9ED1',sans-serif}
+h1,h2,h3,h4,h5,h6{font-size:100%}
+em,b{font-style:normal}
+a{text-decoration:none} 
+a:hover{text-decoration:underline}
+img{border:0} 
+button,input,select,textarea{font-size:100%;outline:none}
+table{border-collapse:collapse;border-spacing:0}
+td,th,ul,ol{padding:0}
+
+.main{
+	width: 100vw;
+	text-align: left;
+}
+.form-div{
+	overflow: hidden;
+	width: 400px;
+	background-color: #DCDCDC;
+	margin-top: 30px;
+	margin-left: 50px; 
+	text-align: center;
+}
+.input-div{
+	margin-top: 10px;
+}
+.submit{
+	float: left;
+	width: 50px;
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #999;
+	margin-left: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	cursor: pointer;
+}
+.reset{
+	float: left;
+	width: 50px;
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #999;
+	margin-left: 140px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	cursor: pointer;
+}
+.result-info{
+	margin-left: 5vw;
+	width: 90vw;
+	height: 75vh;
+	word-wrap:break-word;
+}

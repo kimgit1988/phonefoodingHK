@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>员工列表</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/style.css">
+	<!-- <link rel="stylesheet" href="STATIC_PATH/assets/court/css/jquery.mobile-1.4.5.min.css"> -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/jquery-3.3.1.min.js"></script>
+	<!-- <script type="text/javascript" src="STATIC_PATH/assets/court/js/jquery.mobile-1.4.5.min.js"></script> -->
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="container">
+	<div class="scroll-main bg-contact-order">
+		<ul id="user-list">
+			
+			<li style="display: block;">
+				{volist name="staff" id="vo"}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/contactList',['user'=>$vo.zid])}'">
+					<!-- <div class="contact-list-li-head">
+						<div class="contact-list-head-icon"><img src="{$vo.head}"></div>
+						<div class="contact-list-head-name">{$vo.nick}</div>
+					</div> -->
+					<div class="contact-list-li-body">
+						<div class="contact-list-body-icon" style="background: url({$vo.head}) no-repeat center center;background-size: 100% 100%;"></div>
+
+						<div class="user-list-body-commission">
+							<div class="user-list-commission-title">{$vo.nick}</div>
+							<div class="user-list-commission-number">商家总数:{:countContact($vo.zid,2)}</div>
+						</div>
+					</div>
+					<!-- <div class="contact-list-li-footer">地址：澳门永利酒店大堂酒廊旁</div> -->
+				</div>
+				{/volist}
+			</li>
+		</ul>
+	</div>
+	{include file="common:footer"}
+</div>
+	
+
+</body>
+
+</html>

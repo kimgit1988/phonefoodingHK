@@ -1,0 +1,102 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">銀行列表</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Bank/add')}" title="添加銀行" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+		</header>
+		<!-- <script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script>  -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>銀行名稱</th>
+									<th>銀行編碼</th>
+									<th>地區名稱</th>
+									<th>操作</th>
+								</tr>
+								{volist name="bank" id="vo"}
+								<tr>
+									<td class="text-left">{$vo.id}</td>
+									<td>{$vo.bankcode}</td>
+									<td>{$vo.bankname}</td>
+									<td>{$vo.areaname}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Bank/edit',['id'=>$vo['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Bank/destroy',['id'=>$vo['id']])}');">删除</div>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	function href_ajax(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	                location.href = data.url;
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+</script>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>查詢日結單</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/common.css"/>
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/normalize3.0.2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll.css" rel="stylesheet" />
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_date.css" rel="stylesheet" />
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/dropload.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<!-- <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-1.9.1.js"></script> -->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/date.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iscroll.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll_date.js"></script> 
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll.js"></script> 
+    <script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+</head>
+<body>
+<div class="title-div">
+    <i class="fab-left"></i>
+    <!--<img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="javascript:location.href='{:url('owner/index')}';"/>-->
+    <div class="title" onclick="javascript:location.href='{:url(\'owner/index\')}';">
+        查詢日結單
+    </div>
+</div>
+<div class="drop-body" id="drop-body">
+<div class="statements-container">
+	<div class="statements-main">
+		<form  action="{:url('register')}" method="post" id="register" onkeydown="if(event.keyCode==13)return false;">
+            <div class="register-info">
+                <div class="register-input-li-small">
+                    <div class="register-long-label">開始日期:</div><input id="starttime"  name="starttime" type="text" value="{$start}">
+                </div>
+    		</div>
+
+            <div class="register-info">
+                <div class="register-input-li-small">
+                    <div class="register-long-label">結束日期:</div><input id="endtime"  name="endtime" type="text" value="{$end}">
+                </div>
+            </div>
+
+            <div id="statements-list">
+            </div>
+
+    	</form>
+    	<!-- <div class="member-cate-add-btn">確認發送</div> -->
+
+	</div>
+</div>
+<!-- <div id="datePlugin"></div>
+</div> -->
+
+</body>
+
+  <script type="text/javascript">
+  	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+
+    $(function () {
+        var currYear = (new Date()).getFullYear();  
+        var opt={};
+        opt.date = {preset : 'date'};
+        opt.datetime = {preset : 'datetime'};
+        opt.time = {preset : 'time'};
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式 
+            mode: 'scroller', //日期选择模式
+            dateFormat: 'yy-mm-dd',
+            lang: 'zh',
+            showNow: true,
+            nowText: "今天",
+            cancelText: "取消",
+            startYear: currYear - 50, //开始年份
+            endYear: currYear, //结束年份
+        };
+        $("#starttime").mobiscroll($.extend(opt['date'], opt['default']));
+        $("#endtime").mobiscroll($.extend(opt['date'], opt['default']));
+    });
+
+    $("#starttime").change(function(){
+        var start = $("#starttime").val();
+        var url = "{:url('owner/showStatements',['start'=>'newstart','end'=>$end])}";
+        location.href = url.replace("newstart", start);
+    });
+
+    $("#endtime").change(function(){
+        var end = $("#endtime").val();
+        var url = "{:url('owner/showStatements',['start'=>$start,'end'=>'newend'])}";
+        location.href = url.replace("newend", end);
+    });
+
+    function opendetail(number){
+        var url = "{:url('owner/showBalance',['No'=>'number'])}";
+        location.href = url.replace("number", number);
+    }
+
+    var minStatements;
+    var start = '{$start}';
+    var end   = '{$end}';
+
+    var dropload = $('#drop-body').dropload({
+        domUp : {
+            domClass   : 'dropload-up',
+            domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+            domUpdate  : '<div class="dropload-update">↑釋放更新</div>',
+            domLoad    : '<div class="dropload-load"><span class="load"></span>加載中...</div>'
+        },
+        domDown : {
+            domClass   : 'dropload-down',
+            domRefresh : '<div class="dropload-refresh">↑上拉加載更多</div>',
+            domLoad    : '<div class="dropload-load"><span class="load"></span>加載中...</div>',
+            domNoData  : '<div class="dropload-noData">暫無更多</div>'
+        },
+        loadUpFn : function(me){
+            return;
+        },
+        loadDownFn : function(me){
+            $.ajax({ 
+                type: "POST",  
+                url: "{:url('Owner/showStatements')}",
+                dataType: 'json',  
+                data:{  
+                    'minStatements':minStatements,
+                    'start':start,
+                    'end':end,
+                },
+                success: function (res) {
+                    if(res.code==1){
+                        if(!$.isEmptyObject(res.msg)){
+                            var addorder = '';
+                            $.each(res.msg,function(n,vo) {
+                                if(vo.id<minStatements||minStatements==null||minStatements==''||minStatements==undefined){
+                                    minStatements = vo.id;
+                                }
+                                addorder += '<div class="statements-li" onclick="opendetail(\''+vo.id+'\')">';
+                                addorder += '<div class="statements-li-header" >';
+                                addorder += '<div class="statements-member">結算日期</div>';
+                                addorder += '<div class="statements-time">'+vo.merAccountDate+'</div>';
+                                addorder += '</div>';
+                                addorder += '<div class="statements-body">';
+                                addorder += '<div class="statements-member">總額</div>';
+                                addorder += '<div class="statements-time">HKD$&nbsp;'+vo.balanceTotal+'</div>';
+                                addorder += '<div class="statements-member">手續費</div>';
+                                addorder += '<div class="statements-time">HKD$&nbsp;'+vo.balancePoundage+'</div>';
+                                addorder += '</div>';
+                                addorder += '<div class="statements-footer">';
+                                addorder += '<div class="statements-price">結算金額：<span style="color:#FA875D;">HKD$&nbsp;'+vo.balanceMoney+'</span></div>';
+                                addorder += '</div>';
+                                addorder += '</div>';
+                            });
+                            $("#statements-list").append(addorder);
+                            setTimeout(function(){
+                                me.resetload();
+                            },500);
+                        }else{
+                            setTimeout(function(){
+                                me.lock();
+                                me.noData(true);
+                                me.resetload();
+                            },500);
+                        }
+                    }else{
+                        me.lock();
+                        me.noData();
+                        me.resetload();
+                        /*
+                        swal({
+                            'title': '潮食点餐系统',
+                            'text':res.msg,
+                            'confirmButtonColor':'#AAA',
+                        });
+                        */
+                    }
+
+                }
+            });
+        }
+    });
+    dropload.lock('up');
+  </script>
+</html>

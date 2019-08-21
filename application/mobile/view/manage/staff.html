@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('員工管理')}</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll_date.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+</head>
+<body>
+
+<div class="container-div">
+	<div class="head-div">
+		<i class="fab-left" onclick="javascript:location.href='{:url(\'owner/index\')}';"></i>
+		<div class="title">{:lang('員工管理')}</div>
+	</div>
+	<div class="content-main">
+		{if($user)}
+			{volist name="user" id="vo"}
+				<div class="member-item-li" >
+				<div class="staff">{:lang('職員信息')}
+					<i class="fab-edit" onclick="window.location.href='{:url(\'manage/editstaff\',[\'id\'=>$vo.zid])}'"></i>
+					<i class="fab-delete del-btn" data-zid="{$vo.zid}"></i>
+				</div>
+				<input name="id" type="hidden" value="{$vo.zid}">
+				<div class="staff-li-nick">{:lang('名稱')}<span class="staff-info-span">{$vo.nick}</span></div>
+				<div class="staff-li-info">{:lang('賬號')}<span class="staff-info-span">{$vo.name}</span></div>
+			</div>
+			{/volist}
+		{else}
+		<div class="empty">
+			<svg class="icon" aria-hidden="true">
+				<use xlink:href="#icon-none"></use>
+			</svg>
+			<div class="text-none">{:lang('暫無員工信息')}</div>
+		</div>
+		{/if}
+		<div class="member-cate-li-add" onclick="window.location.href='{:url(\'manage/addstaff\')}'">{:lang('添加職員')}</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+    $('.del-btn').click(function () {
+        //删除数据传递
+        var id = $(this).attr('data-zid');
+        swal({
+            text: '{:lang(\'是否確認删除員工\')}?',
+            imageUrl: 'STATIC_PATH/assets/mobile/images/a-user-delete.png',
+            showCancelButton: true,
+            confirmButtonText: '{:lang(\'確認\')}',
+            confirmButtonColor: '#e07a0a',
+            cancelButtonText: '{:lang(\'取消\')}',
+            imageSize: '16x16',
+            customClass: 'del'
+        }).then(function(isConfirm) {
+            if (isConfirm === true) {
+                $.ajax({
+                    type: "POST",
+                    url : "{:url('delStaff')}",
+                    data: {'id':id},
+                    async: true,
+                    beforeSend: function(){
+                        openloading("STATIC_PATH/assets/img/loading-2.gif");
+                    },
+                    success: function(data) {
+                        closeloading();
+                        if (data.code) {
+                            swal({
+                                'text':data.msg,
+                                'confirmButtonText': '{:lang(\'確認\')}',
+                                'confirmButtonColor':'#e07a0a',
+                                'imageUrl': 'STATIC_PATH/assets/mobile/images/a-user-delete-ful.png',
+                                'imageSize': '16x16',
+                                'customClass': 'success'
+                            }).then(function(isConfirm) {
+                                location.href = data.url;
+                            });
+                        } else {
+                            swal({
+                                'text':data.msg,
+                                'confirmButtonText': '{:lang(\'確認\')}',
+                                'confirmButtonColor':'#e07a0a',
+                                'imageUrl': 'STATIC_PATH/assets/mobile/images/a-user-delete-ful.png',
+                                'imageSize': '16x16',
+                                'customClass': 'fail'
+                            });
+                        }
+                    },
+                    error: function(request) {
+                        closeloading();
+                        swal({
+                            'text':'{:lang(\'頁面錯誤\')}',
+                            'confirmButtonText': '{:lang(\'確認\')}',
+                            'confirmButtonColor':'#e07a0a',
+                            'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                            'imageSize': '16x16',
+                            'customClass': 'fail'
+                        });
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+
+</html>

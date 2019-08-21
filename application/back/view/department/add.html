@@ -1,0 +1,170 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">部門添加</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Bank/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+ -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Department/add')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="add">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">部門名稱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="name" maxlength="30">
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">餐廳選擇</label>
+										<div class="col-sm-5">
+											<select id="contact" class="form-control select2" name="contact">  
+											    <option value="">請選擇</option>
+												{volist name="contact" id="vo"}
+												<option value="{$vo.number}">{$vo.name}({$vo.number})</option>
+												{/volist} 
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">打印機選擇</label>
+										<div class="col-sm-5">
+											<select id="printer" class="form-control select2" name="printer">  
+											    <option value="">請選擇</option>
+											</select>
+										</div>
+									</div>
+
+                                    <div class="form-group">
+                                        <label for="inputname" class="col-sm-3 control-label">同步打印機選擇</label>
+                                        <div class="col-sm-5">
+                                            <select id="reprinter" class="form-control select2" name="reprinter">
+                                                <option value="">請選擇</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for=""> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="disable" id="disable1" value="1" checked="checked"/>啟用</label>
+											<label><input type="radio" name="disable" id="disable0" value="0" />禁用</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style>
+	.note-toolbar-wrapper,.note-toolbar{
+		background-color: #666 !important;
+	}
+</style>
+<script type="text/javascript">  
+    //页面加载完成后初始化select2控件  
+    $(function () {
+		$("#contact").select2({
+	    	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该選項";
+		        }
+		    }
+		});
+		$("#printer").select2({
+	    	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该選項";
+		        }
+		    }
+		});
+        $("#reprinter").select2({
+            width:'100%',
+            language: {
+                noResults: function (params) {
+                    return "没有该選項";
+                }
+            }
+        });
+		$("#contact").change(function(){
+			var contact = $("#contact").val();
+			$.ajax({
+	            type: "POST",
+	            url : '{:url('base/getcontactprinter')}',
+	            data: {contact:contact},
+	            async: true,
+	            success: function(data) {
+	            	if(data.code){
+	            		var html = '<option value="">請選擇</option>';
+			            $.each(data.msg, function(i, obj){
+			            	html += '<option value="'+obj.id+'">'+obj.brand+'-'+obj.deviceNick+'</option>';
+			            });
+			            $("#printer").html(html);
+			            $("#reprinter").html(html);
+		        	}else{
+		        		alert(data.msg);
+		        	}
+	            },
+	            error: function(request) {
+	                alert('頁面錯誤');
+	            }
+	        });
+		});
+		$(".submit").click(function(){
+			$.ajax({
+                type: 'POST',
+                url : '{:url('Department/add')}',
+                data: $("#add").serialize(),
+                async: true,
+                success: function(data) {
+                	if(data.code){
+	                    alert(data.msg);
+	            		window.history.go(-1);
+                	}else{
+	                    alert(data.msg);
+                	}
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+		});
+	});
+</script> 

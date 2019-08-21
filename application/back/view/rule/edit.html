@@ -1,0 +1,131 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+    <script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>
+	<h4 class="page-title b-0">菜单编辑</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/attr/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('back/rule/edit',['id'=>$ruleRow['id']])}" class="form-horizontal ajax-form" method="post" name="rule" id="edit">
+									<div class="form-group">
+										<label for="inputparent_id" class="col-sm-3 control-label">上级菜单</label>
+										<div class="col-sm-5">
+											<select name="parent_id" id="inputparent_id" class="form-control">
+												<option value="0">顶级菜单</option>
+												{volist name="ruleRows" id="vo"}
+												<option value="{$vo.id}" {if condition="$vo['id'] eq $ruleRow['parent_id']" } selected="selected" {/if}>{$vo.title}</option>
+												{volist name="$vo->parent" id="v"}
+												<option value="{$v.id}" {if condition="$v['id'] eq $ruleRow['parent_id']" } selected="selected" {/if}>------{$v.title}</option>
+												{/volist} {/volist}
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputTitle" class="col-sm-3 control-label">菜单名称</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="title" id="inputTitle" value="{$ruleRow.title}" placeholder="菜单名称">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputName" class="col-sm-3 control-label">菜单链接</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="inputName" value="{$ruleRow.name}" placeholder="菜单链接"> </div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputIcon"> ICON图标 </label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="class" id="inputIcon" value="{$ruleRow.class}" placeholder="ICON图标"> </div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputSort"> 排序 </label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control " name="sort" value="{$ruleRow.sort}" placeholder="越小越靠前">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 商家是否可以给予员工 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											{if condition="$ruleRow['contactHas'] eq 0"}
+											<label><input type="radio" name="contactHas" id="inputcontact1" value="0" checked="checked"/>不可以</label>
+											<label><input type="radio" name="contactHas" id="inputcontact2" value="1" />可以</label>
+											{else /}
+											<label><input type="radio" name="contactHas" id="inputcontact1" value="0"/>不可以</label>
+											<label><input type="radio" name="contactHas" id="inputcontact2" value="1" checked="checked"/>可以</label>
+											{/if}
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											{if condition="$ruleRow['status'] eq 1"}
+											<label><input type="radio" name="status" id="inputstatus" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="status" id="inputstatus" value="0" />停用</label>
+											{else /}
+											<label><input type="radio" name="status" id="inputstatus" value="1"/>启用</label>
+											<label><input type="radio" name="status" id="inputstatus" value="0" checked="checked"/>停用</label>
+											{/if}
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+    $(function () {
+        $(".submit").click(function(){
+            $.ajax({
+                type: "POST",
+                url : '{:url('back/rule/edit',['id'=>$ruleRow['id']])}',
+                data: $("#edit").serialize(),
+                async: true,
+                success: function(data) {
+                    if(data.code){
+                        alert(data.msg);
+                        window.history.go(-1);
+                    }else{
+                        alert(data.msg);
+                    }
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+        });
+    });
+</script>

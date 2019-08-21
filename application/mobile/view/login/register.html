@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('註冊')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key={:config('QQLbs.Key')}"></script> <!-- 腾讯地图插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+
+    <style>
+		body{
+			background-color: #F6F8F8;
+		}
+		.register-info:last-child {
+            margin-bottom: 0;
+        }
+
+		.remark-div .register-label,
+		.remark-div .food-cate-label{
+			line-height: 2;
+			height: auto;
+		}
+		.remark-div .register-label{
+			width: 20vw;
+			margin-left: 0.3rem;
+			float: left;
+			text-align: left;
+			font-size: 0.28rem;
+		}
+		.remark-div textarea{
+			position: relative;
+			display: inline-block;
+			width: 94vw;
+			height: max-content;
+			font-size: 0.28rem;
+			outline: none;
+			border: none;
+			margin: 0.1rem 0.3rem 0;
+			float: left;
+			resize: none;
+			box-sizing: inherit;
+			color: #999;
+		}
+		.remark-div textarea:focus{
+			outline-offset: 0;
+		}
+	</style>
+</head>
+<body>
+<div class="title-div">
+	<div class="title"  onclick="javascript:location.href='{:url(\'login/index\')}';">
+        <i class="fab-left"></i>{:lang('註冊')}
+	</div>
+</div>
+<div class="container register-container">
+	<div class="register-main">
+        <div class="register-scroll">
+		<form  action="{:url('register')}" method="post" id="register">
+            <input name="market" type="hidden" value="{$market}">
+            <div class="register-info">
+                <div class="register-li">
+                    <div class="register-label">{:lang('用戶名稱')}</div><input name="username" type="text" maxlength="20">
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('密碼')}</div><input name="password" type="password" maxlength="20">
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('確認密碼')}</div><input name="repassword" type="password" maxlength="20">
+                </div>
+            </div>
+            <div class="register-info">
+                <div class="register-li">
+                    <div class="register-label">{:lang('餐廳名稱')}</div><input name="contact" type="text" maxlength="40">
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('餐廳編號')}</div><input name="number" type="text" maxlength="40">
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('餐枱數')}</div><input name="member" type="number">
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('餐廳類型')}</div>
+                    <div class="select" id="register-category"><i class="fab-down"></i></div>
+                    <input type="hidden" name="categoryId" id="categoryId">
+                    <input type="hidden" name="categoryName" id="categoryName">
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('支付平台')}</div>
+                    <div class="select" id="register-type"><i class="fab-down"></i></div>
+                    <input type="hidden" name="typeId" id="typeId" value="">
+                    <input type="hidden" name="typeName" id="typeName" value="">
+                </div>
+                <div class="register-li">
+                    <div class="register-label">{:lang('支付模式')}</div>
+                    <div class="pay-type">
+                        <input type="radio" name="paytype" value="1" id="pt1">
+                        <label for="pt1">{:lang('餐前支付')}</label>
+                        <input type="radio" name="paytype" value="2" id="pt2" checked>
+                        <label for="pt2">{:lang('餐后支付')}</label>
+                    </div>
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li-img">
+                    <div class="register-label">{:lang('餐廳logo')}<span class="comment">（{:lang('建議解像度')}300*300）</span></div>
+                    <div class="register-img">
+                        <img src="STATIC_PATH/assets/mobile/images/shangchuanzp.png" id="show-logo">
+						<input type="hidden" name="pic_path" id="logo_path">
+                    </div>
+					<!--<div class="upload-img f-r">建議分辨率68*68</div>-->
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li-img">
+                    <div class="register-label f-l">{:lang('餐廳背景圖')}<span class="comment">（{:lang('建議解像度')}500*300）</span></div>
+                    <div class="register-img f-r b-img">
+                        <img src="STATIC_PATH/assets/mobile/images/register-add.png" id="show-img">
+						<input type="hidden" name="img_path" id="img_path">
+                    </div>
+                    <!--<div class="upload-img f-r">建議分辨率750*438</div>-->
+                </div>
+            </div>
+            <div class="register-info">
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('聯繫人')}</div><input name="person" type="text" maxlength="20">
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('聯繫電話')}</div><input name="phone" type="text" maxlength="40">
+                </div>
+			</div>
+            <div class="register-info">
+                <div class="register-li">
+                    <div class="register-label">{:lang('銀行賬號')}</div><input name="bankNumber" type="text" maxlength="20">
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('開戶人姓名')}</div><input name="bankUser" type="text" maxlength="20" />
+                </div>
+                <div class="register-line"></div>
+                <div class="register-li">
+                    <div class="register-label">{:lang('開戶銀行')}</div><div id="register-bank"><i class="fab-down"></i></div>
+                    <input type="hidden" name="bankId" id="bankId">
+                    <input type="hidden" name="bankName" id="bankName">
+                </div>
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <div class="register-label">{:lang('電郵地址')}</div><input name="mail" type="text" maxlength="30" />
+                </div>
+            </div>
+
+            <div class="register-info">
+                <!--<div class="register-line"></div>-->
+                <div class="register-li-textarea remark-div">
+                    <div class="register-label">{:lang('備註')}</div><textarea name="detail"></textarea>
+                </div>
+            </div>
+
+            <!--地圖隱藏注釋-->
+            <div class="register-info">
+                <!--<div class="register-line"></div>-->
+                <div class="register-li">
+                    <!--<div class="register-label">地址</div><input name="address" type="text" maxlength="80" id="address">-->
+                    <div class="register-label">{:lang('地址')}</div><input name="address" type="text" maxlength="80">
+                    <input name="Latitude" type="hidden" maxlength="64" id="Latitude">
+                    <input name="Longitude" type="hidden" maxlength="64" id="Longitude">
+                </div>
+            </div>
+            <div class="register-textarea-li-small">
+                <div class="map register-li" id="map"></div>
+            </div>
+            <!--<div class="register-line"></div>-->
+           <!-- <div class="login-protocol">
+                <input type="checkbox" name="protocol" class="protocol" checked="checked">
+                <span>同意<a href="http://www.soundwavemacau.com/merchantAgreement.html">《商戶服務規定》</a></span>
+            </div>-->
+        </form>
+            <div class="member-cate-add-btn">{:lang('完成註冊')}</div>
+            <div class="login-protocol">
+                <input type="checkbox" name="protocol" class="protocol" checked="checked">
+                <span>{:lang('同意')}<a href="http://www.soundwavemacau.com/merchantAgreement.html">《{:lang('商戶服務規定')}》</a></span>
+            </div>
+        </div>
+	</div>
+</div>
+<div class="clipbg clipbg-img displaynone">
+    <div id="clipArea1"></div>
+    <div class="loading loading-img displaynone">{:lang('正在載入圖片...')}</div>
+    <div class="footer">
+    <dl>
+        <dd>打開相簿<input type="file" id="img" accept="image/*" onClick="window.lee.pickImage()"></dd>
+        <dd id="clipBtn-img">{:lang('完成裁剪')}</dd>
+    </dl>
+    <div class="back back-img">{:lang('取消')}</div>
+    </div>
+</div>
+
+<div class="clipbg clipbg-logo displaynone">
+    <div id="clipArea2"></div>
+    <div class="loading loading-logo displaynone">{:lang('正在載入圖片...')}</div>
+    <div class="footer">
+    <dl>
+        <dd>{:lang('打開相簿')}<input type="file" id="logo" accept="image/*" onClick="window.lee.pickImage()"></dd>
+        <dd id="clipBtn-logo">{:lang('完成裁剪')}</dd>
+    </dl>
+    <div class="back back-logo">{:lang('取消')}</div>
+    </div>
+</div>
+<div id="searchMapDiv">
+	<div class="row content">
+		<div class="row head">
+			<label class="tit">{:lang('搜索地址')}</label>
+			<div class="cancel" onclick='$("#searchMapDiv").slideUp();'>{:lang('取消')}</div>
+		</div>
+		<div class="row input">
+			<input type="text" id="search" oninput="getResult()" placeholder="{:lang('輸入搜索地址')}">
+		</div>
+		<div id="infoDiv" class="row">
+		</div>
+	</div>
+</div>
+<script>
+    setBtn();
+    function setBtn(){
+        var checked =$(".protocol").is(':checked');
+        if(checked){
+            $(".member-cate-add-btn").addClass('b-success').removeClass('b-disable');
+        }else{
+            $(".member-cate-add-btn").addClass('b-disable').removeClass('b-success');
+        }
+    }
+    $(".protocol").change(function(){
+        setBtn();
+    });
+    $("#show-img").click(function(){
+        $(".clipbg-img").fadeIn()
+    })
+    $("#show-logo").click(function(){
+        $(".clipbg-logo").fadeIn()
+    })
+
+    function photoclip_obj(imgurl) {
+        var photoclip = new  PhotoClip("#clipArea1", {
+            size: [300, 300],//裁剪框大小
+            outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+            img:imgurl,
+            ok: "#clipBtn-img",
+            loadStart: function() {
+                //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+                var size = img.size;
+                if(size> {:config('UploadSize.logo')}){
+                    swal({
+                        'text':'{:lang(\'圖片大小不能超過\')}{:config("UploadSize.logo")/1024/1024}M！',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'customClass': 'default'
+                    });
+                    return false;
+                }
+                $(".loading-img").removeClass("displaynone");
+
+            },
+            loadComplete: function() {
+                //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+                $(".loading-img").addClass("displaynone");
+
+            },
+            done: function(dataURL) {
+                //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
+                $(".clipbg-img").fadeOut();
+                $(".food-img").attr("src",dataURL);
+                $("#pic_path").val(dataURL);
+            }
+        });
+    }
+
+    function photoclip_obj2(imgurl) {
+        var photoclip = new  PhotoClip("#clipArea2", {
+            size: [300, 300],//裁剪框大小
+            outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+            img:imgurl,
+            ok: "#clipBtn-logo",
+            loadStart: function() {
+                //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+                var size = img.size;
+                if(size> {:config('UploadSize.logo')}){
+                    swal({
+                        'text':'{:lang(\'圖片大小不能超過\')}{:config("UploadSize.logo")/1024/1024}M！',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'customClass': 'default'
+                    });
+                    return false;
+                }
+                $(".loading-img").removeClass("displaynone");
+
+            },
+            loadComplete: function() {
+                //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+                $(".loading-img").addClass("displaynone");
+
+            },
+            done: function(dataURL) {
+                //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
+                $(".clipbg-img").fadeOut();
+                $(".food-img").attr("src",dataURL);
+                $("#pic_path").val(dataURL);
+            }
+        });
+    }
+
+    function getimgdata(imgdata){
+        photoclip_obj(imgdata);
+    }
+
+    function getimgurl(base64Codes){
+        photoclip_obj(base64Codes);
+    }
+    var clipAreaImg = new  PhotoClip("#clipArea1", {
+        size: [300, 174],//裁剪框大小
+        outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+        file: "#img",
+        ok: "#clipBtn-img",
+        loadStart: function() {
+        //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+            var size = document.getElementById("img").files[0].size;
+            if(size> {:config('UploadSize.img')}){
+                swal({
+                    'text':'{:lang(\'背景圖片大小不能超過\')}{:config(\'UploadSize.img\')/1024/1024}M！',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'customClass': 'default'
+                });
+                return false;
+            }
+            $(".loading-img").removeClass("displaynone");
+
+        },
+        loadComplete: function() {
+        //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+            $(".loading-img").addClass("displaynone");
+
+        },
+        done: function(dataURL) { 
+        //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。        
+            $(".clipbg-img").fadeOut();
+            $("#show-img").attr("src",dataURL);
+            $("#img_path").val(dataURL);
+        }
+    });
+
+    var clipAreaLogo = new  PhotoClip("#clipArea2", {
+        size: [300,300],//裁剪框大小
+        outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+        file: "#logo",
+        ok: "#clipBtn-logo",
+        loadStart: function() {
+        //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+            var size = document.getElementById("logo").files[0].size;
+            if(size> {:config('UploadSize.logo')}){
+                swal({
+                    'text':'logo{:lang(\'圖片大小不能超過\')}{:config(\'UploadSize.logo\')/1024/1024}M！',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'customClass': 'default'
+                });
+                return false;
+            }
+            $(".loading-logo").removeClass("displaynone");
+
+        },
+        loadComplete: function() {
+        //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+            $(".loading-logo").addClass("displaynone");
+
+        },
+        done: function(dataURL) { 
+        //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。   
+            $(".clipbg-logo").fadeOut();
+            $("#show-logo").attr("src",dataURL);
+            $("#logo_path").val(dataURL);
+        }
+    });
+
+    $(".back-logo").click(function(){
+        $(".clipbg-logo").fadeOut()
+    })
+    $(".back-img").click(function(){
+        $(".clipbg-img").fadeOut()
+    });
+    function getLatlng(){
+        var address = $('#address').val();
+        $.ajax({
+            type : 'post',
+            url : "{:url('login/ted')}",
+            data : {'address':address},              
+            success : function(data) {
+                if(data.msg.status==0){
+                    setLatitude(data.msg.result.location.lat);
+                    setLongitude(data.msg.result.location.lng);
+                    center = new qq.maps.LatLng(Latitude,Longitude);
+                    map.panTo(center);
+                    deletemarket();
+                    addmarker(Latitude,Longitude);
+                }else{
+                    swal({
+                        'text':'{:lang(\'請輸入正確的地址\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }    
+            },
+            error : function() {
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    }
+    setLatitude(22.219279685846963);
+    setLongitude(113.53977837265015);
+    var center = new qq.maps.LatLng(Latitude,Longitude);
+    map = new qq.maps.Map(document.getElementById("map"));
+    map.panTo(center);
+    map.zoomTo(17);
+    var marker = new qq.maps.Marker({
+        position: center,
+        map: map
+    });
+
+    qq.maps.event.addListener(map, 'center_changed', function() {
+        var newCenter = map.getCenter();
+        setLatitude(newCenter.lat);
+        setLongitude(newCenter.lng);
+        deletemarket();
+        addmarker(Latitude,Longitude);
+    });
+    qq.maps.event.addListener(map,'click',function(event) {
+        setLatitude(event.latLng.getLat());
+        setLongitude(event.latLng.getLng());
+        center = new qq.maps.LatLng(Latitude,Longitude);
+        map.panTo(center);
+        deletemarket();
+        addmarker(Latitude,Longitude);
+    });
+	$('#address').click(function(){
+		$("#searchMapDiv").slideDown();
+		$("#search").val('');
+		$("#search").focus();
+	});
+	function isEmpty(str){
+		if(str == undefined || str == null || str == ''){
+			return true;
+		}
+		return false;
+	}
+	//调用Poi检索类
+	function getResult() {
+		var poiText = document.getElementById("search").value;
+		$('#infoDiv').html('');
+		searchService.search(poiText);
+	}
+	var searchPois = [];
+	var searchService = new qq.maps.SearchService({
+		pageCapacity: 100,
+		complete: function(results) {
+			searchPois = results.detail.pois;
+			var htmlStr = '<ul>';
+			$.each(searchPois, function(i, obj){
+				var name = '', address = '', phone = '';
+				if(!isEmpty(obj.name)){
+					name = obj.name;
+				}
+				if(!isEmpty(obj.address)){
+					address = obj.address;
+				}
+				if(!isEmpty(obj.phone)){
+					phone = obj.phone;
+				}
+				htmlStr += '<li onclick="selectAddress(' + i + ')">'
+						+ '<span class="title">' + name + '</span>'
+						+ '<span class="address">' + address + '</span>'
+						+ '<span class="tel">' + phone + '</span>'
+						+ '</li>';
+			});
+			htmlStr += '</ul>';
+			$('#infoDiv').html(htmlStr);
+		}
+	});
+	
+	function selectAddress(index){
+		$("#searchMapDiv").slideUp();
+		var obj = searchPois[index];
+		$('input[name="address"]').val(obj.name);
+		setLatitude(obj.latLng.lat);
+		setLongitude(obj.latLng.lng);
+		center = new qq.maps.LatLng(Latitude,Longitude);
+		map.panTo(center);
+		deletemarket();
+		addmarker(Latitude,Longitude);
+	}
+    function addmarker(lat,lng){
+        var markerCenter = new qq.maps.LatLng(lat,lng);
+        marker = new qq.maps.Marker({
+            position: markerCenter,
+            map: map
+        });
+    }
+    function deletemarket() {
+        if (marker) {
+            marker.setMap(null);
+        }
+    }
+    function setLatitude(number){
+        Latitude = number;
+        $("#Latitude").val(Latitude);
+    }
+    function setLongitude(number){
+        Longitude = number;
+        $("#Longitude").val(Longitude);
+    }
+</script>
+	
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+    var submitInfo = true;
+	$('.member-cate-add-btn').click(function () {
+        var checked =$(".protocol").is(':checked') ;
+        if(checked){
+            if(submitInfo){
+                $.ajax({
+                    type: "POST",
+                    url : "{:url('register')}",
+                    data: $('#register').serialize(),
+                    async: true,
+                    beforeSend: function(){
+                        openloading("STATIC_PATH/assets/img/loading-2.gif");
+                    },
+                    success: function(data) {
+                        closeloading();
+                        if (data.code) {
+                            swal({
+                                'text':data.msg,
+    							'confirmButtonText': '{:lang(\'確認\')}',
+    							'confirmButtonColor':'#e07a0a',
+    							'imageUrl': 'STATIC_PATH/assets/mobile/images/order.png',
+    							'imageSize': '16x16',
+    							'customClass': 'success'
+    						}).then(function(isConfirm) {
+                                location.href = data.url;
+                            });
+                        } else {
+                            swal({
+    							'text':data.msg,
+    							'confirmButtonText': '{:lang(\'確認\')}',
+    							'confirmButtonColor':'#e07a0a',
+    							'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+    							'imageSize': '16x16',
+    							'customClass': 'fail'
+    						});
+                        }
+                    },
+                    error: function(request) {
+                        closeloading();
+                        swal({
+    						'text':'{:lang(\'頁面錯誤\')}',
+    						'confirmButtonText': '{:lang(\'確認\')}',
+    						'confirmButtonColor':'#e07a0a',
+    						'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+    						'imageSize': '16x16',
+    						'customClass': 'fail'
+    					});
+                    }
+                });
+            }else{
+                swal({
+                    'text':'{:lang(\'圖片上傳中,請稍後\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+    				'confirmButtonColor':'#e07a0a',
+    				'customClass': 'default'
+                });
+            }
+        }
+    });
+    function setCategory(){
+        var selectOption = mobileSelect1.getValue();
+        $("#categoryId").val(selectOption[0]['id']);
+        $("#categoryName").val(selectOption[0]['value']);
+    }
+    function setType(){
+        var selectOption = mobileSelect2.getValue();
+        $("#typeId").val(selectOption[0]['id']);
+        $("#typeName").val(selectOption[0]['value']);
+    }
+    function setBank(){
+        var selectOption = mobileSelect3.getValue();
+        $("#bankId").val(selectOption[0]['id']);
+        $("#bankName").val(selectOption[0]['value']);
+    }
+    // 設置分類選項數組
+    var option = [];
+    var types = [];
+    var bank = [];
+    {volist name="category" id="vo" key="i"}
+    // 設置分類選項
+    option.push({id:{$vo.id},value:'{$vo.name}'});
+    {/volist}
+    //分类组
+    
+    {volist name="type" id="vo" key="i"}
+    // 設置分類選項
+    types.push({id:{$vo.contact_type},value:'{$vo.name}'});
+    {/volist}
+
+    {volist name="bank" id="vo" key="i"}
+    // 設置分類選項
+    bank.push({id:{$vo.id},value:'{$vo.bankname}'});
+    {/volist}
+
+    var mobileSelect1 = new MobileSelect({
+        trigger: '#register-category', 
+        title: '{:lang(\'餐廳類型\')}',
+        wheels: [
+            {data:option,},
+        ],
+        callback:setCategory,
+    });
+
+    var mobileSelect2 = new MobileSelect({
+        trigger: '#register-type', 
+        title: '{:lang(\'支付平台\')}',
+        wheels: [
+            {data:types,},
+        ],
+        callback:setType,
+    });
+
+    var mobileSelect3 = new MobileSelect({
+        trigger: '#register-bank', 
+        title: '{:lang(\'開戶銀行\')}',
+        wheels: [
+            {data:bank,},
+        ],
+        callback:setBank,
+    });
+</script>
+<script type="text/javascript" src="STATIC_PATH/assets/js/scale.js"></script>
+</body>
+</html>

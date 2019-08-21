@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>今日訂單</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/dropload.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<!--<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery.mobile-1.4.5.min.js"></script>-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+	<style>
+		.order-main{
+			bottom: 15vw;
+		}
+	</style>
+</head>
+<body>
+<script>
+	$(function(){
+		$("#order-hear li").click(function(){
+			$(this).css({
+				"color":"#52B293",
+				"border-bottom":"0.8vw solid #52B293",
+			}).siblings('li').css({
+				"color":"#818181",
+				"border-bottom":"none",
+			});
+		});					
+			
+		$("#order-hear li").click(function(){
+			$(this).addClass("action").siblings().removeClass("action");
+			var index = $(this).index();
+			$("#order-list li").eq(index).css("display","block").siblings().css("display","none");
+			// 需先解锁下拉面再关闭上拉否则上拉也会打开(插件问题)
+			dropload.unlock('down');
+			dropload.lock('up');
+			dropload.noData(false);
+			dropload.resetload();
+		});
+	});
+</script>
+<div class="container">
+	<div class="order-main">
+		<!-- 头部图片 -->
+		<ul id="order-hear">
+			<li id="allOrder" style="color:#52B293;border-bottom:0.8vw solid #52B293;" class="action todayorder">今日</li>
+		</ul>
+		<div id="order-scroll">
+		<ul id="order-list">
+			<li style="display: block;" id="all-list"></li>
+		</ul>
+		</div>
+	</div>
+	{include file="common:footer"}
+</div>
+<script type="text/javascript">
+	function getOrder(orderSN){
+		$.ajax({
+          type: "POST",
+          url : "{:url('order/getOrder')}",
+          data: {'orderSN':orderSN},
+          async: true,
+            success: function(data) {
+            	if(data.code) {
+            		swal({
+            		    'text':data.msg,
+						'confirmButtonText': '确认',
+            		    'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+            		});
+            		$("#order"+orderSN).addClass('order-btn-no').removeClass('order-btn');
+            		$("#order"+orderSN).empty();
+            		$("#order"+orderSN).html('<span>已接單</span>');
+            		$("#order"+orderSN).removeAttr('onclick');
+            	}else{
+            		swal({
+						'text':data.msg,
+						'confirmButtonText': '確認',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+            	}
+            },
+            error: function(request) {
+              	swal({
+					'text':'頁面錯誤',
+					'confirmButtonText': '確認',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+	};
+
+	var minOrder;
+	var dropload = $('#order-scroll').dropload({
+		domUp : {
+			domClass   : 'dropload-up',
+			domRefresh : '<div class="dropload-refresh">↓下拉刷線</div>',
+			domUpdate  : '<div class="dropload-update">↑釋放更多</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加載中...</div>'
+		},
+		domDown : {
+			domClass   : 'dropload-down',
+			domRefresh : '<div class="dropload-refresh">↑上拉加載更多</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加載中...</div>',
+			domNoData  : '<div class="dropload-noData">暫無更多</div>'
+		},
+		loadUpFn : function(me){
+			return;
+		},
+		loadDownFn : function(me){
+			$.ajax({ 
+			    type: "POST",  
+			    url: "{:url('Owner/nextTodayOrders')}",
+			    dataType: 'json',  
+			    data:{  
+			        'minOrder':minOrder,
+			    },
+			    success: function (res) {
+					if(res.code==1){
+						if(!$.isEmptyObject(res.msg)){
+							var addorder = '';
+							$.each(res.msg,function(n,vo) {
+								if(vo.id<minOrder||minOrder==null||minOrder==''||minOrder==undefined){
+									minOrder = vo.id;
+								}
+								addorder += '<div class="order-li">';
+								addorder += '<div class="order-li-header" >';
+								addorder += '<div class="order-member"><span>'+vo.contactMemberName+'</span></div>';
+								addorder += '<div class="order-time">'+vo.createTime+'</div>';
+								addorder += '</div>';
+								addorder += '<div class="order-li-body  printer-table">';
+								$.each(vo._goods,function(i,food) {
+									if(food.goodsType==3){
+										addorder += '<div class="order-meal-food">';
+										addorder += '<div class="order-food meal printer-tr">';
+										addorder += '<div class="order-food-name printer-td"><span><img class="meal-icon" src="/public/static/assets/img/meal-icon.png" /></span><span>'+food.goodsName+'</span></div>';
+										addorder += '<div class="order-food-number printer-td">'+food.num+'</div>';
+										addorder += '<div class="order-food-price printer-td">'+food.goodsPrice+'</div>';
+										addorder += '</div>';
+										addorder += '<div class="meal-foods printer-table">';
+										$.each(food._food,function(i,mealFood) {
+											addorder += '<div class="order-food printer-tr">';
+											addorder += '<div class="order-food-name printer-td">'+mealFood.goodsName+'</div>';
+											addorder += '<div class="order-food-number printer-td">'+mealFood.num+'</div>';
+											addorder += '</div>';
+										});
+										addorder += '</div>';
+										addorder += '</div>';
+									}else{
+										addorder += '<div class="order-food printer-tr">';
+										addorder += '<div class="order-food-name printer-td">'+food.goodsName+'</div>';
+										addorder += '<div class="order-food-number printer-td">'+food.num+'</div>';
+										addorder += '<div class="order-food-price printer-td">'+food.goodsPrice+'</div>';
+										addorder += '</div>';
+									}
+								});
+								addorder += '</div>';
+								addorder += '<div class="order-li-footer">';
+                                addorder += '<div class="order-price">總額：<span style="color:#FF5901;">HKD$&nbsp;'+vo.moneyPaid+'</span></div>';
+								if(vo.orderStatus==2){
+									addorder += '<div class="order-btn" onclick="getOrder(\''+vo.orderSN+'\')" id="order'+vo.orderSN+'"><span>接單</span></div>';
+								}else if(vo.orderStatus==1){
+									addorder += '<div class="order-btn-no"><span>未支付</span></div>';
+								}else{
+									addorder += '<div class="order-btn-no">已接單</div>';
+								}
+								// addorder += '<div class="order-price">總額：<span style="color:#FF5901;">HK$&nbsp;'+vo.moneyPaid+'</span></div>';
+								addorder += '</div>';
+								addorder += '</div>';
+							});
+							$("#all-list").append(addorder);
+							setTimeout(function(){
+								me.resetload();
+							},500);
+						}else{
+							setTimeout(function(){
+								me.lock();
+								me.noData(true);
+								me.resetload();
+							},500);
+						}
+					}else{
+						me.lock();
+						me.noData();
+						me.resetload();
+						/*
+						swal({
+		                    'title': '潮食点餐系统',
+		                    'text':res.msg,
+		                    'confirmButtonColor':'#AAA',
+		                });
+						*/
+					}
+
+				}
+			});
+		}
+	});
+	dropload.lock('up');
+</script>
+
+</body>
+
+</html>

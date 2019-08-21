@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('訂單')}</title>
+    <!-- CSS -->
+    <!-- <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/jquery.mobile-1.4.5.min.css"> -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/dropload.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <!-- <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery.mobile-1.4.5.min.js"></script> -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+
+    <style type="text/css">
+        .order-main {
+            bottom: 0;
+            top: 0.96rem;
+            width: 100%;
+        }
+
+        #order-hear .tab-head {
+            width: 50%;
+            font-size: 0.24rem;
+            height: 1rem;
+            line-height: 1rem;
+            list-style: none;
+            text-align: center;
+            -webkit-appearance: none;
+            border-bottom: none;
+            z-index: 9;
+            color: #000;
+        }
+
+        #order-list {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #order-list .tab-content {
+            display: none;
+            width: 100%;
+            padding:0 0.3rem;
+            background-color: #ffffff;
+        }
+
+        #order-list .tab-content.active-txt {
+            display: block;
+        }
+
+        .order-li:last-child {
+            padding-bottom:0.6rem;
+            margin-bottom: 20vw;
+            border-bottom: none;
+        }
+
+        .order-sn {
+            color: #52B293;
+        }
+
+        .order-type-in,.order-type-out{
+            display: inline-block;
+            width:0.8rem;
+            height: 0.36rem;
+            line-height: 0.36rem;
+            margin-left:0.1rem;
+            text-align: center;
+            font-size:0.24rem;
+            color:#ffffff;
+            background-color:#FBB93F;
+        }
+
+        .order-type-out{
+            background-color:#DA9921;
+        }
+
+        .order-li-header {
+            display: flex;
+            border-bottom: none;
+            width: 100%;
+            align-items: center;
+        }
+
+        .order-time {
+            float: left;
+        }
+
+        .order-price {
+            float: right;
+            width: auto;
+            margin: 0 auto;
+            height: auto;
+            line-height: 1;
+        }
+
+        #order-scroll {
+            width: 100%;
+            top:1.3rem;
+            background-color: #ffffff;
+        }
+
+        .order-li {
+            width: 100%;
+            margin:0;
+            border-bottom: 1px dashed #DCDCDC;
+            text-align: center;
+            font-size: 0.24rem;
+        }
+
+        .order-member {
+            margin-left: 0;
+        }
+
+        .order-li-footer {
+            width: 100%;
+            margin: 0 0 0.25rem 0;
+            padding:0;
+            border-top: none;
+        }
+    </style>
+</head>
+<body>
+<script>
+    $(function () {
+        $("#order-hear li").click(function () {
+            $(this).addClass("action").siblings().removeClass("action");
+            var index = $(this).index();
+            $("#order-list li").eq(index).css("display", "block").siblings().css("display", "none");
+            // 需先解锁下拉面再关闭上拉否则上拉也会打开(插件问题)
+            dropload.unlock('down');
+            dropload.lock('up');
+            dropload.noData(false);
+            dropload.resetload();
+        });
+    });
+</script>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/order/orderamount.html';"></i>
+        <div class="title">{:lang($data.name)} {:lang('流水詳情')}</div>
+    </div>
+    <div class="order-main">
+        <!-- 头部图片 -->
+        <ul id="order-hear">
+            <!--<li id="allOrder" class="tab-head action">所有訂單</li>
+            <li id="newsOrder" class="tab-head">本月訂單</li>
+            <li id="dayOrder" class="tab-head">當天訂單</li>-->
+            <li id="underlineOrder" class="tab-head action">{:lang('櫃枱支付')}</li>
+            <li id="onlineOrder" class="tab-head">{:lang('線上支付')}</li>
+        </ul>
+        <div id="order-scroll">
+            <ul id="order-list">
+               <!-- <li class="tab-content active-txt" id="all-list"></li>
+                <li class="tab-content" id="news-list"></li>
+                <li class="tab-content" id="day-list"></li>-->
+                <li class="tab-content clearfix active-txt" id="underline-list"></li>
+                <li class="tab-content clearfix" id="online-list"></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var maxorder;
+    var minAllOrder;
+    var minNewOrder;
+    var dropload = $('#order-scroll').dropload({
+        domUp: {
+            domClass: 'dropload-up',
+            domRefresh: '<div class="dropload-refresh">↓{:lang(\'下拉更新\')}</div>',
+            domUpdate: '<div class="dropload-update">↑{:lang(\'釋放更新\')}</div>',
+            domLoad: '<div class="dropload-load"><span class="load"></span>{:lang(\'加載中\')}...</div>'
+        },
+        domDown: {
+            domClass: 'dropload-down',
+            domRefresh: '<div class="dropload-refresh">↑{:lang(\'上拉加載更多\')}</div>',
+            domLoad: '<div class="dropload-load"><span class="load"></span>{:lang(\'加載中\')}...</div>',
+            domNoData: '<div class="dropload-noData">{:lang(\'暫無更多\')}</div>'
+        },
+        loadUpFn: function (me) {
+            return;
+        },
+        loadDownFn: function (me) {
+            var action;
+            var ptype = {$ptype};
+            var minOrder;
+            if ($(".action").attr('id') == 'underlineOrder') {
+                action = 0;
+                minOrder = minAllOrder;
+            } else if ($(".action").attr('id') == 'onlineOrder') {
+                action = 1;
+                minOrder = minNewOrder;
+            }
+            $.ajax({
+                type: "POST",
+                url: "{:url('Order/nextordersamount')}",
+                dataType: 'json',
+                data: {
+                    'minOrder': minOrder,
+                    'action': action,
+                    'ptype': ptype,
+                },
+                success: function (res) {
+                    if (res.code == 1) {
+                        if (!$.isEmptyObject(res.msg.order)) {
+                            var addorder = '';
+                            $.each(res.msg.order, function (n, vo) {
+                                if (vo.id > maxorder || maxorder == null || maxorder == '' || maxorder == undefined) {
+                                    maxorder = vo.id;
+                                }
+                                if (vo.id < minOrder || minOrder == null || minOrder == '' || minOrder == undefined) {
+                                    if (action == 0) {
+                                        minAllOrder = vo.id;
+                                    } else if (action == 1) {
+                                        minNewOrder = vo.id;
+                                    }
+                                }
+                                addorder += '<div class="order-li">';
+                                if (vo.payStatus == 0) {
+                                    addorder += '<div class="order-li-header" onclick="selectTable(\'' + vo.orderSN + '\')">';
+                                } else {
+                                    addorder += '<div class="order-li-header">';
+                                }
+                                var typeStr = '';
+                                if(vo.orderType==1){
+                                    typeStr = '{:lang(\'堂食\')}'
+                                }else if(vo.orderType==2){
+                                    typeStr = '{:lang(\'外帶\')}'
+                                }else if(vo.orderType==3){
+                                    typeStr = '{:lang(\'外賣\')}'
+                                }
+                                addorder += '<div class="order-member"><span>' + vo.contactMemberName + '{:lang(\'枱\')}' + '</span></div>';
+                                addorder += '<div class="order-sn">[' + vo.orderSN + ']</div>';
+                                addorder += '<div class="order-type-in">'+typeStr+'</div>';
+                                // addorder += '<div class="order-time">'+vo.createTime+'</div>';
+                                addorder += '</div>';
+                                addorder += '<div class="order-li-footer">';
+                                addorder += '<div class="order-time">' + vo.createTime + '</div>';
+                                addorder += '<div class="order-price"><span style="color:#FF5901;">HK$&nbsp;' + vo.moneyPaid + '</span></div><div class="btn-box">';
+
+                                addorder += '</div></div>';
+                                addorder += '</div><div id="dropload-wrap"></div>';
+                            });
+                            if (action == 0) {
+                                $("#underline-list").append(addorder);
+                            } else if (action == 1) {
+                                $("#online-list").append(addorder);
+                            }
+                            setTimeout(function () {
+                                me.resetload();
+                            }, 500);
+                        } else {
+                            setTimeout(function () {
+                                me.lock();
+                                me.noData(true);
+                                me.resetload();
+                            }, 500);
+                        }
+                    } else {
+                        me.lock();
+                        me.noData();
+                        me.resetload();
+                    }
+                }
+            });
+        }
+    });
+    dropload.lock('up');
+
+
+</script>
+</body>
+</html>

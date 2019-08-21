@@ -1,0 +1,104 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="viewport"content="width=device-width, initial-scale=1">
+	<title>美食廣場登錄</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="Cache-Control" content="no-siteapp"/>
+	<meta name="market-web-app-capable" content="yes">
+	<meta name="apple-market-web-app-capable" content="yes">
+	<meta name="apple-market-web-app-status-bar-style" content="black">
+	<meta name="apple-market-web-app-title" content="TAO dian dian"/>
+	<meta name="msapplication-TileColor" content="#0e90d2">
+	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=no, width=device-width">
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/pullToRefresh.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<meta name="format-detection" content="telephone=no" />
+</head>
+<body>
+	<!-- 页面整体 -->
+	<div class="container">
+		<div class="scroll-login">
+			<div class="login-main">
+				<!-- 头部div -->
+				<div class="login-header">
+					<!-- <div class="login-header-btn">注册</div> -->
+					<div class="login-header-title">智能点餐</div>
+					<div class="login-header-context">美食廣場专用</div>
+				</div>
+				<!-- 圆角div -->
+				<div class="login-body">
+					<div class="login-body-bg">
+						<div class="login-body-bg-left"></div>
+						<div class="login-body-bg-person"></div>
+						<div class="login-body-bg-right"></div>
+					</div>
+					<!-- 输入区域 -->
+					<div class="login-from">
+						<form  action="{:url('login')}" method="post" id="login">
+						<div class="login-input"><img src="STATIC_PATH/assets/court/images/user-icon.png"><input type="text" name="user" placeholder="用户名/手机号"></div>
+						<div class="login-input"><img src="STATIC_PATH/assets/court/images/pass-icon.png"><input type="password" name="pass"></div>
+						<div class="login-reset" onclick="window.location.href='{:url('login/reset')}'">忘記密碼</div>
+						<div class="login-btn">登錄</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+	$('.login-btn').click(function () {
+        $.ajax({
+          
+          type: "POST",
+          url : '{:url('login')}',
+          data: $('#login').serialize(),
+          async: true,
+            success: function(data) {
+            	if (data.code) {
+            		swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/court/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+            		    location.href = data.url;
+            		});
+            	} else {
+            		swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/court/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+            	}
+            },
+            error: function(request) {
+				swal({
+					'text':'頁面錯誤',
+					'confirmButtonText': '确认',
+					'confirmButtonColor':'#ea831e',
+					'imageUrl': 'STATIC_PATH/assets/court/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+</script>
+</html>

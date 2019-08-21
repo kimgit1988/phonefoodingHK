@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>管理</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="container">
+	<div class="main bg-contact-order">
+		<!-- 头部图片 -->
+		<img src="STATIC_PATH/assets/market/images/index-head.png" class="header">
+		<div class="header-div">
+			<div class="header-icon"><img src="{:session('mar_user.head')}"></div>
+			<div class="header-text">
+				<div class="header-name">{:session('mar_user.nick')}</div>
+				<div class="header-contanct">號碼{:session('mar_user.mobile')}</div>
+			</div>
+		</div>
+		<div class="manage-list">
+			<div class="li-self-radius">
+				<div class="li-div" onclick="window.location.href='{:url('manage/qrcode')}'">
+					<div class="li-name"><img src="STATIC_PATH/assets/market/images/erweima1.png" />市場人員二維碼</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/market/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+			</div>
+			<div class="li-self-radius">
+				<div class="li-div" onclick="window.location.href='{:url('manage/repass')}'">
+					<div class="li-name"><img src="STATIC_PATH/assets/market/images/xiugaimima.png" />修改密碼</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/market/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+				<div class="li-div" onclick="window.location.href='{:url('manage/reset')}'">
+					<div class="li-name"><img src="STATIC_PATH/assets/market/images/xiugaizl.png" />修改資料</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/market/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+			</div>
+			<div class="li-loginout">退出</div>
+		</div>
+	</div>
+	{include file="common:footer"}
+</div>
+<script type="text/javascript">
+	$('.li-loginout').click(function () {
+		$.ajax({
+        	type: "POST",
+        	url : '{:url('manage/loginout')}',
+        	data: {},
+        	async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/market/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/market/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+				swal({
+					'text':'页面错误',
+					'confirmButtonText': '确认',
+					'confirmButtonColor':'#ea831e',
+					'imageUrl': 'STATIC_PATH/assets/market/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+	});
+</script>
+
+</body>
+
+</html>

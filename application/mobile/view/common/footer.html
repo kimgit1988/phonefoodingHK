@@ -1,0 +1,47 @@
+ <!--底部导航栏 -->
+<!--{if($menu)}
+<div class="bottomnav">
+<ul class="navul">
+{if(count($menu)==4)}
+	{volist name="menu" id="vo"}
+		{if $vo.click==1}<li onclick="location.href='{$vo.url}'" class="navli navli-4-action"><img src="{$vo.icon}"><p>{$vo.name}</p></li>
+		{else /}<li onclick="location.href='{$vo.url}'" class="navli navli-4"><img src="{$vo.icon}"><p>{$vo.name}</p></li>{/if}
+ 	{/volist}
+{elseif(count($menu)==3)}
+	{volist name="menu" id="vo"}
+		{if $vo.click==1}<li onclick="location.href='{$vo.url}'" class="navli navli-3"><img src="{$vo.icon_click}"><p>{$vo.name}</p></li>
+		{else /}<li onclick="location.href='{$vo.url}'" class="navli navli-3"><img src="{$vo.icon}"><p>{$vo.name}</p></li>{/if}
+	{/volist}
+{/if}
+</ul>
+</div>
+{/if}-->
+
+<script>
+    window.onload=function () {
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, {
+            passive: false  // 关闭被动监听
+        });
+        var lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            var now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, {
+            passive: false  // 关闭被动监听
+        });
+        document.addEventListener('gesturestart', function (event) {
+            event.preventDefault();
+        }, {
+            passive: false  // 关闭被动监听
+        });
+
+    }
+
+</script>

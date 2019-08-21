@@ -1,0 +1,76 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">餐桌管理</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<form method="get" action="{:url('member/index')}">
+			<select class="search-select select2" id="contact" name="contact">
+				<option value="" selected="selected">请选择餐廳</option>
+				{volist name="contact" id="vo"}
+				<option value="{$vo.number}" {if(!empty($param.contact)&&$param.contact==$vo.number)}selected="selected"{/if}>{$vo.name}({$vo.number})</option>
+				{/volist}
+			</select>
+			<!-- <div class="search-label">分類</div> --><input type="text" name="search" class="search-input" placeholder="餐桌編號/名稱" value="{if(!empty($param.search))}{$param.search}{/if}">
+			<button class="search-btn btn-primary">搜索</button>
+			</form>
+		</header>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>餐桌ID</th>
+									<th>餐桌编号</th>
+									<th>餐桌二维码</th>
+									<th>餐桌名称</th>
+									<th>餐桌分类</th>
+									<th>餐桌状态</th>
+									<th>餐廳名稱</th>
+									<th>操作</th>
+								</tr>
+								{volist name="lists" id="Row"}
+								<tr>
+									<td>{$Row->mid}</td>
+									<td>{$Row->mnumber}</td>
+									<td><img src="{$Row->qrcode}" style="max-width: 68px;"></td>
+									<td>{$Row->mname}</td>
+									<td>{$Row->category}</td>
+									<td>{if($Row->mdisable)}啟用{else}禁用{/if}</td>
+									<td>{$Row->name} {if(!empty($Row->number))} ({$Row->number}) {/if}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Member/edit',['id'=>$Row['mid']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('Member/destroy',['id'=>$Row['mid']])}')">删除</div>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

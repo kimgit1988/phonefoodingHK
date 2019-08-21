@@ -1,0 +1,23 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<form action="add" enctype="multipart/form-data" method="post">
+		<h4 class="page-title">添加文章属性</h4>
+
+		<div class="block-area" id="text-input">
+
+			<div class="block-area" id="text-input">
+
+				<p>属性</p>
+				<input class="form-control input-focused" name="attr_name" type="text" placeholder="例如：头条，热点，视频，幻灯">
+				<hr class="whiter m-t-20" />
+			</div>
+			<div class="block-area" id="button">
+				<label class="btn btn-gr-gray btn-lg">
+                            <input type="submit" value="添加">
+                        </label>
+			</div>
+	</form>
+</section>

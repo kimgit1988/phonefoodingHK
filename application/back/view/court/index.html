@@ -1,0 +1,164 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">美食廣場管理</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Court/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('Court/index')}">
+			<select class="search-select select2" id="category" name="category">
+				<option value="" selected="selected">请选择分類</option>
+				{volist name="category" id="vo"}
+					<option value="{$vo.id}" {if(!empty($param.category)&&$param.category==$vo.id)}selected="selected"{/if}>{$vo.name}</option>
+				{/volist}
+			</select>
+			<select class="search-select select2" id="method" name="method">
+				<option value="" selected="selected">请选择平台</option>
+				{foreach name="type" id="vo" key="key"}
+					<option value="{$vo.contact_type}" {if(!empty($param.method)&&$param.method==$vo.contact_type)}selected="selected"{/if}>{$vo.name}</option>
+				{/foreach}
+			</select>
+			<select class="search-select select2" id="status" name="status">
+				<option value=""selected="selected">请选择状态</option>
+				<option value="0" {if(isset($param.status)&&$param.status==='0')}selected="selected"{/if}>待审批</option>
+				<option value="1" {if(isset($param.status)&&$param.status==='1')}selected="selected"{/if}>启用</option>
+				<option value="2" {if(isset($param.status)&&$param.status==='2')}selected="selected"{/if}>拒绝</option>
+				<option value="3" {if(isset($param.status)&&$param.status==='3')}selected="selected"{/if}>禁用</option>
+			</select>
+			<!-- <div class="search-label">分類</div> --><input type="text" name="search" class="search-input" placeholder="輸入編號/名稱" value="{if(!empty($param.search))}{$param.search}{/if}">
+			<button class="search-btn btn-primary">搜索</button>
+			</form>
+		</header>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#category").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+				$("#method").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+		        $("#status").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>美食廣場ID</th>
+									<th>logo</th>
+									<th>美食廣場编号</th>
+									<th>美食廣場名称</th>
+									<th>美食廣場分类</th>
+									<th>美食廣場状态</th>
+									<th>二維碼狀態</th>
+									<th>美食廣場平臺</th>
+									<th>费率</th>
+									<th>週期</th>
+									<th>申请时间</th>
+									<th>审批日期</th>
+									<th>二维码状态修改时间</th>
+									<th>操作</th>
+									<th>审核</th>
+									<th>二维码</th>
+								</tr>
+								{volist name="lists" id="Row"}
+								<tr>
+									<td>{$Row->id}</td>
+									<td><img src="{$Row->logoUrl}" style="max-width: 68px;"></td>
+									<td>{$Row->number}</td>
+									<td>{$Row->name}</td>
+									<td>{$Row->cCategoryName}</td>
+									<td>{$Row->courtdisable}</td>
+									<td>{$Row->code}</td>
+									<td>{if(!empty($Row.contactType))}{$type[$Row.contactType]['name']}{/if}</td>
+									<td>{$Row->rate}%</td>
+									<td>T+{$Row->cycle}</td>
+									<td>{if !empty($Row->ctime)}{:date('Y-m-d H:i:s',$Row->ctime)}{else/}无{/if}</td>
+									<td>{if !empty($Row->retime)}{:date('Y-m-d H:i:s',$Row->retime)}{else/}无{/if}</td>
+									<td>{if !empty($Row->qrtime)}{:date('Y-m-d H:i:s',$Row->qrtime)}{else/}无{/if}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Court/edit',['id'=>$Row['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('Court/destroy',['id'=>$Row['id']])}')">删除</div>
+										<a class="btn btn-xs btn-default" href="{:url('Court/contact',['id'=>$Row['id']])}">餐廳管理</a>
+									</td>
+									<td>
+										{if($Row['disable']==0)}
+										<a class="btn btn-xs btn-default" href="{:url('Court/review',['id'=>$Row['id']])}">审核</a>
+										{/if}
+									</td>
+									<td>
+										{if($Row['codeStatus']==0&&$Row['disable']==1)}
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Court/CourtWxQrcode',['id'=>$Row['id'],'number'=>$Row['number'],'code'=>$Row['codeStatus']])}')">二維碼生成</div>
+										{elseif($Row['codeStatus']==1)}
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Court/CourtWxQrcode',['id'=>$Row['id'],'number'=>$Row['number'],'code'=>$Row['codeStatus']])}')">製作完成</div>
+										{elseif($Row['codeStatus']==2)}
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Court/CourtWxQrcode',['id'=>$Row['id'],'number'=>$Row['number'],'code'=>$Row['codeStatus']])}')">派發</div>
+										{/if}
+										{if($Row['codeStatus']>0&&$Row['disable']==1)}
+										<a class="btn btn-xs btn-default" href="{:url('Court/downsticker',['number'=>$Row['number']])}">下載掃碼牌</a>
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Court/rewebqrcode',['id'=>$Row['id'],'number'=>$Row['number']])}')">二維碼重新生成</div>
+										{/if}
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+	function href_ajax(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	                location.href = data.url;
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+</script>

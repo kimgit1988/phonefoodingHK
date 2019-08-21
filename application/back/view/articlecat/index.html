@@ -1,0 +1,87 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">分类列表</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/articlecat/add')}" title="添加分类" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+	
+			<div class="clearfix"></div>
+		</header>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>分类标题</th>
+									<th>排序</th>
+									<th>更新时间</th>
+									<th>操作</th>
+								</tr>
+								{volist name="Articlecat" id="Articlecat"}
+								<tr>
+									<td>{$Articlecat->id}</td>
+									<td class="text-left">{$Articlecat->title}</td>
+									<td>{$Articlecat->sort}</td>
+									<td>{$Articlecat->update_time|date="y-m-d",###}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/articlecat/edit',['id'=>$Articlecat['id']])}">编辑</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/articlecat/destroy',['id'=>$Articlecat['id']])}">删除</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/article/searchArticle',['id'=>$Articlecat['id']])}">栏目文档</a>
+									</td>
+								</tr>
+								{volist name="$Articlecat->parent" id="Rows"}
+								<tr>
+									<td>{$Articlecat->id}</td>
+									<td class="text-left">┗━{$Rows->title}</td>
+									<td>{$Articlecat->sort}</td>
+									<td>{$Rows->update_time|date="y-m-d",###}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/articlecat/edit',['id'=>$Rows['id']])}">编辑</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/articlecat/destroy',['id'=>$Rows['id']])}">删除</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/article/searchArticle',['id'=>$Articlecat['id']])}">栏目文档</a>
+									</td>
+								</tr>
+								{volist name="$Rows->parent" id="Row"}
+								<tr>
+									<td>{$Articlecat->id}</td>
+									<td class="text-left">&nbsp;&nbsp;┗━━━{$Row->title}</td>
+									<td>{$Articlecat->sort}</td>
+									<td>{$Row->update_time|date="y-m-d",###}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/articlecat/edit',['id'=>$Row['id']])}">编辑</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/articlecat/destroy',['id'=>$Row['id']])}">删除</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/article/searcharticle',['id'=>$Articlecat['id']])}">栏目文档</a>
+									</td>
+								</tr>
+								{/volist} {/volist} {/volist}
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</section>

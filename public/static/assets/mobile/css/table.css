@@ -1,0 +1,135 @@
+.container{
+    background-color:#F6F8F8;
+}
+
+.title-box{
+    display: flex;
+    width:100%;
+    height: 1rem;
+    line-height: 1rem;
+    padding:0 0.3rem;
+    box-sizing: border-box;
+    border-bottom:1px solid #F6F6F6;
+    background-color:#ffffff;
+}
+
+.title-box .title-name{
+    font-size:0.28rem;
+    color:#333333;
+}
+
+.title-box .statu-box{
+    margin-left:auto;
+    font-size:0.24rem;
+    color:#999999;
+}
+
+.title-box .statu-box .statu-item{
+    display: inline-block;
+    padding-left:0.1rem;
+}
+
+.statu-item .statu-d,.statu-item .statu-y,.statu-item .statu-z,.statu-item .statu-k{
+    display: inline-block;
+    margin-left:0.1rem;
+    width:0.3rem;
+    height: 0.1rem;
+    background-color:#FA875D;
+}
+
+.statu-item .statu-y{
+    background-color:#64A4A9;
+}
+
+.statu-item .statu-z{
+    background-color:#FBB93F;
+}
+
+.statu-item .statu-k{
+    background-color:#88CDB5;
+}
+
+
+.table-list{
+    display: grid;
+    grid-template-columns: repeat(4,23.5%);
+    grid-gap:0.2rem 2%;
+    padding:0.5rem 0.3rem;
+    background-color:#ffffff;
+}
+
+.table-list .table-item{
+    position:relative;
+    width: 100%;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    text-align: center;
+    font-size:0.24rem;
+    color:#333333;
+    border-radius:4px;
+    border:1px solid;
+    border-color:#333;
+    overflow: hidden;
+}
+
+.table-list .table-item .triangle{
+    position:absolute;
+    top:0;
+    left:0;
+    width:0;
+    height: 0;
+    border-top:0.4rem solid #333;
+    border-right:0.4rem solid transparent;
+}
+
+.table-item.statu-k{
+    border-color: #88CDB5;
+}
+
+.table-item.statu-k .triangle{
+    border-top-color: #88CDB5;
+}
+
+.table-item.statu-d{
+    border-color: #FA875D;
+}
+
+.table-item.statu-d .triangle{
+    border-top-color: #FA875D;
+}
+
+.table-item.statu-z{
+    border-color: #FBB93F;
+}
+
+.table-item.statu-z .triangle{
+    border-top-color: #FBB93F;
+}
+
+.table-item.statu-y{
+    border-color: #64A4A9;
+}
+
+.table-item.statu-y .triangle{
+    border-top-color: #64A4A9;
+}
+
+.container-div .fresh{
+    position:fixed;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    bottom:0.6rem;
+    right:0.6rem;
+    width:1rem;
+    height: 1rem;
+    color:#ffffff;
+    background-color:#52B293;
+    border-radius:100%;
+    z-index: 999;
+}
+
+.container-div .fresh .fab-fresh{
+    font-size:0.4rem;
+    color:#ffffff;
+}

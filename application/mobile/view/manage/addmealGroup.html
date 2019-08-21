@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('分組信息')}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/addmeal.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:history.back(-1);"></i>
+        <div class="title">{:lang('分組信息')}</div>
+    </div>
+    <div class="content-main">
+        <form  action="{:url('addmealgroup')}" method="post" id="addmealgroup">
+        <div class="register-info b-3">
+            <div class="register-input-li-long">
+                <div class="register-long-label">{:lang('分組名稱-中文繁體')}</div><input name="name" type="text" maxlength="20" />
+            </div>text
+            <div class="register-input-li-long">
+                <div class="register-long-label">{:lang('分組名稱-英文')}</div><input name="name_en" type="text" maxlength="20" />
+            </div>
+            <div class="register-input-li-long">
+                <div class="register-long-label">{:lang('分組名稱-其他')}</div><input name="name_other" type="text" maxlength="20" />
+            </div>
+        </div>
+        <div class="item-tr-6 b-3">
+            <span class="text">{:lang('分組內選擇數量')}</span>
+            <input name="group_max_number" type="text" class="" maxlength="10" placeholder="0" />
+        </div>
+        <div class="item-tr-6  b-3">
+                <span class="item-text">
+                    <span class="text">{:lang('設置為必選分組')}</span>
+                    <span class="item-text-s mr-0">{:lang('顧客必須選擇這個分組下的項目')}</span>
+                </span>
+            <div class="check-box">
+                <input type="checkbox" name="is_require" value="1" id="group">
+                <label for="group">
+                        <span class="check-div">
+                            <span class="inner"></span>
+                        </span>
+                </label>
+            </div>
+        </div>
+        <div class="item-tr-6 b-3 ">
+            <div class="item-text">
+                <span class="item-text">{:lang('分組選項是否可複選')}</span>
+                <div class="item-text-s mr-0">{:lang('分組選項顧客可以重複選擇')}</div>
+            </div>
+            <div class="check-box">
+                <input type="checkbox" name="is_repeat" value="1" id="repeat">
+                <label for="repeat">
+                    <span class="check-div">
+                        <span class="inner"></span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="btn-fix">
+            <input name="aid" type="hidden" value="{$aid}" />
+            <div class="button-normal confirm">{:lang('確認')}</div>
+        </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $('.confirm').click(function () {
+        $.ajax({
+            type: "POST",
+            url : '{:url("addmealgroup")}',
+            data: $('#addmealgroup').serialize(),
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function(data) {
+                closeloading();
+                if (data.code) {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        window.location.href = '{:url(\'manage/setmeal\',[\'id\'=>$aid])}';
+                    });
+                } else {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function(request) {
+                closeloading();
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    });
+
+
+</script>
+</body>
+</html>

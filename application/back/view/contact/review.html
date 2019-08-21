@@ -1,0 +1,167 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">餐厅审批</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Contact/index')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header> -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('Contact/review')}" enctype="multipart/form-data" class="form-horizontal ajax-form" method="post" id="review">
+									<input type="hidden" name="id" id="inputid" value="{$contact.id}">
+									<input type="hidden" name="number" id="inputnumber" value="{$contact.number}">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">商家编号</label>
+										<div class="col-sm-11">
+											<div class="form-control" style="border: 0;background: 0;">{$contact.number}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">餐厅分类</label>
+										<div class="col-sm-11">
+											<div class="form-control" style="border: 0;background: 0;">{$contact.cCategoryName}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">餐厅名</label>
+										<div class="col-sm-11">
+											<div class="form-control" style="border: 0;background: 0;">{$contact.name}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputurl"> 联系电话 </label>
+										<div class="col-sm-11">
+											<div class="form-control" style="border: 0;background: 0;">{$contact.linkMans}</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">logo图片</label>
+										<div class="col-sm-11">
+											<img src="{$contact.logoUrl}" style="max-width: 68px;">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">背景图片</label>
+										<div class="col-sm-11">
+											<img src="{$contact.bgImageUrl}" style="max-width: 100px;">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">邮箱</label>
+										<div class="col-sm-11">
+											<div class="form-control" style="border: 0;background: 0;">{$user.email}</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">餐檯數</label>
+										<div class="col-sm-11">
+											<div class="form-control" style="border: 0;background: 0;">{$contact.member}</div>
+											<input type="hidden" name="member" value="{$contact.member}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">费率</label>
+										<div class="col-sm-11">
+											<div class="form-control" style="border: 0;background: 0;">{$contact.rate}%</div>
+											<input type="hidden" name="rate" value="{$contact.rate}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">餐廳平臺</label>
+										<div class="col-sm-11">
+											<div class="form-control" style="border: 0;background: 0;">
+											{if(isset($type[$contact.contactType]['name']))}
+											{$type[$contact.contactType]['name']}
+											{/if}
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputremark"> 备注 </label>
+										<div class="col-sm-11">
+											<div name="remark" class="form-control" style="border: 0;background: 0;">{$contact.remark}</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputstatus"> 通过/拒绝 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="disable" id="inputstatus" value="1" checked="checked"/>通过</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="2" />拒绝</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputremark"> 拒绝原因(通过不用填) </label>
+										<div class="col-sm-11">
+											<textarea name="reason" class="form-control"></textarea>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+$(".submit").click(function(){
+	$.ajax({
+        type: "POST",
+        url : '{:url('Contact/review')}',
+        data: $("#review").serialize(),
+        async: true,
+        success: function(data) {
+        	if(data.code){
+                alert(data.msg);
+	            window.history.go(-1);
+        	}else{
+                alert(data.msg);
+        	}
+        },
+        error: function(request) {
+            alert('頁面錯誤');
+        }
+    });
+});
+</script>

@@ -1,0 +1,202 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">商家流水单</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<form method="get" action="{:url('balance/contactbalance')}">
+				<select class="search-select select2" id="paymethod" name="paymethod">
+					<option value="" selected="selected">请选择支付通道</option>
+					{volist name="paymethod" id="vo"}
+					<option value="{$vo.id}" {if(!empty($param.paymethod)&&$param.paymethod==$vo.id)}selected="selected"{/if}>{$vo.name}</option>
+					{/volist}
+				</select>
+				<select class="search-select select2" id="contact" name="contact">
+					<option value="" selected="selected">请选择商家</option>
+					{volist name="contact" id="vo"}
+					<option value="{$vo.number}" {if(!empty($param.contact)&&$param.contact==$vo.number)}selected="selected"{/if}>{$vo.name}（{$vo.number}）</option>
+					{/volist}
+				</select>
+				<select class="search-select select2" id="type" name="type">
+					<option value="" selected="selected">请选择類型</option>
+					{volist name="balanceType" id="vo"}
+					<option value="{$key}" {if(!empty($param.type)&&$param.type==$key)}selected="selected"{/if}>{$vo}</option>
+					{/volist}
+				</select>
+				<select class="search-select select2" id="contactstatus" name="contactstatus">
+					<option value="" selected="selected">请选择商家結算狀態</option>
+					<option value="0" {if(isset($param.contactstatus)&&$param.contactstatus==='0')}selected="selected"{/if}>未結算</option>
+					<option value="1" {if(isset($param.contactstatus)&&$param.contactstatus==='1')}selected="selected"{/if}>已結算</option>
+				</select>
+				<select class="search-select select2" id="paystatus" name="paystatus">
+					<option value="" selected="selected">请选择通道結算狀態</option>
+					<option value="0" {if(isset($param.paystatus)&&$param.paystatus==='0')}selected="selected"{/if}>未結算</option>
+					<option value="1" {if(isset($param.paystatus)&&$param.paystatus==='1')}selected="selected"{/if}>已結算</option>
+				</select>
+				<select class="search-select select2" id="change" name="change">
+					<option value="" selected="selected">请选择收入/支出</option>
+					{volist name="balanceChange" id="vo"}
+					<option value="{$key}" {if(!empty($param.change)&&$param.change==$key)}selected="selected"{/if}>{$vo}</option>
+					{/volist}
+				</select>
+				<input type="text" id="calcaccount" name="calcaccount" class="search-input" placeholder="商户理论结算日" value="{if(!empty($param.calcaccount))}{$param.calcaccount}{/if}" readonly="readonly">
+				<input type="text" id="account" name="account" class="search-input" placeholder="商户实际结算日" value="{if(!empty($param.account))}{$param.account}{/if}" readonly="readonly">
+				<input type="text" id="paycalcaccount" name="paycalcaccount" class="search-input" placeholder="支付通道理论结算日" value="{if(!empty($param.paycalcaccount))}{$param.paycalcaccount}{/if}" readonly="readonly">
+				<input type="text" id="payaccount" name="payaccount" class="search-input" placeholder="支付通道实际结算日" value="{if(!empty($param.payaccount))}{$param.payaccount}{/if}" readonly="readonly">
+				<input type="text" id="payStart" name="payStart" class="search-input" placeholder="支付/提現起始時間" value="{if(!empty($param.payStart))}{$param.payStart}{/if}" readonly="readonly">
+				<input type="text" id="payEnd" name="payEnd" class="search-input" placeholder="支付/提現結束時間" value="{if(!empty($param.payEnd))}{$param.payEnd}{/if}" readonly="readonly">
+				<input type="text" id="ctimeStart" name="ctimeStart" class="search-input" placeholder="創建起始時間" value="{if(!empty($param.ctimeStart))}{$param.ctimeStart}{/if}" readonly="readonly">
+				<input type="text" id="ctimeEnd" name="ctimeEnd" class="search-input" placeholder="創建結束時間" value="{if(!empty($param.ctimeEnd))}{$param.ctimeEnd}{/if}" readonly="readonly">
+				<input type="text" id="search" name="search" class="search-input" placeholder="業務單號" value="{if(!empty($param.search))}{$param.search}{/if}">
+				<button class="search-btn btn-primary">搜索</button>
+			</form>
+		</header>
+		<script src="{$Think.config.Houtai}js/laydate.js"></script>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#paymethod").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "沒有該選項";
+				        }
+				    }
+				});
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "沒有該選項";
+				        }
+				    }
+				});
+				$("#type").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "沒有該選項";
+				        }
+				    }
+				});
+				$("#change").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "沒有該選項";
+				        }
+				    }
+				});
+
+				$("#contactstatus").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "沒有該選項";
+				        }
+				    }
+				});
+
+				$("#paystatus").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "沒有該選項";
+				        }
+				    }
+				});
+			});
+
+		laydate.render({
+		  elem: '#calcaccount', //指定元素
+		  type:'date',
+		});
+		laydate.render({
+		  elem: '#account', //指定元素
+		  type:'date',
+		});
+		laydate.render({
+		  elem: '#paycalcaccount', //指定元素
+		  type:'date',
+		});
+		laydate.render({
+		  elem: '#payaccount', //指定元素
+		  type:'date',
+		});
+		laydate.render({
+		  elem: '#payStart', //指定元素
+		  type:'datetime',
+		});
+		laydate.render({
+		  elem: '#payEnd', //指定元素
+		  type:'datetime',
+		});
+		laydate.render({
+		  elem: '#ctimeStart', //指定元素
+		  type:'datetime',
+		});
+		laydate.render({
+		  elem: '#ctimeEnd', //指定元素
+		  type:'datetime',
+		});
+		</script> 
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>流水ID</th>
+									<th>商家編號</th>
+									<th>商家名稱</th>
+									<th>業務單號</th>
+									<th>流水類型</th>
+									<th>收入/支出</th>
+									<th>結餘前金額</th>
+									<th>流水金額</th>
+									<th>流水結餘</th>
+									<th>支付/提現時間</th>
+									<th>商户理论结算日</th>
+									<th>商户实际结算日</th>
+									<th>商户结算状态</th>
+									<th>支付通道理论结算日</th>
+									<th>支付通道实际结算日</th>
+									<th>支付通道结算状态</th>
+									<th>流水渠道</th>
+									<th>記錄創建時間</th>
+								</tr>
+								{volist name="lists" id="Row"}
+								<tr>
+									<td>{$Row.id}</td>
+									<td>{$Row.contactNumber}</td>
+									<td>{$Row.name}</td>
+									<td>{$Row.balanceNumber}</td>
+									<td>{$balanceType[$Row.balanceType]}</td>
+									<td>{$balanceChange[$Row.balanceChange]}</td>
+									<td>{$Row.balanceBegin}</td>
+									<td>{$Row.balanceMoney}</td>
+									<td>{$Row.balanceEnd}</td>
+									<td>{$Row.payTime}</td>
+									<td>{$Row.merCalcAccountDate}</td>
+									<td>{$Row.merAccountDate}</td>
+									<td>{if(isset($Row.isMerSettlements)&&$Row.isMerSettlements==1)}已结算{else}未结算{/if}</td>
+									<td>{$Row.payCalcAccountDate}</td>
+									<td>{$Row.payAccountDate}</td>
+									<td>{if(isset($Row.isPaySettlements)&&$Row.isPaySettlements==1)}已结算{else}未结算{/if}</td>
+									<td>{$Row.pname}</td>
+									<td>{$Row.ctime}</td>
+								</tr>
+								{/volist}
+								
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

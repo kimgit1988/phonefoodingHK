@@ -1,0 +1,129 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">权限菜单</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/rule/add')}" title="添加菜单" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('Rule/index')}">
+			<select class="search-select select2" id="rid" name="rid">
+				<option value=""selected="selected">请选择菜单名称</option>
+				{volist name="select" id="one"}
+				<option value="{$one.id}" {if(isset($param.rid)&&$one.id==$param.rid)}selected="selected"{/if}>{$one.title}</option>
+				{volist name="$one->parent" id="two"}
+				<option value="{$two.id}" {if(isset($param.rid)&&$two.id==$param.rid)}selected="selected"{/if}>┗━{$two.title}</option>
+				{volist name="$two->parent" id="three"}
+				<option value="{$three.id}" {if(isset($param.rid)&&$three.id==$param.rid)}selected="selected"{/if}>┗━━━{$three.title}</option>
+				{/volist}
+				{/volist}
+				{/volist}
+			</select>
+			<button class="search-btn btn-primary">搜索</button>
+			</form>
+			<div class="clearfix"></div>
+		</header>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {
+		        $("#rid").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该菜单";
+				        }
+				    }
+				});
+			});
+		</script> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>模块</th>
+									<th>栏目</th>
+									<th>操作</th>
+									<th>商户可否给予员工</th>
+								</tr>
+								{volist name="lists" id="lists"}
+								<tr>
+									<td>{$lists->id}</td>
+									<td class="text-left">{$lists->name}</td>
+									<td>{$lists->title}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/rule/edit',['id'=>$lists['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('back/rule/delete',['id'=>$lists['id']])}')">删除</div>
+									</td>
+									<td>{if($lists->contactHas)}可以{else}不可以{/if}</td>
+								</tr>
+								{volist name="$lists->parent" id="Rows"}
+								<tr>
+									<td>{$Rows->id}</td>
+									<td class="text-left">┗━{$Rows->name}</td>
+									<td>{$Rows->title}</td>
+
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/rule/edit',['id'=>$Rows['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('back/rule/delete',['id'=>$Rows['id']])}')">删除</div>
+
+									</td>
+									<td>{if($Rows->contactHas)}可以{else}不可以{/if}</td>
+								</tr>
+								{volist name="$Rows->parent" id="Row"}
+								<tr>
+									<td>{$Row->id}</td>
+									<td class="text-left">&nbsp;&nbsp;┗━━━{$Row->name}</td>
+									<td>{$Row->title}</td>
+
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/rule/edit',['id'=>$Row['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('back/rule/delete',['id'=>$Row['id']])}')">删除</div>
+
+									</td>
+									<td>{if($Row->contactHas)}可以{else}不可以{/if}</td>
+								</tr>
+								{/volist} {/volist} {/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>編輯分類</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/foods-add.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/summernote.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/summernote.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/lang/summernote-zh-CN.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="title-div">
+    <img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="javascript:window.history.go(-1);">
+    <div class="title">
+        編輯分類
+    </div>
+    <div class="del-btn">
+        刪除
+    </div>
+</div>
+<script>
+$(function(){
+    $("#order-hear li").click(function(){
+        $(this).css({
+            "color":"#E07A0A",
+            "border-bottom":"1vw solid #E07A0A",
+        }).siblings('li').css({
+            "color":"#818181",
+            "border-bottom":"none",
+        });
+    });                 
+        
+    $("#order-hear li").click(function(){
+        $(this).addClass("action").siblings().removeClass("action");
+        var index = $(this).index();
+        $("#setmeal-info li").eq(index).css("display","block").siblings().css("display","none");
+    });
+});
+</script>
+<div class="container-div">
+    <form  action="{:url('edit')}" method="post" id="edit">
+    <input type="hidden" name="mid" value="{$mid}">
+    <input type="hidden" name="cid" value="{$cid}">
+	<div class="main">
+        <ul id="order-hear">
+            <li id="allOrder" style="color:#E07A0A;border-bottom:1vw solid #E07A0A;" class="action">分類信息</li>
+            <li id="newsOrder" style="color:#818181;border-bottom:none;">可選菜式</li>
+        </ul>
+        <ul id="setmeal-info">
+            <li id="setmeal-base">
+        		<div class="food-input-li">
+                    <div class="food-cate-label">名稱</div><input name="name" type="text" maxlength="20" value="{$mealCategory.name}">
+                </div>
+                
+                <div class="food-input-li">
+                    <div class="food-cate-label">分類可選數</div><input name="categoryNumber" type="text" maxlength="3" value="{$mealCategory.categoryMaxNumber}">
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">單項最大數</div><input name="goodsMax" type="text" maxlength="3" value="{$mealCategory.goodsMaxNumber}">
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">排序</div><input name="sort" type="text" maxlength="3" value="{$mealCategory.sort}">
+                </div>
+            </li>
+            <li id="setmeal-category" style="display: none;">
+                <div class="food-input-li">
+                    <div class="food-cate-label">名稱</div><div class="select" id="category" {if empty($list)}onclick="location='{:url('foods/add')}'"{/if}></div><img src="STATIC_PATH/assets/mobile/images/arrow-next.png" class="food-arrow">
+                    <input type="hidden" id="categoryId">
+                    <input type="hidden" id="foodId">
+                </div>
+                <div class="select-foods-btn">查詢</div>
+                <div class="category-food-list">
+                    {if empty($list)}
+                        <div class="category-food-empty">暫無可選菜式</div>
+                    {else}
+                        <div id="food-relation-list">
+                            <ul>
+                                <li class="parent_li">
+                                    <span onclick="toggleFood(this);">
+                                        <i class="glyphicon glyphicon-minus-sign"></i>
+                                    </span>
+                                    <label><input type="checkbox" id="all-food" onclick="allChecked(this)">菜式</label>
+                                    <ul class="category-food" id="category-food">
+
+                                    {volist name="list" id="obj"}
+                                    {if(!empty($obj._food))}
+                                        <li class="parent_li category-food-li" id="category-{$obj.id}">
+                                        <span onclick="toggleFood(this);"><i class="glyphicon glyphicon-minus-sign"></i> </span> <label><input type="checkbox" id="food-category-{$obj.id}" onclick="allChecked(this)">{$obj.name}</label>
+                                        <ul>
+                                        {volist name="obj._food" id="vo"}
+                                            <li class="parent_li category-food-checked-li" id="food-{$vo.id}">
+                                            <label>
+                                                <label style="position:relative;">
+                                                    <input type="checkbox" name="food[{$vo.id}]" style="position:absolute;right:1vw;top:1vw;margin:0;" {if(in_array($vo.id,$categoryFoodId))}checked="checked"{/if}>
+                                                    <img src="{$vo.thumbnailUrl}">
+                                                </label>
+                                            <div>{$vo.name}</div>
+                                            </label>
+                                            </li>
+                                        {/volist}
+                                        </ul>
+                                        </li>
+                                    {/if}
+                                    {/volist}
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    {/if}
+                </div>
+            </li>
+        </ul>
+	</div>
+	<div class="member-cate-add-btn">保&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</div>
+    </form>
+</div>
+<script type="text/javascript">
+    var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+    window.onload=function(){ //在页面整体加载完毕时
+        $('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+    };
+
+    var submitInfo = true;
+    function allChecked(e){
+        if($(e).is(':checked')){
+            $(e).parent().parent().find('input:visible').prop("checked", true);
+        }else{
+            $(e).parent().parent().find('input:visible').prop("checked", false);
+        }
+    }
+
+    function toggleFood(e){
+        var children = $(e).parent('li.parent_li').find('>ul>li');
+        if (children.is(":visible")) {
+            children.hide('fast');
+            $(e).find(' > i').addClass('glyphicon-plus-sign').removeClass('glyphicon-minus-sign');
+        } else {
+            children.show('fast');
+            $(e).find(' > i').addClass('glyphicon-minus-sign').removeClass('glyphicon-plus-sign');
+        }
+        // e.stopPropagation();
+    }
+
+    $('.del-btn').click(function () {
+        swal({
+            text: '是否確認删除分類?',
+            imageUrl: 'STATIC_PATH/assets/mobile/images/shanchu.png',
+            imageSize: '16x16',
+            showCancelButton: true,
+            confirmButtonText: '確認',
+            confirmButtonColor: '#e07a0a',
+            cancelButtonText: '取消',
+            imageSize: '16x16',
+            customClass: 'del'
+        }).then(function(isConfirm) {
+          if (isConfirm === true) {
+            $.ajax({
+                type: "POST",
+                url : '{:url('delcategory')}',
+                data: {'id':'{$cid}'},
+                async: true,
+                beforeSend: function(){
+                    openloading("STATIC_PATH/assets/img/loading-2.gif");
+                },
+                success: function(data) {
+                    closeloading();
+                  if (data.code) {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '確認',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        window.history.go(-1);
+                    });
+                  } else {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '確認',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                  }
+                },
+                error: function(request) {
+                    closeloading();
+                    swal({
+                        'text':'頁面錯誤',
+                        'confirmButtonText': '確認',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            });
+          }
+        });
+        
+    });
+    $('.select-foods-btn').click(function () {
+        var categoryId = $("#categoryId").val();
+        var foodId = $("#foodId").val();
+        if(categoryId&&categoryId!='0'){
+            $(".category-food-li").not("#category-"+categoryId).hide();
+            $("#category-"+categoryId).show();
+            if(foodId!='0'){
+                $(".category-food-checked-li").not("#food-"+foodId).hide();
+                $("#food-"+foodId).show();
+            }else{
+                $(".category-food-checked-li").show();
+            }
+        }else{
+            $(".category-food-li").show();
+            $(".category-food-checked-li").show();
+        }
+    });
+	$('.member-cate-add-btn').click(function () {
+        if(submitInfo){
+            $.ajax({
+                type: "POST",
+                url : '{:url('editcategory')}',
+                data: $('#edit').serialize(),
+                async: true,
+                beforeSend: function(){
+                    openloading("STATIC_PATH/assets/img/loading-2.gif");
+                },
+                success: function(data) {
+                    closeloading();
+                    if (data.code) {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '確認',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+							'imageSize': '16x16',
+							'customClass': 'success'
+						}).then(function(isConfirm) {
+                            window.history.go(-1);
+                        });
+                    } else {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '確認',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+                    closeloading();
+					swal({
+						'text':'頁面錯誤',
+						'confirmButtonText': '確認',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+        }else{
+            swal({
+                'text':'圖片上傳中,請稍後',
+				'confirmButtonText': '確認',
+                'confirmButtonColor':'#e07a0a',
+				'customClass': 'default'
+            });
+        }
+        
+    });
+
+    function setCategory(){
+        var selectOption = mobileSelect1.getValue();
+        $("#categoryId").val(selectOption[0]['id']);
+        if(selectOption[1]&&selectOption[0]['id']!=0){
+            $("#category").text(selectOption[0]['value']+'-'+selectOption[1]['value']);
+            $("#foodId").val(selectOption[1]['id']);
+        }else{
+            $("#category").text(selectOption[0]['value']);
+            $("#foodId").val("0");
+        }
+    }
+
+    // 設置分類選項數組
+    var option = [];
+    var add = {id:0,value:'全部'};
+    add.childs = [{id:0,value:'全部'}];
+    option.push(add);
+    {volist name="list" id="vo"}
+    // 設置分類選項
+    add = {id:{$vo.id},value:'{$vo.name}'};
+    add.childs = [{id:0,value:'全部'}];
+    {volist name="vo._food" id="v"}
+    //
+    add.childs.push({id:{$v.id},value:'{$v.name}'})
+    {/volist}
+    //添加到選項中
+    option.push(add);
+    {/volist}
+
+    if(option!='[]'&&option.length>0){
+        var mobileSelect1 = new MobileSelect({
+            trigger: '#category', 
+            title: '分類',  
+            wheels: [
+                {data:option,},
+            ],
+            callback:setCategory,
+        });
+    }
+</script>
+</body>
+
+</html>

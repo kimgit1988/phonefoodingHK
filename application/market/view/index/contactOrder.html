@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>餐厅订单</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/dropload.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+</head>
+<body>
+<div class="container">
+	<div class="contact-order-summary">
+		<img class="contact-order-summar-img" src="{$contact.logoUrl}">
+		<div class="contact-order-summar-title">合计</div>
+		<div class="contact-order-summar-money">总额：{$money.money}</div>
+		<div class="contact-order-summar-commission">佣金：{$money.commission}</div>
+	</div>
+	<div class="scroll-main bg-contact-order m-t-15">
+		<div class="contact-order-list" id="contact-order-list">
+		</div>
+	</div>
+	{include file="common:footer"}
+</div>
+	
+
+</body>
+<script type="text/javascript">
+	var minOrder;
+	var dropload = $('.scroll-main').dropload({
+		domUp : {
+			domClass   : 'dropload-up',
+			domRefresh : '<div class="dropload-refresh">↓下拉刷新</div>',
+			domUpdate  : '<div class="dropload-update">↑释放更新</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加载中...</div>'
+		},
+		domDown : {
+			domClass   : 'dropload-down',
+			domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加载中...</div>',
+			domNoData  : '<div class="dropload-noData">暂无更多</div>'
+		},
+		loadUpFn : function(me){
+			return;
+		},
+		loadDownFn : function(me){
+			$.ajax({ 
+			    type: "POST",  
+			    url: "{:url('Index/nextContactOrders')}",
+			    dataType: 'json',  
+			    data:{  
+			        'minOrder':minOrder,
+			        'id' :{$contact.id},
+			        {if(session('mar_user.mechanismAdmin')==1)}
+					'user' : {$userid},
+					{/if}
+			    },
+			    success: function (res) {
+					if(res.code==1){
+						if(!$.isEmptyObject(res.msg)){
+							var addstr = '';
+							$.each(res.msg,function(n,vo) {
+								if(vo.id<minOrder||minOrder==null||minOrder==''||minOrder==undefined){
+									minOrder = vo.id;
+								}
+								addstr += '<div class="contact-order-li mg-top">';
+								addstr += '<div class="contact-order-li-head">';
+								addstr += '<div class="contact-order-head-title">餐台编号</div>';
+								addstr += '<div class="contact-order-head-number">'+vo.contactMemberNumber+'</div>';
+								addstr += '</div>';
+								addstr += '<div class="contact-order-li-body">';
+								addstr += '<div class="contact-order-body-th">';
+								addstr += '<div class="contact-order-th-name">名称</div>';
+								addstr += '<div class="contact-order-th-number">数量</div>';
+								addstr += '<div class="contact-order-th-price">单价</div>';
+								addstr += '</div>';
+								addstr += '<div class="contact-order-body-list">';
+								$.each(vo.foods,function(i,food) {
+									if(food.goodsType==3){
+										addstr += '<div class="contact-order-meal-list-td">';
+										addstr += '<div class="contact-order-list-td meal">';
+										addstr += '<div class="contact-order-td-name"><span><img class="meal-icon" src="/public/static/assets/img/meal-icon.png" /></span><span>'+food.goodsName+'</span></div>';
+										addstr += '<div class="contact-order-td-number">'+food.num+'</div>';
+										addstr += '<div class="contact-order-td-price">'+food.goodsPrice+'</div>';
+										addstr += '</div>';
+										addstr += '<div class="meal-foods">';
+										$.each(food._food,function(i,mealFood) {
+											addstr += '<div class="contact-order-list-td">';
+											addstr += '<div class="contact-order-td-name">'+mealFood.goodsName+'</div>';
+											addstr += '<div class="contact-order-td-number">'+mealFood.num+'</div>';
+											addstr += '</div>';
+										});
+										addstr += '</div>';
+										addstr += '</div>';									
+									}else{
+										addstr += '<div class="contact-order-list-td">';
+										addstr += '<div class="contact-order-td-name">'+food.goodsName+'</div>';
+										addstr += '<div class="contact-order-td-number">'+food.num+'</div>';
+										addstr += '<div class="contact-order-td-price">'+food.goodsPrice+'</div>';
+										addstr += '</div>';
+									}
+								});
+								addstr += '</div>';
+								addstr += '<div class="contact-order-body-th">';
+								addstr += '<div class="contact-order-th-name">总额</div>';
+								addstr += '<div class="contact-order-th-money">'+vo.moneyPaid+'</div>';
+								addstr += '</div>';
+								addstr += '<div class="contact-order-body-th">';
+								addstr += '<div class="contact-order-th-name">佣金</div>';
+								addstr += '<div class="contact-order-th-money">'+getcommission(vo.moneyPaid)+'</div>';
+								addstr += '</div>';
+								addstr += '</div>';
+								addstr += '<div class="contact-order-li-footer">';
+								addstr += '<div class="contact-order-footer-left">';
+								addstr += '<img src="STATIC_PATH/assets/market/images/order-black.png"><span class="contact-order-footer-number">'+vo.orderSN+'</span>';
+								addstr += '</div>';
+								addstr += '<div class="contact-order-footer-right">'+vo.createTime+'</div>';
+								addstr += '</div>';
+								addstr += '</div>';
+							});
+							$("#contact-order-list").append(addstr);
+							setTimeout(function(){
+								me.resetload();
+							},500);
+						}else{
+							setTimeout(function(){
+								me.lock();
+								me.noData(true);
+								me.resetload();
+							},500);
+						}
+					}else{
+						me.lock();
+						me.noData();
+						me.resetload();
+						/*
+						swal({
+		                    'title': '潮食点餐系统',
+		                    'text':res.msg,
+		                    'confirmButtonColor':'#ea831e',
+		                });
+						*/
+					}
+
+				}
+			});
+		}
+	});
+	dropload.lock('up');
+	function getcommission(price){
+		var commission = Math.floor(price*{$commission})/100;
+		return commission;
+	}
+</script>
+
+</html>

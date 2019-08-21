@@ -1,0 +1,102 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">餐廳分类</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/customertype/add')}" title="添加分类" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>分类名</th>
+									<th>排序</th>
+									<th>分类等级</th>
+									<th>操作</th>
+								</tr>
+								{volist name="lists" id="lists"}
+								<tr>
+									<td>{$lists->id}</td>
+									<td class="text-left">{$lists->name}</td>
+									<td>{$lists->ordnum}</td>
+									<td>{$lists->level}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('customertype/edit',['id'=>$lists['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('customertype/destroy',['id'=>$lists['id']])}')">删除</div>
+									</td>
+								</tr>
+								{volist name="$lists->parent" id="Rows"}
+								<tr>
+									<td>{$Rows->id}</td>
+									<td class="text-left">┗━{$Rows->name}</td>
+									<td>{$Rows->ordnum}</td>
+									<td>{$Rows->level}</td>
+
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('customertype/edit',['id'=>$Rows['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('customertype/destroy',['id'=>$Rows['id']])}')">删除</div>
+
+									</td>
+								</tr>
+								{volist name="$Rows->parent" id="Row"}
+								<tr>
+									<td>{$Row->id}</td>
+									<td class="text-left">&nbsp;&nbsp;┗━━━{$Row->name}</td>
+									<td>{$Row->ordnum}</td>
+									<td>{$Row->level}</td>
+
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('customertype/edit',['id'=>$Row['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('customertype/destroy',['id'=>$Row['id']])}')">删除</div>
+
+									</td>
+								</tr>
+								{/volist} {/volist} {/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

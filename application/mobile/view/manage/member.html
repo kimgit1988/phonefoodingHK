@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('餐枱管理')}</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div class="container">
+	<div class="main">
+		{volist name="member" id="vo"}
+		<div class="member-cate-li" onclick="window.location.href='{:url(\'manage/editmember\',[\'id\'=>$vo.id])}'">
+			<div class="member-li-name">{$vo.name}</div>
+			<div class="member-li-info">
+				<div class="member-li-number">{:lang('餐枱編號')}： {$vo.number}</div>
+				<div class="member-li-category">{:lang('餐枱分類')}： {$vo.cCategoryName}</div>
+			</div>
+		</div>
+		{/volist}
+		<div class="member-cate-li-add" onclick="window.location.href='{:url(\'manage/addmember\')}'">+{:lang('添加餐枱')}</div>
+	</div>
+	{include file="common:footer"}
+</div>
+</body>
+</html>

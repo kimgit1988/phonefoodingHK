@@ -1,0 +1,10 @@
+    {if condition="isset($breadcrumb)"}
+                <ol class="breadcrumb hidden-xs">
+                     <li><a>首页</a></li>
+                    {volist name="$breadcrumb" id="vo"}
+                    {if($vo.title!='首页')}
+                    <li><a>{$vo.title}</a></li>
+                    {/if}
+                    {/volist}
+                </ol>
+                  {/if}

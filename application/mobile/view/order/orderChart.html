@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('圖表分析')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll.css" rel="stylesheet" />
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_date.css" rel="stylesheet" />
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/orderstatis.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script src="http://s1.bdstatic.com/r/www/cache/efe/esl/2-1-6/esl.source.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll_date.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll.js"></script>
+
+</head>
+<body>
+
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/owner/index.html';"></i>
+        <div class="title">{:lang('圖表分析')}</div>
+    </div>
+    <div class="content-main">
+        <div class="item-tr-5 b-3 datetime-title">
+            <div class="datetime">
+                <input type="text" id="starttime" name="starttime" value="{$starttime}" readonly placeholder="{:lang('起始日期')}">
+                <i class="fab-down"></i>
+            </div>
+            <span class="hr-line">——</span>
+            <div class="datetime right">
+                <input type="text" id="endtime" name="endtime" value="{$endtime}" readonly placeholder="{:lang('結束日期')}">
+                <i class="fab-down"></i>
+            </div>
+        </div>
+        <div class="table-pic-place b-3" id="sale-total"></div>
+        <div class="table-pic-place b-3" id="sale-in-total"></div>
+        <!--<div class="table-pic-place b-3" id="sale-out-total"></div>-->
+        <div class="alert-fail"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    var json = {$data};
+    var json2 = {$data};
+    var json3 = {$data};
+
+    // 路径配置
+    require.config({
+        paths: {
+            'echarts': 'https://cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0.rc2/echarts-en.common',//js文件路径
+        }
+    });
+    require(
+        [
+            'echarts',
+        ],
+        function (ec) {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = ec.init(document.getElementById('sale-total'));
+            var myChartIn = ec.init(document.getElementById('sale-in-total'));
+            // var myChartOut = ec.init(document.getElementById('sale-out-total'));
+            myChart.setOption(option = {
+                title: {
+                    text: '{:lang(\'銷售總數\')}(HK$)',//左上角标题
+                    textStyle:{
+                        fontSize:'0.28rem',
+                        fontWeight:'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    data: json.map(function (item) {
+                        return item[0];//x轴数据，取数组的第一个元素
+                    })
+                },
+                yAxis: {
+                    splitLine: {
+                        show: false
+                    }
+                },
+                toolbox: {
+                    left: 'right',
+                    feature: {
+                        restore : {show: true,color:'orange'},
+                    }
+                },
+                dataZoom: [{
+                    startValue: '{$startdata}'
+                }, {
+                    type: 'inside'
+                }],
+                series: {
+                    name: '{:lang(\'銷售總額\')}',
+                    type: 'line',
+                    itemStyle: {
+                        normal: {
+                            color:'#229DAA'
+                        }
+                    },
+                    data: json.map(function (item) {
+                        return item[1];//x轴数据，取数组的第二个元素
+                    }),
+                    markLine: {
+                        silent: true,
+                        data: [{
+                            yAxis: 50
+                        }, {
+                            yAxis: 150
+                        }, {
+                            yAxis: 250
+                        }, {
+                            yAxis: 350
+                        }, {
+                            yAxis: 450
+                        }, {
+                            yAxis: 550
+                        }]
+                    }
+                }
+            });
+            myChartIn.setOption(option = {
+                title: {
+                    text: '{:lang(\'堂食銷售總額\')}(HK$)',//左上角标题
+                    textStyle:{
+                        fontSize:'0.28rem',
+                        fontWeight:'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    data: json2.map(function (item) {
+                        return item[0];//x轴数据，取数组的第一个元素
+                    })
+                },
+                yAxis: {
+                    splitLine: {
+                        show: false
+                    }
+                },
+                toolbox: {
+                    left: 'right',
+                    feature: {
+                        restore : {show: true,color:'orange'},
+                    }
+                },
+                dataZoom: [{
+                    startValue: '{$startdata}'
+                }, {
+                    type: 'inside'
+                }],
+                series: {
+                    name: '{:lang(\'銷售總額\')}',
+                    type: 'line',
+                    itemStyle: {
+                        normal: {
+                            color:'#229DAA'
+                        }
+                    },
+                    data: json.map(function (item) {
+                        return item[1];//x轴数据，取数组的第二个元素
+                    }),
+                    markLine: {
+                        silent: true,
+                        data: [{
+                            yAxis: 50
+                        }, {
+                            yAxis: 150
+                        }, {
+                            yAxis: 250
+                        }, {
+                            yAxis: 350
+                        }, {
+                            yAxis: 450
+                        }, {
+                            yAxis: 550
+                        }]
+                    }
+                }
+            });
+            /*myChartOut.setOption(option = {
+                title: {
+                    text: '外賣銷售總額',//左上角标题
+                    textStyle:{
+                        fontSize:'0.28rem',
+                        fontWeight:'bold'
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    data: json3.map(function (item) {
+                        return item[0];//x轴数据，取数组的第一个元素
+                    })
+                },
+                yAxis: {
+                    splitLine: {
+                        show: false
+                    }
+                },
+                toolbox: {
+                    left: 'right',
+                    feature: {
+                        restore : {show: true,color:'orange'},
+                    }
+                },
+                dataZoom: [{
+                    startValue: '{$startdata}'
+                }, {
+                    type: 'inside'
+                }],
+                series: {
+                    name: '销售总额',
+                    type: 'line',
+                    itemStyle: {
+                        normal: {
+                            color:'#229DAA'
+                        }
+                    },
+                    data: json.map(function (item) {
+                        return item[1];//x轴数据，取数组的第二个元素
+                    }),
+                    markLine: {
+                        silent: true,
+                        data: [{
+                            yAxis: 50
+                        }, {
+                            yAxis: 150
+                        }, {
+                            yAxis: 250
+                        }, {
+                            yAxis: 350
+                        }, {
+                            yAxis: 450
+                        }, {
+                            yAxis: 550
+                        }]
+                    }
+                }
+            });*/
+        }
+    );
+
+
+
+    // 日期查詢
+    $(function () {
+        var currYear = (new Date()).getFullYear();
+        var opt={};
+        opt.date = {preset : 'date'};
+        opt.datetime = {preset : 'datetime'};
+        opt.time = {preset : 'time'};
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式
+            mode: 'scroller', //日期选择模式
+            dateFormat: 'yy-mm-dd',
+            lang: 'zh',
+            showNow: true,
+            nowText: "{:lang('今天')}",
+            cancelText: "{:lang('取消')}",
+            setText: '{:lang(\'確定\')}',
+            startYear: currYear - 50, //开始年份
+            endYear: currYear, //结束年份
+        };
+        $("#starttime").mobiscroll($.extend(opt['date'], opt['default']));
+        $("#endtime").mobiscroll($.extend(opt['date'], opt['default']));
+    });
+
+
+    var start, end;
+
+    $("#starttime").change(function() {
+        start = $("#starttime").val();
+        end = $("#endtime").val();
+        if (!compareDate(start, end)) {
+            $('.alert-fail').html('{:lang(\'結束日期必須大于起始日期\')}').show().delay(1500).fadeOut();
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url : "{:url('order/orderchart')}",
+            data: {'starttime':start},async: true,
+            success: function(data) {
+                location.href = "{:url('order/orderchart')}";
+            },
+            error: function(request) {
+            }
+        });
+    });
+
+    $("#endtime").change(function(){
+        start = $("#starttime").val();
+        end = $("#endtime").val();
+        if (!compareDate(start, end)) {
+            $('.alert-fail').html('{:lang(\'結束日期必須大于起始日期\')}').show().delay(1500).fadeOut();
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url : "{:url('order/orderchart')}",
+            data: {'endtime':end},async: true,
+            success: function() {
+                location.href = "{:url('order/orderchart')}";
+            },
+            error: function(request) {
+            }
+        });
+    });
+
+
+    // 日期比较
+    function compareDate(logintime, logouttime) {
+        var arys1 = new Array();
+        var arys2 = new Array();
+        if (logintime != null && logouttime != null) {
+            arys1 = logintime.split('-');
+            var logindate = new Date(arys1[0], parseInt(arys1[1] - 1), arys1[2]);
+            arys2 = logouttime.split('-');
+            var logoutdate = new Date(arys2[0], parseInt(arys2[1] - 1), arys2[2]);
+            if (logindate >= logoutdate) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

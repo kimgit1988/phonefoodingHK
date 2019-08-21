@@ -1,0 +1,64 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">编辑焦点图位置</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/focus/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+			<input class="input-sm col-md-4 pull-right message-search" type="text" placeholder="Search....">
+
+			<div class="clearfix"></div>
+		</header> -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('back/focusposition/edit',['id'=>$positionRow['id']])}" class="form-horizontal ajax-form" method="post" name="rule">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">调用代码</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" value="{$positionRow.code}" name="code" id="inputname" placeholder="标题">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputurl"> 调用名称 </label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" value="{$positionRow.name}" name="name" id="inputurl" placeholder="链接地址">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-9">
+											<button type="submit" class="btn btn-primary">提交</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</section>

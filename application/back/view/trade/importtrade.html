@@ -1,0 +1,119 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<!-- 调用select2需要新版jquery -->
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">导入菜品分类</h4>
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Goods/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header> -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('Trade/importtrade')}" enctype="multipart/form-data" class="form-horizontal ajax-form" method="post" id="addform">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">餐廳選擇</label>
+										<div class="col-sm-11">
+											<select id="contactNumber" class="form-control select2" name="contactNumber">  
+											    <option value="">请选择</option>
+												{volist name="contact" id="vo"}
+												<option value="{$vo.number}">{$vo.name}({$vo.number})</option>
+												{/volist} 
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputurl" style="padding-top: 10px;"> 上传excel </label>
+										<div class="col-sm-11">
+											<input type="file" class="form-control" name="excel" id="excel" style="height: 39px;">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-9">
+											<div class="btn btn-primary submit">提交</div><a href="{:url('base/downtempexl',['type'=>'trade'])}" style="color: #428bca;margin-left: 5px;">下载模板</a>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style>
+	.select2{
+		background: rgba(0, 0, 0, 0.05);
+	    border: 1px solid rgba(255, 255, 255, 0.3);
+	    text-shadow: none;
+	    color: #000;
+	    box-shadow: none;
+	    font-family: open-sans-regular;
+	}
+	.select2-results{
+		color:#000;
+	}
+	.select2-search__field{
+		color:#000;
+	}
+	.note-toolbar-wrapper,.note-toolbar{
+		background-color: #666 !important;
+	}
+</style>
+<script type="text/javascript">
+    //页面加载完成后初始化select2控件  
+    $(function () {
+        $("#contactNumber").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该餐廳";
+		        }
+		    }
+		});
+		$(".submit").click(function(){
+            var options = {
+                "beforeSubmit" : checkForm,
+                "success" : resultForm,
+                "resetForm" : false,
+                "dataType" : "json"
+            };
+            $("#addform").ajaxSubmit(options);
+        });
+ 
+        function checkForm(formData, form, options) {
+        }
+ 
+        function resultForm(data, status) {
+            //表单完成
+            if(data.code){
+	            alert(data.msg);
+	            window.history.go(-1);
+            }else{
+	            alert(data.msg);
+            }
+        }
+    });
+</script> 

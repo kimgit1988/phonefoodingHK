@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>审核信息</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/jquery.core.image.upload.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery.core.image.upload.js"></script> <!-- File Upload -->
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key={:config('QQLbs.Key')}"></script> <!-- 腾讯地图插件 -->
+</head>
+<body>
+<div class="container">
+	<div class="register-main">
+        <div class="review-scroll">
+		<form  action="{:url('review')}" method="post" id="review">
+            <div class="register-info">
+                <div class="register-input-li-small">
+                    <div class="register-small-label">状态：</div><input name="username" type="text" value="审核中" readonly="readonly">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-small-label">用戶名：</div><input name="username" type="text" value="{$user.name}" readonly="readonly">
+                </div>
+                <div class="register-input-li-long">
+                    <div class="register-long-label">商家編號：</div><input name="number" type="text" value="{$contact.number}" readonly="readonly">
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">餐廳類型：</div><div id="category">{$contact.cCategoryName}</div>
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">餐廳平臺</div><div id="type">{$type[$contact['contactType']]['name']}</div>
+                </div>
+                <div class="register-input-li-long">
+                    <div class="register-long-label">餐廳名稱：</div><input name="contact" type="text" value="{$contact.name}" readonly="readonly">
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">餐廳logo</div>
+                    <img src="{$contact.logoUrl}" class="food-img" id="show-logo">
+                </div>
+                <div class="food-input-li">
+                    <div class="food-cate-label">餐廳背景圖</div>
+                    <img src="{$contact.bgImageUrl}" class="food-img" id="show-img">
+                </div>
+                <div class="register-input-li-long">
+                    <div class="register-long-label">餐檯數：</div><input name="member" type="text" value="{$contact.member}" readonly="readonly">
+                </div>
+            </div>
+            <div class="register-info">
+                <div class="register-input-li-small">
+                    <div class="register-small-label">聯繫人：</div><input name="person" type="text" value="{$user.nick}" readonly="readonly">
+                </div>
+                <div class="register-input-li-long">
+                    <div class="register-long-label">聯繫電話：</div><input name="phone" type="text" value="{$contact.linkMans}" readonly="readonly">
+                </div>
+                <div class="register-input-li-small">
+                    <div class="register-small-label">郵箱：</div><input name="mail" type="text" value="{$user.email}" readonly="readonly">
+                    <div class="register-error-div">
+                        <img class="register-error-img" src="STATIC_PATH/assets/market/images/error.png">
+                        <div class="register-error-span">格式錯誤</div>
+                    </div>
+                </div>
+                <div class="register-textarea-li-small">
+                    <div class="register-small-textarea-label">備註：</div><textarea name="detail" readonly="readonly">{$contact.remark}</textarea>
+                </div>
+            </div>
+			
+			<div class="register-info">
+                <div class="food-input-li">
+                    <div class="register-label">地址<span style="color:#ce3815;">*</span></div>
+                    <input name="address" type="text" value="{if(!empty($contact.address))}{$contact.address}{/if}" maxlength="80" id="address" readonly="readonly">
+                    <input name="Latitude" type="hidden" maxlength="64" id="Latitude">
+                    <input name="Longitude" type="hidden" maxlength="64" id="Longitude">
+                </div>
+            </div>
+            <div class="register-info" style="margin-bottom: 2vw;">
+                <div class="map" id="map"></div>
+            </div>
+        </form>
+        </div>
+	</div>
+</div>
+	
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+	setLatitude({if(!empty($contact.latitude))}{$contact.latitude}{else}22.219279685846963{/if});
+    setLongitude({if(!empty($contact.longitude))}{$contact.longitude}{else}113.53977837265015{/if});
+    var center = new qq.maps.LatLng(Latitude,Longitude);
+    map = new qq.maps.Map(document.getElementById("map"));
+    map.panTo(center);
+    map.zoomTo(17);
+    var marker = new qq.maps.Marker({
+        position: center,
+        map: map
+    });
+
+    qq.maps.event.addListener(map, 'center_changed', function() {
+        var newCenter = map.getCenter();
+        setLatitude(newCenter.lat);
+        setLongitude(newCenter.lng);
+        deletemarket();
+        addmarker(Latitude,Longitude);
+    });
+    qq.maps.event.addListener(map,'click',function(event) {
+        setLatitude(event.latLng.getLat());
+        setLongitude(event.latLng.getLng());
+        center = new qq.maps.LatLng(Latitude,Longitude);
+        map.panTo(center);
+        deletemarket();
+        addmarker(Latitude,Longitude);
+    });
+    function addmarker(lat,lng){
+        var markerCenter = new qq.maps.LatLng(lat,lng);
+        marker = new qq.maps.Marker({
+            position: markerCenter,
+            map: map
+        });
+    }
+    function deletemarket() {
+        if (marker) {
+            marker.setMap(null);
+        }
+    }
+    function setLatitude(number){
+        Latitude = number;
+        $("#Latitude").val(Latitude);
+    }
+    function setLongitude(number){
+        Longitude = number;
+        $("#Longitude").val(Longitude);
+    }
+    function getLatlng(){
+        var address = $('#address').val();
+        $.ajax({
+            type : 'post',
+            url : '{:url('manage/ted')}',
+            data : {'address':address},              
+            success : function(data) {
+                if(data.msg.status==0){
+                    setLatitude(data.msg.result.location.lat);
+                    setLongitude(data.msg.result.location.lng);
+                    center = new qq.maps.LatLng(Latitude,Longitude);
+                    map.panTo(center);
+                    deletemarket();
+                    addmarker(Latitude,Longitude);
+                }else{
+                    swal({
+                        'text':'请输入正确的地址',
+                        'confirmButtonText': '确认',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }    
+            },
+            error : function() {
+                swal({
+                    'text':'页面错误',
+                    'confirmButtonText': '确认',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    }
+</script>
+</body>
+
+</html>

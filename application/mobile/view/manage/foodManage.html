@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('菜品管理')}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/owner/index.html';"></i>
+        <div class="title">{:lang('菜品管理')}</div>
+    </div>
+    <div class="owner-box">
+        <div class="owner-ul">
+            <div class="owner-li" onclick="window.location.href='{:url(\'foods/index\')}'">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icon-good-manage"></use>
+                </svg>
+                <div class="owner-li-name">{:lang('菜式管理')}</div>
+            </div>
+            <div class="owner-li" onclick="window.location.href='{:url(\'manage/spec\')}'">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icon-spec-manage"></use>
+                </svg>
+                <div class="owner-li-name">{:lang('選項管理')}</div>
+            </div>
+            <div class="owner-li" onclick="window.location.href='{:url(\'manage/goodsCategory\')}'">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icon-cate-manage"></use>
+                </svg>
+                <div class="owner-li-name">{:lang('分類管理')}</div>
+            </div>
+            <div class="owner-li" onclick="window.location.href='{:url(\'manage/addmealManage\')}'">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icon-food"></use>
+                </svg>
+                <div class="owner-li-name">{:lang('跟餐管理')}</div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

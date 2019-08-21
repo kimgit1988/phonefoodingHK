@@ -1,0 +1,243 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">廣告编辑</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Mechanism/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header> -->
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Adlist/edit')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="edit">
+									<input type="hidden" name="id" value="{$ad.id}">
+									<div class="form-group">
+										<label for="position" class="col-sm-3 control-label">廣告位置</label>
+										<div class="col-sm-5">
+											<select name="position" class="form-control" id="position">
+												<option value="">請選擇</option>
+												{volist name="position" id="vo"}
+												<option value="{$key}" {if($ad.adPosition==$key)}selected{/if}>{$vo.name}</option>
+												{/volist}
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">廣告名稱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="name" placeholder="廣告名稱" value="{$ad.adName}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">廣告鏈接</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="link" id="link" placeholder="廣告鏈接" value="{$ad.adLink}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">開始時間</label>
+										<div class="col-sm-5">
+											<input type="text" id="start" name="start" class="form-control" placeholder="開始時間" readonly="readonly" value="{:date('Y-m-d H:i:s',$ad.adStart)}" style="cursor: pointer;">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">結束時間</label>
+										<div class="col-sm-5">
+											<input type="text" id="end" name="end" class="form-control" placeholder="結束時間" readonly="readonly" value="{:date('Y-m-d H:i:s',$ad.adEnd)}" style="cursor: pointer;">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">聯繫人</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="man" id="man" placeholder="聯繫人" value="{$ad.adMan}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">聯繫電話</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="phone" id="phone" placeholder="聯繫電話" value="{$ad.adPhone}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">聯繫郵箱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="email" id="email" placeholder="聯繫郵箱" value="{$ad.adEmail}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											{if condition="$ad['disable'] eq 1"}
+											<label><input type="radio" name="disable" id="inputstatus" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="0" />停用</label>
+											{else /}
+											<label><input type="radio" name="disable" id="inputstatus" value="1"/>启用</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="0" checked="checked"/>停用</label>
+											{/if}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">圖片上傳</label>
+										<label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file">
+							        	  <input class="sr-only" id="inputImage" name="file" type="file" accept="image/*" onchange="xmTanUploadImg(this)">
+							        	  <span class="docs-tooltip" data-toggle="tooltip" title="Import image with Blob URLs">
+							        	    <span class="icon icon-upload">上傳圖片</span>
+							        	  </span>
+							        	</label>
+							        	<span id="picsize">圖片大小</span>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">預覽圖</label>
+										<input type="hidden" id="imgnumber">
+										<div class="img-list col-sm-9" id="img-list" style="display: inline-block;">
+											{volist name="url" id="val"}
+											<div id="div-show{$key}" style="margin:10px;"><img id="img-show{$key}" src="{$val['path']}" style="max-width:200px;max-height:200px;margin-right:10px;"><div class="col-sm-3" style="display:inline-block;float: none;"><input type="text" class="form-control" name="upload[{$key}][sort]" placeholder="排序" value="{$val['sort']}"></div><input type="hidden" value="{$val['path']}" name="upload[{$key}][pic]"><div class="btn btn-primary" onclick="deleteImg('{$key}')">删除该图片</div></div>
+											{/volist}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script src="{$Think.config.Houtai}js/laydate.js"></script>
+<script type="text/javascript">  
+laydate.render({
+	elem: '#start', //指定元素
+	type:'datetime',
+});
+laydate.render({
+	elem: '#end', //指定元素
+	type:'datetime',
+});
+</script> 
+<script type="text/javascript">  
+    //页面加载完成后初始化select2控件  
+    $(function () {
+		var number = $('#img-list').children('div').length;
+		$("#imgnumber").val(number);
+		var imgSize = {
+    		{volist name="position" id="vo"}
+			'{$key}':'{$vo.size}',
+			{/volist}
+    	}
+
+		$("#position").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "沒有該位置";
+		        }
+		    }
+		});
+
+		$("#position").change(function(){
+			var sizeId = $("#position").val();
+			if(imgSize[sizeId]!=null&&imgSize[sizeId]!=undefined){
+				var picsize = imgSize[sizeId];
+			}else{
+				var picsize = '';
+			}
+			$("#picsize").text('圖片大小:'+picsize);
+
+		});
+
+		$(".submit").click(function(){
+			$.ajax({
+                type: "POST",
+                url : '{:url('Adlist/edit')}',
+                data: $("#edit").serialize(),
+                async: true,
+                success: function(data) {
+                	if(data.code){
+	                    alert(data.msg);
+	            		window.history.go(-1);
+                	}else{
+	                    alert(data.msg);
+                	}
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+		});
+	});
+	//判断浏览器是否支持FileReader接口
+	if (typeof FileReader == 'undefined') {
+	    alert("当前浏览器不支持图片预览");
+	    //使选择控件不可操作
+	    // document.getElementById("xdaTanFileImg").setAttribute("disabled", "disabled");
+	}
+
+	//选择图片，马上预览
+	function xmTanUploadImg(obj) {
+	    var file = obj.files[0];
+	    if((file.type).indexOf("image/")==-1){
+			// alert("不是图片不能预览");
+	    }else{
+	    	var reader = new FileReader();
+		    reader.readAsDataURL(file);
+	    	reader.onload = function (e) {
+	    		var base = e.target.result;
+	    		var number = $("#imgnumber").val();
+		    	// var base = base.replace(/\&/g,"%26");
+		    	// var base = base.replace(/\+/g,"%2B");
+		        //或者 img.src = this.result;  //e.target == this
+		        var addstr = '<div id="div-show'+number+'" style="margin:10px;"><img id="img-show'+number+'" src="'+base+'" style="max-width:200px;max-height:200px;margin-right:10px;"><div class="col-sm-3" style="display:inline-block;float: none;"><input type="text" class="form-control" name="upload['+number+'][sort]" placeholder="排序"></div><input type="hidden" value="'+base+'" name="upload['+number+'][pic]"><div class="btn btn-primary" onclick="deleteImg(\''+number+'\')">删除该图片</div></div>';
+		        $('#img-list').append(addstr);
+		        number = Number(number)+1;
+		        $("#imgnumber").val(number);
+		        var fileid = obj.id;
+		        var file = $("#"+fileid);
+				file.attr('type','text');
+				file.attr('type','file');
+		    }
+	    }
+	}
+
+	function deleteImg(number){
+		$("#div-show"+number).remove();
+	}
+</script>

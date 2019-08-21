@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <title>{:config('web_title')}</title>
+
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+	<link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+	<link href="STATIC_PATH/assets/wxweb/css/home.css" rel="stylesheet">
+	<script>
+	$(function(){
+		var X = 0;
+		var moveEndX = 0;
+		var startX = 0;
+		var Y = 0;
+		var moveEndY = 0; 
+		var startY = 0;
+		$("#myCarousel").on("touchstart", function(e) {
+			// 判断默认行为是否可以被禁用
+			if (e.cancelable) {
+				// 判断默认行为是否已经被禁用
+				if (!e.defaultPrevented) {
+					e.preventDefault();
+				}
+			}   
+			startX = e.originalEvent.changedTouches[0].pageX,
+			startY = e.originalEvent.changedTouches[0].pageY;
+		});
+		$("#myCarousel").on("touchend", function(e) { 
+			// 判断默认行为是否可以被禁用
+			if (e.cancelable) {
+				// 判断默认行为是否已经被禁用
+				if (!e.defaultPrevented) {
+					e.preventDefault();
+				}
+			}               
+			moveEndX = e.originalEvent.changedTouches[0].pageX,
+			moveEndY = e.originalEvent.changedTouches[0].pageY,
+			X = moveEndX - startX,
+			Y = moveEndY - startY;
+			//左滑
+			if ( X > 20 ) {
+				$("#carousel-left").click();				
+			}
+			//右滑
+			else if ( X < -20 ) { 
+				$("#carousel-right").click(); 
+			}
+			/*
+			//下滑
+			else if ( Y > 0) {
+				alert('下滑');    
+			}
+			//上滑
+			else if ( Y < 0 ) {
+				alert('上滑');    
+			}
+			*/
+			else{
+				var id = $(".carousel-inner>.active").attr('data-val');
+				$.ajax({ 
+					type: "POST",  
+					url: "{:url('index/clickbanner')}",
+					dataType: 'json',  
+					data:{  
+					    'id':id,
+					},
+					success: function (res) {
+						if(res.code==1){
+							window.location.href = res.msg;
+						}
+					}
+				});    
+			}
+		});
+		$('#myCarousel').carousel({interval:5000});
+	});
+	 </script>
+</head>
+<body>
+<div class="container-div">
+	<div class="content">
+		<div class="head-div">
+		<!--
+			<div class="logo">
+				<div class="logo-img">
+					<img src="STATIC_PATH/assets/wxweb/images/logo.png" />
+				</div>
+				<div class="logo-tit">
+					<h5>潮<span>|</span>食 智<span>|</span>能<span>|</span>點 餐<span>|</span>系<span>|</span>統</h5>
+				</div>
+			</div>
+			-->
+			<div class="banner">
+				<div id="myCarousel" class="carousel slide" >
+					<!-- 轮播（Carousel）指标 -->
+					<ol class="carousel-indicators">
+						{if(!empty($ad))}
+							{volist name="ad" id="vo"}
+							<li data-target="#myCarousel" data-slide-to="0" {if $key==0}class="active"{/if}></li>
+							{/volist}
+						{else}
+							<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+							<li data-target="#myCarousel" data-slide-to="1"></li>
+							<li data-target="#myCarousel" data-slide-to="2"></li>
+						{/if}
+					</ol>
+					<!-- 轮播（Carousel）项目 -->
+					<div class="carousel-inner">
+						{if(!empty($ad))}
+							{volist name="ad" id="vo"}
+							<div class="item {if $key==0}active{/if}" data-val="{$vo.id}">
+								<img src="{$vo.path}" alt="{$vo.name}" class="img-responsive">
+							</div>
+							{/volist}
+						{else}
+							<div class="item active">
+								<img src="STATIC_PATH/assets/wxweb/images/banner1.png" alt="First slide" class="img-responsive">
+							</div>
+							<div class="item">
+								<img src="STATIC_PATH/assets/wxweb/images/banner2.png" alt="Second slide" class="img-responsive">
+							</div>
+							<div class="item">
+								<img src="STATIC_PATH/assets/wxweb/images/banner3.png" alt="Three slide" class="img-responsive">
+							</div>
+						{/if}
+					</div>
+				</div>
+			</div>
+			<!-- 轮播（Carousel）导航 -->
+			<a class="carousel-control left hide" id="carousel-left" href="#myCarousel" 
+			   data-slide="prev"> <span _ngcontent-c3="" aria-hidden="true"></span></a>
+			<a class="carousel-control right hide"  id="carousel-right" href="#myCarousel" 
+			   data-slide="next"></a>
+		</div>
+		<div class="body-div">
+			{if($contact_info['code']!=1)}
+			<div class="button" onclick="saomiao()">
+				<img src="STATIC_PATH/assets/wxweb/images/saoma.png" />
+				<p>掃碼點餐</p>
+			</div>
+			{elseif($contact_info['code']==1)}
+			<div class="text">
+				<div class="row restaurant">
+					<img src="STATIC_PATH/assets/wxweb/images/diancanliuchen.png" />
+				</div>
+				<div class="row content">
+					<div class="logo-div">
+						<img src={$contact_info.contact.logoUrl} />
+					</div>
+					<div class="content-div">
+						<p class="c-t">{$contact_info.contact.name}</p>
+						<p class="c-b">餐枱號:{$contact_info.member.name}</p>
+						<button class="replace" onclick="saomiao()">更換</button>
+					</div>
+				</div>
+				<div class="row">
+					<button class="look" onclick="openList();">開&nbsp;始&nbsp;點&nbsp;餐</button>
+				</div>
+				<div class="row-btn" style="display: none;">
+					<div class="user-protocol"><label><input type="checkbox" name="protocol" class="protocol" disabled="disabled"checked>
+                    <span>同意<a href="/wxweb/index/userprotocol">《用戶服務協議》</a></span></label></div>
+					<!-- <button class="message" onclick="sendMessage();">发&nbsp;起&nbsp;提&nbsp;问</button> -->
+					<div class="message" onclick="openMessage();">留言&建議&nbsp;></div>
+				</div>
+			</div>
+			{/if}
+		</div>
+	</div>
+	<div class="menu">
+		<div class="home-button active">
+			<img src="STATIC_PATH/assets/wxweb/images/shouye1.png" />
+			<p>首頁</p>
+		</div>
+		<div class="user-button">
+			<img src="STATIC_PATH/assets/wxweb/images/dingdan.png" />
+			<p>訂單</p>
+		</div>
+	</div>
+</div>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+$(function(){
+	$(".user-button").click(function(){
+		window.location.href = "{:url('index/allOrder')}";
+	});
+    var url= location.href.split('#')[0];
+    openloading("STATIC_PATH/assets/img/loading-2.gif");
+    $.ajax({
+      type: 'GET',
+      url: '{:url("index/wx")}',
+      data: {'url':url},
+      dataType:'json',
+      success:function(res){ 
+        var json = res.data;
+          wx.config({
+          debug: false,
+          appId: json.appId,
+          timestamp: json.timestamp,
+          nonceStr:  json.noncestr,
+          signature: json.signature,
+          jsApiList: [
+            'checkJsApi',
+            'scanQRCode',
+            'onMenuShareAppMessage',
+            'onMenuShareTimeline',
+            'getLocation',
+          ]
+          });
+          setTimeout('closeloading()',500);
+      },
+      error:function(){
+      	setTimeout('closeloading()',500);
+        
+      }
+    });
+
+
+});
+
+
+function saomiao(){
+	wx.scanQRCode({
+      needResult: 1,
+      desc: 'scanQRCode desc',
+      scanType : ["qrCode"],
+      success: function (res) {
+        window.location.href = res.resultStr;
+      }
+    });
+}
+function openMessage(){
+	var listUrl = "{:url('index/messageList')}";
+	window.location.href = listUrl;
+}
+
+// var inarea = false; //用戶是否在可以下單範圍
+// $.ajax({
+// 		    	type: 'POST',
+// 		    	url: '{:url("index/inarea")}',
+// 		    	data: {'latitude':22.270715,'longitude':113.576726},
+// 		    	dataType:'json',
+// 		    	success:function(res){ 
+// 		    		if(res.code==1){
+// 		    			inarea = true;
+// 		    			console.log('可以下单');
+// 		    		}else{
+// 		    			alert('用户不在可下单范围')
+// 		    		}
+// 		    		setTimeout('closeloading()',500);
+// 		    	},
+// 		    	error:function(){
+// 		    		setTimeout('closeloading()',500);
+		    	  
+// 		    	}
+// 		    });
+{if($contact_info['code']==1)}
+var inarea = true; //用戶是否在可以下單範圍不限制下單
+setBtn();
+wx.ready(function(){
+	wx.getLocation({
+	    success: function (res) {
+			// openloading("STATIC_PATH/assets/img/loading-2.gif");
+			var latitude = res.latitude; //纬度
+			var longitude = res.longitude; //经度
+			// var speed = res.speed; //速度
+			// var accuracy = res.accuracy; //位置精度
+			// var errMsg = res.errMsg; //结果状态
+			// var locationStr = "latitude："+latitude+"，"+"longitude："+longitude+"，"+"speed："+speed+"，"+"accuracy："+accuracy+"，"+"errMsg："+errMsg;
+			$.ajax({
+		    	type: 'POST',
+		    	url: '{:url("index/inarea")}',
+		    	data: {'latitude':latitude,'longitude':longitude},
+		    	dataType:'json',
+		    	success:function(res){ 
+		    		inarea = true;
+		    		// setTimeout('closeloading()',500);
+		    	},
+		    	error:function(){
+		    		// setTimeout('closeloading()',500);
+		    	  
+		    	}
+		    });
+		// $("#locationText").text(locationStr);
+	    },
+	    cancel: function (res) {
+	      alert('請打開微信定位權限并同意定位');
+	    },
+	    fail: function (res) {
+	    	// JSON.stringify(res)
+	      alert('請打開微信定位權限并同意定位');
+	    }
+	});//end wx.getLocation
+});
+$(".protocol").change(function(){
+	setBtn();
+});
+function openList(){
+	var listUrl = "{:url('index/foodList')}";
+	var checked =$(".protocol").is(':checked') ;
+	if(checked&&inarea){
+		window.location.href = listUrl;
+	}
+}
+function sendMessage(){
+	var listUrl = "{:url('index/sendMessage')}";
+	window.location.href = listUrl;
+}
+function setBtn(){
+	var checked =$(".protocol").is(':checked');
+	if(checked&&inarea){
+		$(".look").addClass('b-success').removeClass('b-disable');
+	}else{
+		$(".look").addClass('b-disable').removeClass('b-success');
+	}
+}
+{/if}
+function opentips(){
+	$('#tips').modal('show');
+}
+function closetips(){
+	$('#tips').modal('hide');
+}
+}
+{if($contact_info['code']=='-1')}
+	 setTimeout('opentips()',100);
+{/if}
+
+</script>
+<div class="modal fade" id="tips" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true" style="margin-top:calc(50vh - 71.5px);">
+    <div class="modal-dialog">
+        <div class="modal-content" id="tips-cont">
+            <div class="modal-body" id="tips-text">
+            	{if (!empty($contact_info['tip']))}
+				{$contact_info['tip']}
+            	{/if}
+			</div>
+			<div class="modal-footer" id="tips-foot" onclick="closetips();">
+				<div class="ok" id="tips-btn">確認</div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</body>
+</html>

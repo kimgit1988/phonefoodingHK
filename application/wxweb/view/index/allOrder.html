@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>{:lang('訂單記錄')}</title>
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+    <link href="STATIC_PATH/assets/wxweb/css/order.css" rel="stylesheet">
+    <link href="STATIC_PATH/assets/css/icon.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-div" id="container-div">
+    <div class="head-box">
+        <div class="title"><i class="fab-left" onclick="javascript:history.back(-1);"></i>{:lang('訂單記錄')}</div>
+    </div>
+    <div class="history-div">
+        <div class="order-list">
+            <div class="order-ul">
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+       var allpage=1;
+        $.ajax({
+           type:'POST',
+           url:'{:url("index/getOrder")}',
+           dataType: 'json',
+           data:{'allpage':allpage,'ordersn':''},
+           async:true,
+           success:function (res) {
+               if(res.code){
+                   var listHtml = '';
+                   $.each(res.msg, function (index,list) {
+                       var sStatu = '';
+                       if(list.orderStatus==2){
+                           sStatu = '{:lang(\'等待商家接單\')}';
+                       }else if(list.orderStatus==3){
+                           sStatu = '{:lang(\'商家已接單\')}';
+                           if(list.addStatus==1){
+                               sStatu = '{:lang(\'等待商家接單（加單）\')}';
+                           }
+                       }else if(list.orderStatus==0){
+                           sStatu = '{:lang(\'已取消\')}';
+                       }else{
+                           sStatu = '{:lang(\'已完成\')}';
+                       }
+                       listHtml += '<div class="div-box" onclick="orderdetail(\''+list.orderSN+'\')">'
+                           + '<div class="head-div">'
+                           + '<span class="text-left">'+list.contactMemberName+'<em>('+list.orderAssignedNumber+')</em></span><span class="text-right">'+sStatu+'</span></div>'
+                           + '<div class="pro printer-table">';
+                            $.each(list._food,function (key,item) {
+                                if(item.goodsType==1){
+                                    listHtml += '<div class="li-item printer-tr">'
+                                        + '<div class="li-text printer-td"><span>'+item.goodsName+'</span></div>'
+                                        + '<div class="pir  printer-td"><span class="pri-text">HK$&nbsp;'+item.goodsPrice+'</span></div>'
+                                        + '<div class="num  printer-td"><span class="num-text">x'+item.num+'</span></div>'
+                                        + '</div>';
+                                }else{
+                                    listHtml += '<div class="li-meal-item">'
+                                        + '<div class="li-item meal printer-tr">'
+                                        + '<div class="li-text printer-td"><span>'+item.goodsName+'</span></div>'
+                                        + '<div class="pir  printer-td"><span class="pri-text">HK$&nbsp;'+item.goodsPrice+'</span></div>'
+                                        + '<div class="num  printer-td"><span class="num-text">x'+item.num+'</span></div></div>';
+                                    if(item._food){
+                                        $.each(item._food, function (k,food) {
+                                            listHtml += '<div class="li-foods printer-table">'
+                                                + '<div class="li-item printer-tr">'
+                                                + '<div class="li-text printer-td"><span>'+food.goodsName+'</span></div>'
+                                                + '<div class="num  printer-td"><span class="num-text">x'+food.num+'</span></div>'
+                                                + '</div></div>';
+                                        })
+                                    }
+                                    listHtml += '</div>';
+                                }
+
+                            });
+
+                           listHtml += '</div><div class="total">'
+                                   + '<div class="total-name">{:lang(\'合計\')}:</div>'
+                                   + '<div class="total-price">HK$'+list.goodsAmount+'</div>'
+                                   + '</div></div>';
+                   });
+                   $('.order-ul').append(listHtml);
+               }
+           },
+           error:function (msg) {
+               console.log(msg.errorMsg);
+           }
+       });
+    });
+
+    function orderdetail(ordersn) {
+        var url = 'orderdetail/ordersn/'+ordersn;
+        window.location.href = "{:url('"+url+"')}";
+    }
+</script>
+</body>
+</html>

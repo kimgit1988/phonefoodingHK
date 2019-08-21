@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('套餐添加')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/foods-add.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/summernote.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll.css" rel="stylesheet" />
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_date.css" rel="stylesheet" />
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/summernote.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/lang/summernote-zh-CN.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll_date.js"></script> 
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll.js"></script> 
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='{:url(\'foods/index\')}';"></i>
+        <div class="title">{:lang('添加套餐')}</div>
+    </div>
+	<div class="edit-main">
+		<form  action="{:url('add')}" method="post" id="add">
+			<div class="food-input-li">
+                <div class="food-cate-label">{:lang('名稱-繁体')}</div><input name="name" type="text" maxlength="100">
+            </div>
+            <div class="food-input-li">
+                <div class="food-cate-label">{:lang('名稱-英文')}</div><input name="name_en" type="text" maxlength="100">
+            </div>
+            <div class="food-input-li">
+                <div class="food-cate-label">{:lang('名稱-其他')}</div><input name="name_other" type="text" maxlength="100">
+            </div>
+        	<div class="food-input-li">
+        		<div class="food-cate-label">{:lang('分類')}</div>
+                <div class="select" id="category" {if empty($category)} onclick="location='{:url(\'manage/addgoodscategory\')}'" {/if} ></div>
+                <i class="fab-down"></i>
+                <input type="hidden" name="categoryId" id="categoryId">
+                <input type="hidden" name="categoryName" id="categoryName">
+        	</div>
+            <!-- <div class="food-input-li">
+                <div class="food-cate-label">編號</div><input name="number" type="text">
+            </div> -->
+            <div class="food-input-li">
+                <div class="food-cate-label">{:lang('價格')}(HKD$)</div><input name="price" type="text" maxlength="10">
+            </div>
+            <div class="food-input-li">
+				<div class="food-cate-label f-l">{:lang('圖片上傳')}<span class="comment">（{:lang('建議解像度')}300*300）</span></div>
+				<div class="food-cate-img f-r add-img" id="upload-img">
+					<img src="STATIC_PATH/assets/mobile/images/shangchuanzp.png" class="food-img">
+					<input type="hidden" name="pic_path" id="pic_path">
+					<input type="hidden" name="thumb_path" id="thumb_path">
+				</div>
+				<!--<div class="upload-img f-r">建議分辨率80*80</div>-->
+			</div>
+            <!--<div class="food-input-li">
+                <div class="food-cate-label">有效期</div><div class="select-modal" onclick="openVaild();" id="selectVaild"></div>
+            </div>
+            &lt;!&ndash; <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#validityTime">开始演示模态框</button> &ndash;&gt;
+            &lt;!&ndash; 模态框（Modal） &ndash;&gt;
+            <div class="modal fade" id="validityTime" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header" style="border:0;text-align: center;margin-top: 10px;">
+                            <div class="vaildity-div">
+                                <label for="validityTime1"><input name="validityTime" type="radio" value="1" id="validityTime1">
+                                指定日期</label>
+                            </div>
+                            <div class="vaildity-div">
+                                <label for="validityTime2"><input name="validityTime" type="radio" value="2" id="validityTime2">
+                                指定时段</label>
+                            </div>
+                            <div class="vaildity-div">
+                                <label for="validityTime3"><input name="validityTime" type="radio" value="3" id="validityTime3">
+                                无</label>
+                            </div>
+                        </div>
+                        <div class="modal-body" style="display: none;">
+                            <div id="validityTime-checked-1" style="display: none;">
+                                <div class="validity-datetime-div">
+                                    <input id="startdate" name="startdate" type="text" value="" readonly="readonly" placeholder="開始日期">
+                                </div>
+                                <div class="validity-datetime-div">
+                                    <input id="enddate" name="enddate" type="text" value="" readonly="readonly" placeholder="結束日期">
+                                </div>
+                            </div>
+                            <div id="validityTime-checked-2" style="display: none;">
+                                <div class="validity-datetime-div">
+                                    <input id="starttime" name="starttime" type="text" value="" readonly="readonly" placeholder="開始時段">
+                                </div>
+                                <div class="validity-datetime-div">
+                                    <input id="endtime" name="endtime" type="text" value="" readonly="readonly" placeholder="結束時段">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="border:0;text-align: center;">
+                            <button type="button" class="btn btn-primary" style="margin-right: 5vw;" onclick="closeVaild(1);">确认</button>
+                            <button type="button" class="btn btn-default" style="margin-left: 5vw;" onclick="closeVaild(0);">重置</button>
+                        </div>
+                    </div>&lt;!&ndash; /.modal-content &ndash;&gt;
+                </div>&lt;!&ndash; /.modal &ndash;&gt;
+            </div>-->
+            <div class="food-input-li remark-div">
+                <div class="food-cate-label-detail">{:lang('添加套餐')}備註</div>
+                <textarea name="remark" id="remark"></textarea>
+            </div>
+            <div class="food-detail">
+                <div class="food-cate-label-detail">{:lang('詳情')}</div><input type="hidden" name="detail" id="inputdetail"><div id="detail"></div>
+            </div>
+            <div class="food-input-li b-n">
+                <div class="food-cate-label">{:lang('是否啟用')}</div>
+                <div class="food-radio-div">
+                    <input name="status" type="radio" value="1" id="label-yes" checked="checked">
+                    <label for="label-yes">{:lang('是')}</label>
+                    <input name="status" type="radio" value="0" id="label-no">
+                    <label for="label-no">{:lang('否')}</label>
+                </div>
+            </div>
+        </form>
+    <div class="member-cate-add-btn">完成</div>
+	</div>
+	<!--<div class="member-cate-add-btn">完成</div>-->
+</div>
+<div class="clipbg clipbg-img displaynone">
+    <div id="clipArea1"></div>
+    <div class="loading loading-img displaynone">{:lang('正在载入圖片')}...</div>
+    <div class="footer">
+    <dl>
+        <dd>{:lang('打開相簿')}<input type="file" id="img" accept="image/*" onClick="window.lee.pickImage()"></dd>
+        <dd id="clipBtn-img">{:lang('完成裁剪')}</dd>
+    </dl>
+    <div class="back back-img">{:lang('取消')}</div>
+    </div>
+</div>
+<style type="text/css">
+    .dw-persp{
+        z-index: 11000;
+    }
+</style>
+<script type="text/javascript">
+    
+    var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+    window.onload=function(){ //在页面整体加载完毕时
+        $('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式$(function () {
+        var currYear = (new Date()).getFullYear();  
+        var opt={};
+        opt.date = {preset : 'date'};
+        opt.datetime = {preset : 'datetime'};
+        opt.time = {preset : 'time'};
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式 
+            mode: 'scroller', //日期选择模式
+            lang: 'zh',
+            dateFormat: 'yy-mm-dd',  
+            dateOrder: 'yymmdd', //面板中日期排列格式 
+            timeFormat: 'HH:ii:ss',  
+            // timeOrder: 'HHiiss',
+            timeWheels: 'HHiiss',
+            cancelText: "{:lang('取消')}",
+            startYear: currYear - 50, //开始年份
+            endYear: currYear, //结束年份
+            showLabel: false, // 是否显示 年月日标签
+        };
+        $("#startdate").mobiscroll($.extend(opt['datetime'], opt['default']));
+        $("#enddate").mobiscroll($.extend(opt['datetime'], opt['default']));
+        $("#starttime").mobiscroll($.extend(opt['time'], opt['default']));
+        $("#endtime").mobiscroll($.extend(opt['time'], opt['default']));
+    };
+    function closeVaild(method){
+        if(method==0){
+            $("input[name='validityTime']:checked").prop("checked",false);
+            $("#startdate").val('');
+            $("#enddate").val('');
+            $("#starttime").val('');
+            $("#endtime").val('');
+            $(".modal-body").hide();
+            $("#validityTime-checked-1").hide();
+            $("#validityTime-checked-2").hide();
+        }else{
+            var validityTime = $("input[name='validityTime']:checked").val();
+            if(validityTime==3){
+                $("#selectVaild").text('无');
+            }else if(validityTime==2){
+                var start = $("#starttime").val();
+                var end = $("#endtime").val();
+                if(start!=''&&end!=''){
+                    $("#selectVaild").text(start+'-'+end);
+                }else if(start==''){
+                    swal({
+                        'text':'{:lang(\'請選擇開始時間\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                    return;
+                }else{
+                    swal({
+                        'text':'{:lang(\'請選擇結束時間\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                    return;
+                }
+            }else if(validityTime ==1){
+                var start = $("#startdate").val();
+                var end = $("#enddate").val();
+                if(start!=''&&end!=''){
+                    $("#selectVaild").text(start+'-'+end);
+                }else if(start==''){
+                    swal({
+                        'text':'{:lang(\'請選擇開始時間\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                    return;
+                }else{
+                    swal({
+                        'text':'{:lang(\'請選擇結束時間\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                    return;
+                }
+            }else{
+                swal({
+                    'text':'{:lang(\'請選擇有效期類型\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+                return;
+            }
+            $("#validityTime").modal('hide');
+        }
+    }
+    function openVaild(method){
+        var vaild = $("input[name='validityTime']:checked").val();
+        if(vaild==1){
+            $(".modal-body").show();
+            $("#validityTime-checked-1").show();
+            $("#validityTime-checked-2").hide();
+        }else if(vaild==2){
+            $(".modal-body").show();
+            $("#validityTime-checked-1").hide();
+            $("#validityTime-checked-2").show();
+
+        }else{
+            $(".modal-body").hide();
+            $("#validityTime-checked-1").hide();
+            $("#validityTime-checked-2").hide();
+        }
+        $("#validityTime").modal('show');
+    }
+    $("input[name='validityTime']").on('change', function(event){
+        var vaild = $("input[name='validityTime']:checked").val();
+        if(vaild==1){
+            $(".modal-body").show();
+            $("#validityTime-checked-1").show();
+            $("#validityTime-checked-2").hide();
+        }else if(vaild==2){
+            $(".modal-body").show();
+            $("#validityTime-checked-1").hide();
+            $("#validityTime-checked-2").show();
+
+        }else{
+            $(".modal-body").hide();
+            $("#validityTime-checked-1").hide();
+            $("#validityTime-checked-2").hide();
+        }
+    });
+    $("#detail").summernote({
+        minHeight : 150,
+        lang:'zh-CN',
+        disableDragAndDrop: true,
+        dialogsInBody: true,
+        dialogsFade : true,
+        toolbar: [
+            // ['style', ['style']],
+            ['font', ['bold', 'underline']],
+            // ['font', ['bold', 'underline', 'clear']],
+            // ['fontname', ['fontname']],
+            ['color', ['color']],
+            // ['para', ['ul', 'ol', 'paragraph']],
+            // ['table', ['table']],
+            ['insert', ['link', 'picture']],
+            // ['insert', ['link', 'picture', 'video']],
+            // ['view', ['fullscreen', 'codeview', 'help']]
+        ],
+        callbacks : {
+            // onImageUpload的参数为files，summernote支持选择多张图片
+            onImageUpload : function(files) {
+                var $files = $(files);
+                // 通过each方法遍历每一个file
+                $files.each(function() {
+                    var file = this;
+                    // FormData，新的form表单封装，具体可百度，但其实用法很简单，如下
+                    var data = new FormData();
+                    // 将文件加入到file中，后端可获得到参数名为“file”
+                    data.append("image", file);
+                    // ajax上传
+                    $.ajax({
+                        data : data,
+                        type : "POST",
+                        url : "{:url('Foods/uploadImg')}",// div上的action
+                        cache : false,
+                        contentType : false,
+                        processData : false,
+         
+                        // 成功时调用方法，后端返回json数据
+                        success : function(data) {
+                            // 状态ok时
+                            if (data.code == 1) {
+                                // 获取后台数据保存的图片完整路径
+                                var imageUrl = data.msg;
+         
+                                // 插入到summernote
+                                $("#detail").summernote('insertImage', imageUrl, function($image) {
+                                    // todo，后续可以对image对象增加新的css式样等等，这里默认
+                                    $image[0].style.width="100%";
+                                });
+                            }
+         
+                        },
+                        // ajax请求失败时处理
+                        error : function(res){
+
+                        }
+                    });
+                });
+            }
+        }
+
+    })
+
+    var submitInfo = true;
+	$('.member-cate-add-btn').click(function () {
+        if(submitInfo){
+            if (!$("#detail").summernote('isEmpty')) {
+                var detail = $('#detail').summernote('code');
+                $("#inputdetail").val(detail);
+            }
+            var add = $('#add').serialize();
+            $.ajax({
+                type: "POST",
+                url : "{:url('add')}",
+                data: $('#add').serialize(),
+                async: true,
+                beforeSend: function(){
+                    openloading("STATIC_PATH/assets/img/loading-2.gif");
+                },
+                success: function(data) {
+                    closeloading();
+                    if (data.code) {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/a-dishes-add.png',
+							'imageSize': '16x16',
+							'customClass': 'success'
+						}).then(function(isConfirm) {
+                            window.history.go(-1);
+                        });
+                    } else {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+                    closeloading();
+					swal({
+						'text':'{:lang(\'頁面錯誤\')}',
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+        }else{
+            swal({
+                'text':'{:lang(\'圖片上傳中,請稍後\')}',
+				'confirmButtonText': '{:lang(\'確認\')}',
+                'confirmButtonColor':'#e07a0a',
+				'customClass': 'default'
+            });
+        }
+        
+    });
+
+    $("#upload-img").click(function(){
+        $(".clipbg-img").fadeIn()
+    })
+
+    function photoclip_obj(imgurl) {
+        var photoclip = new  PhotoClip("#clipArea1", {
+            size: [300, 300],//裁剪框大小
+            outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+            img:imgurl,
+            ok: "#clipBtn-img",
+            loadStart: function() {
+                //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+                var size = img.size;
+                if(size> {:config('UploadSize.logo')}){
+                    swal({
+                        'text':'{:lang(\'圖片大小不能超過\')}{:config("UploadSize.logo")/1024/1024}M！',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'customClass': 'default'
+                    });
+                    return false;
+                }
+                $(".loading-img").removeClass("displaynone");
+
+            },
+            loadComplete: function() {
+                //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+                $(".loading-img").addClass("displaynone");
+
+            },
+            done: function(dataURL) {
+                //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。
+                $(".clipbg-img").fadeOut();
+                $(".food-img").attr("src",dataURL);
+                $("#pic_path").val(dataURL);
+            }
+        });
+    }
+
+    function getimgdata(imgdata){
+        console.log(imgdata);
+        photoclip_obj(imgdata);
+    }
+
+    function getimgurl(base64Codes){
+        console.log(base64Codes);
+        photoclip_obj(base64Codes);
+    }
+
+    var clipAreaImg = new  PhotoClip("#clipArea1", {
+        size: [300, 300],//裁剪框大小
+        outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+        file: "#img",
+        ok: "#clipBtn-img",
+        loadStart: function() {
+        //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+            var size = document.getElementById("img").files[0].size;
+            if(size> {:config('UploadSize.logo')}){
+                swal({
+                    'text':'{:lang(\'圖片大小不能超過\')}{:config(\'UploadSize.logo\')/1024/1024}M！',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'customClass': 'default'
+                });
+                return false;
+            }
+            $(".loading-img").removeClass("displaynone");
+
+        },
+        loadComplete: function() {
+        //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+            $(".loading-img").addClass("displaynone");
+
+        },
+        done: function(dataURL) { 
+        //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。        
+            $(".clipbg-img").fadeOut();
+            $(".food-img").attr("src",dataURL);
+            $("#pic_path").val(dataURL);
+        }
+    });
+
+    $(".back-img").click(function(){
+        $(".clipbg-img").fadeOut()
+    })
+
+    function setCategory(){
+        var selectOption = mobileSelect1.getValue();
+        $("#categoryId").val(selectOption[0]['id']);
+        $("#categoryName").val(selectOption[0]['value']);
+    }
+
+    // 設置分類選項數組
+    var option = [];
+    {volist name="category" id="vo" key="i"}
+    // 設置分類選項
+    option.push({id:{$vo.id},value:'{$vo.name}'});
+    {/volist}
+
+    if(option!='[]'&&option.length>0){
+        var mobileSelect1 = new MobileSelect({
+            trigger: '#category', 
+            title: '{:lang(\'分類\')}',
+            cancelBtnText:'{:lang(\'取消\')}',
+            ensureBtnText:'{:lang(\'確認\')}',
+            wheels: [
+                {data:option,},
+            ],
+            callback:setCategory,
+        });
+    }
+</script>
+</body>
+
+</html>

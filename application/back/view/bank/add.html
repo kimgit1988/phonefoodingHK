@@ -1,0 +1,86 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">銀行添加</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Bank/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+ -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Bank/add')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="add">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">銀行名稱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="inputname" value="" placeholder="銀行名稱">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">銀行編碼</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="number" id="inputnumber" value="" placeholder="銀行編碼">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">  
+    //页面加载完成后初始化select2控件  
+    $(function () {
+		$(".submit").click(function(){
+			$.ajax({
+                type: "POST",
+                url : '{:url('bank/add')}',
+                data: $("#add").serialize(),
+                async: true,
+                success: function(data) {
+                	if(data.code){
+	                    alert(data.msg);
+	            		window.history.go(-1);
+                	}else{
+	                    alert(data.msg);
+                	}
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+		});
+	});
+</script> 

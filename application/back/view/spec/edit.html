@@ -1,0 +1,170 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">规格編輯</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Spec/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Spec/edit')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="edit">
+									<input type="hidden" name="id" value="{$spec.id}">
+
+									<div class="form-group" id="contact-div">
+										<label for="inputrole_id" class="col-sm-3 control-label">餐厅</label>
+										<div class="col-sm-5">
+											<select name="contact" id="contact" class="form-control select2">
+												<option value="">请选择餐厅</option>
+												{volist name="contact" id="vo"}
+												<option value="{$vo.number}" {if($spec.contactNumber==$vo.number)}selected="selected"{/if}>{$vo.name}（{$vo.number}）</option>
+												{/volist}
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputrole_id" class="col-sm-3 control-label">父级规格</label>
+										<div class="col-sm-5">
+											<select name="parent" id="parent" class="form-control select2">
+												<option value="">请选择父级规格</option>
+												<option value="0" {if($spec.spec_pid==0)}selected="selected"{/if}>顶级规格</option>
+												{volist name="list" id="vo"}
+												<option value="{$vo.id}" {if($spec.spec_pid==$vo.id)}selected="selected"{/if}>{$vo.spec_name}</option>
+												{/volist}
+											</select>
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">規格名</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="inputname" placeholder="規格名" value="{$spec.spec_name}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">排序</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="sort" id="inputsort" placeholder="排序" value="{$spec.spec_order}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="status" id="inputstatus" value="1" {if($spec.spec_disable==1)}checked="checked"{/if}/>启用</label>
+											<label><input type="radio" name="status" id="inputstatus" value="0" {if($spec.spec_disable==0)}checked="checked"{/if}/>停用</label>
+											<label><input type="radio" name="status" id="inputstatus" value="2" {if($spec.spec_disable==2)}checked="checked"{/if}/>不可选</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	$(function () {
+
+		$("#parent").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该規格";
+		        }
+		    }
+		});
+
+		$("#contact").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该餐廳";
+		        }
+		    }
+		});
+
+		$("#contact").change(function(){
+			var contact = $("#contact").val();
+			if(contact!=''){
+				$.ajax({
+			        type: "POST",
+			        url : '{:url('base/getspeclist')}',
+			        data: {contactNumber:contact},
+			        async: true,
+			        success: function(data) {
+			            var str = '<option value="">请选择父级规格</option>';
+			            str += '<option value="0">顶级规格</option>';
+			            if(!$.isEmptyObject(data.msg)){
+			                $.each(data.msg,function(n,vo) {
+			                	str += '<option value="'+vo.id+'">'+vo.spec_name+'</option>';
+			                });
+			        	}
+			        	$("#parent").html(str);
+			        },
+			        error: function(request) {
+			            alert('頁面錯誤');
+			        }
+			    });
+			}else{
+				var str = '<option value="">请选择父级规格</option>';
+				$("#parent").html(str);
+			}
+		});
+		
+		$(".submit").click(function(){
+			$.ajax({
+                type: "POST",
+                url : '{:url('Spec/edit')}',
+                data: $("#edit").serialize(),
+                async: true,
+                success: function(data) {
+                	if(data.code){
+	                    alert(data.msg);
+	                    window.history.go(-1);
+                	}else{
+	                    alert(data.msg);
+                	}
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+		});
+
+	});
+	
+</script>

@@ -1,0 +1,61 @@
+{include file="common:header"}
+<body>
+<div class="swipper">
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+            <div class="item active">
+                <img src="/static/assets/padweb/images/bg1.jpg">
+            </div>
+            <div class="item">
+                <img src="/static/assets/padweb/images/bg2.jpg">
+            </div>
+            <div class="item">
+                <img src="/static/assets/padweb/images/bg3.jpg">
+            </div>
+        </div>
+    </div>
+    <div class="tab-footer">
+        <img src="/static/assets/mobile/images/logo.png" alt="">
+        <a href="index.html">
+            點擊屏幕開始點餐
+        </a>
+    </div>
+</div>
+<style type="text/css">
+    html,body{
+        height: 100%;
+    }
+    .swipper{
+        position: absolute;
+        height: 100%;
+        overflow: hidden;
+    }
+    .tab-footer{
+        background-color: #000;
+        opacity: 0.7;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        padding: 2% 4%;
+    }
+    .tab-footer img{
+        width: 50%;
+    }
+    .tab-footer a{
+        width: 26%;
+        color: #fff;
+        float: right;
+        text-decoration: none;
+        font-size: 60px;
+        line-height: 85px;
+    }
+</style>
+<script>
+    //轮播时间间隔
+    $('.carousel').carousel({
+        interval: 2000
+    });
+</script>
+</body>
+</html>

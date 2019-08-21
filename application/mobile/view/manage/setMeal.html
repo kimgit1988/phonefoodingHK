@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('設置菜品')}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/addmeal.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<script type="text/javascript">
+    // 滑动删除
+    $(document).ready(function (e) {
+        // 设定每一行的宽度=屏幕宽度+按钮宽度
+        $(".line-scroll-wrapper").width($(".line-wrapper").width() + $(".line-btn-delete").width());
+        // 设定常规信息区域宽度=屏幕宽度
+        $(".line-normal-wrapper").width($(".line-wrapper").width() - 24);
+        // 设定文字部分宽度（为了实现文字过长时在末尾显示...）
+        // $(".line-normal-msg").width($(".line-normal-wrapper").width() - 280);
+
+        // 获取所有行，对每一行设置监听
+        var lines = $(".line-normal-wrapper");
+        var len = lines.length;
+        var lastX, lastXForMobile;
+
+        // 用于记录被按下的对象
+        var pressedObj;  // 当前左滑的对象
+        var lastLeftObj; // 上一个左滑的对象
+
+        // 用于记录按下的点
+        var start;
+
+        // 网页在移动端运行时的监听
+        for (var i = 0; i < len; ++i) {
+            lines[i].addEventListener('touchstart', function (e) {
+                lastXForMobile = e.changedTouches[0].pageX;
+                pressedObj = this; // 记录被按下的对象
+
+                // 记录开始按下时的点
+                var touches = event.touches[0];
+                start = {
+                    x: touches.pageX, // 横坐标
+                    y: touches.pageY  // 纵坐标
+                };
+            });
+
+            lines[i].addEventListener('touchmove', function (e) {
+                // 计算划动过程中x和y的变化量
+                var touches = event.touches[0];
+                delta = {
+                    x: touches.pageX - start.x,
+                    y: touches.pageY - start.y
+                };
+
+                // 横向位移大于纵向位移，阻止纵向滚动
+                if (Math.abs(delta.x) > Math.abs(delta.y)) {
+                    event.preventDefault();
+                }
+            });
+
+            lines[i].addEventListener('touchend', function (e) {
+                if (lastLeftObj && pressedObj != lastLeftObj) { // 点击除当前左滑对象之外的任意其他位置
+                    $(lastLeftObj).animate({marginLeft: "0"}, 300); // 右滑
+                    lastLeftObj = null; // 清空上一个左滑的对象
+                }
+                var diffX = e.changedTouches[0].pageX - lastXForMobile;
+                if (diffX < -150) {
+                    $(pressedObj).animate({marginLeft: "-40px"}, 300); // 左滑
+                    lastLeftObj && lastLeftObj != pressedObj &&
+                    $(lastLeftObj).animate({marginLeft: "0"}, 300); // 已经左滑状态的按钮右滑
+                    lastLeftObj = pressedObj; // 记录上一个左滑的对象
+                } else if (diffX > 150) {
+                    if (pressedObj == lastLeftObj) {
+                        $(pressedObj).animate({marginLeft: "0"}, 300); // 右滑
+                        lastLeftObj = null; // 清空上一个左滑的对象
+                    }
+                }
+            });
+        }
+
+        // 网页在PC浏览器中运行时的监听
+        for (var i = 0; i < len; ++i) {
+            $(lines[i]).bind('mousedown', function (e) {
+                lastX = e.clientX;
+                pressedObj = this; // 记录被按下的对象
+            });
+
+            $(lines[i]).bind('mouseup', function (e) {
+                if (lastLeftObj && pressedObj != lastLeftObj) { // 点击除当前左滑对象之外的任意其他位置
+                    $(lastLeftObj).animate({marginLeft: "0"}, 300); // 右滑
+                    lastLeftObj = null; // 清空上一个左滑的对象
+                }
+                var diffX = e.clientX - lastX;
+                if (diffX < -150) {
+                    $(pressedObj).animate({marginLeft: "-40px"}, 300); // 左滑
+                    lastLeftObj && lastLeftObj != pressedObj &&
+                    $(lastLeftObj).animate({marginLeft: "0"}, 300); // 已经左滑状态的按钮右滑
+                    lastLeftObj = pressedObj; // 记录上一个左滑的对象
+                } else if (diffX > 150) {
+                    if (pressedObj == lastLeftObj) {
+                        $(pressedObj).animate({marginLeft: "0"}, 300); // 右滑
+                        lastLeftObj = null; // 清空上一个左滑的对象
+                    }
+                }
+            });
+        }
+    });
+</script>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/manage/addmealManage.html';"></i>
+        <div class="title">{:lang('設置菜品')}</div>
+    </div>
+    <div class="content-main">
+        {if($addon_foods_data)}
+            {volist name="addon_foods_data" id="vo" key="k"}
+                <div class="food-box">
+                <div class="food-title">
+                    <span class="name">{:lang($vo.name)}</span>
+                    <span class="right" onclick="window.location.href='{:url(\'manage/editmealgroup\',[\'id\'=>$vo.id,\'aid\'=>$aid])}'">
+                        {if($vo.is_require==1)} {:lang('必选')} {elseif($vo.is_require<1)} {:lang('非必选')} {/if}
+                        {if($vo.group_max_number>0)} | {:lang('任选')}{$vo.group_max_number}{:lang('项')}{/if}<i class="fab-right"></i></span>
+                </div>
+                <div class="item-ul" id="item{$vo.id}">
+                    {volist name="vo._foods" id="food"}
+                        <div class="item-li line-wrapper" id="{$food.id}">
+                            <div class="line-scroll-wrapper">
+                                <div class="line-normal-wrapper">
+                                    <div class="img">
+                                        <img src="{$food.imgUrl}" alt="" />
+                                        <div class="name">{:lang($food.name)}</div>
+                                    </div>
+                                    {if($food._spec)}
+                                    <!--{php}
+                                    if(!empty($food['spec_price']))
+                                    {
+                                    $specPrice = json_decode($food['spec_price'],true);
+                                    }
+                                    {/php}-->
+                                    {volist name="food._spec" id="spec"}
+                                        <div class="item-head">
+                                            <span class="spec">{:lang($spec.name)}</span>
+                                            <span class="price">{:lang('價格')}(HK$)</span>
+                                        </div>
+                                        {volist name="spec._child" id="child"}
+                                            <div class="item-info">
+                                                <span class="spec">{:lang($child.name)}</span>
+                                                <input type="text" class="price" id="{$child.id}" data-type="{$food.id}_{$child.id}_" value="{if(!empty($specPrice))}{$specPrice[$child.id]}{else}{$child.price}{/if}" placeholder="0" />
+                                            </div>
+                                        {/volist}
+                                    {/volist}
+                                    {else}
+                                        <div class="info">
+                                            <div class="title">{:lang('價格')}(HK$)</div>
+                                            <input class="price" type="text" data-type="{$food.id}_" id="{$food.id}" value="{if(!empty($food.addon_price))}{$food.addon_price}{else}{$food.salePrice}{/if}" />
+                                        </div>
+                                    {/if}
+                                </div>
+                                <div class="line-btn-delete" onclick="foodDel('{$food.id}')"><i class="fab-delete"></i></div>
+                            </div>
+                        </div>
+                    {/volist}
+                </div>
+                <div class="remark"><img src="STATIC_PATH/assets/mobile/images/about.png" class="about" alt="">{:lang('點擊價格，可編輯菜品的價格！')}</div>
+                <div class="button">
+                    <div class="button-normal cancel" onclick="showmodal('{$vo.id}')">{:lang('添加更多選項')}</div>
+                    {if($vo._foods)}
+                    <div class="button-normal confirm" onclick="btnEdit('{$vo.id}')">{:lang('完成')}</div>
+                    {/if}
+                </div>
+            </div>
+            {/volist}
+        {else}
+        <div class="content-none">
+            <svg class="icon icon-none" aria-hidden="true">
+                <use xlink:href="#icon-none"></use>
+            </svg>
+            <div class="text">{:lang('暫時未設置菜品')}</div>
+        </div>
+        {/if}
+        <div class="btn-fix">
+            <div class="button-normal cancel" onclick="window.location.href='{:url(\'manage/addmealgroup\',[\'aid\'=>$aid])}'">{:lang('添加分組')}</div>
+            <!--<div class="button-normal confirm">{:lang('保存')}</div>-->
+        </div>
+    </div>
+    <div class="modal fade modal-wrapper" id="addfoodModal" tabindex="-1" role="dialog"
+         aria-labelledby="configModalLabel" aria-hidden="true">
+        <form method="post" id="addmealfood">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="title">{:lang('添加更多菜品')}</div>
+                <div class="search">
+                    <i class="fab-search"></i>
+                    <input type="text" class="input-searach" placeholder="{:lang('輸入菜品名稱')}">
+                </div>
+                <div class="meal-ul">
+                    <div class="alert-fail"></div>
+                </div>
+            </div><!-- /.modal-content -->
+            <div class="footer btn-fix">
+                <input type="checkbox" id="all" class="check">
+                <span class="text">{:lang('全選')}</span>
+                <div class="button-normal confirm add btn-add-confirm">{:lang('確認')}</div>
+                <input type="hidden" name="groupid" id="groupid" />
+                <input type="hidden" name="aid" value="{$aid}" />
+            </div>
+        </div><!-- /.modal -->
+        </form>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    function showmodal(gid) {
+        $('#groupid').val(gid);
+        $.ajax({
+            type:'POST',
+            url : '{:url("manage/getMealFood")}',
+            data: {'groupid':gid},
+            async: true,
+            success: function (res) {
+                if(res){
+                    $('#addfoodModal').modal('show');
+                    var listHtml ='';
+                    $.each(res, function (n,vo) {
+                        listHtml += '<div class="meal-li-item">'
+                            + '<input type="checkbox" class="checkbox" name="gid[]" value="'+vo.id+'" id="'+vo.id+'" />'
+                            + '<label for="'+vo.id+'">';
+                        if(vo.thumbnailUrl){
+                            listHtml += '<div class="img"><img src="'+vo.thumbnailUrl+'" alt="" />';
+                        }else{
+                            listHtml += '<div class="img"><img src="STATIC_PATH/assets/img/lazyloadImg.png" alt="" />';
+                        }
+
+                        listHtml += '</div><div class="meal-info">'
+                            + '<div class="name"><span class="text">'+vo.name+'</span></div>'
+                            + '<div class="remark">'+vo.remark+'</div>'
+                            + '<div class="price">HK$<em>'+vo.salePrice+'</em></div>'
+                            + '</div></label></div>';
+                    });
+                    $('.meal-ul').append(listHtml);
+                }
+            },
+            error: function (msg) {
+                console.log(msg.errorMessage);
+            }
+        });
+    }
+
+
+    $(document).on('click', '#all', function () {
+        var flag = $(this).is(':checked');
+        if(flag){
+            $('input[type="checkbox"][class="checkbox"]').prop('checked',true);
+        }else{
+            $('input[type="checkbox"][class="checkbox"]').prop('checked',false);
+        }
+    });
+
+    $(document).on('click', 'input[type="checkbox"][class="checkbox"]',function () {
+        var checkbox = $('input[type="checkbox"][class="checkbox"]');
+        var len = $('input[type="checkbox"][class="checkbox"]:checked').length;
+        if(len<checkbox.length){
+            $('input[type="checkbox"][id="all"]').prop('checked',false);
+        }else{
+            $('input[type="checkbox"][id="all"]').prop('checked',true);
+        }
+    });
+
+
+    //菜品搜索
+    $('.input-searach').bind('keydown',function (e) {
+        if(e.keyCode==13){
+            e.preventDefault();
+            var keyword = $('.input-searach').val();
+            var gid = $('#groupid').val();
+            $.ajax({
+                type:'POST',
+                url:'{:url("manage/getMealFood")}',
+                data:{'keyword':keyword,'groupid':gid},
+                async:true,
+                success:function (res) {
+                    var arrHtml = '';
+                    if(res.length>0){
+                        $.each(res, function (n,vo) {
+                            arrHtml += '<div class="meal-li-item">'
+                                + '<input type="checkbox" class="checkbox" name="gid[]" value="'+vo.id+'" id="'+vo.id+'" />'
+                                + '<label for="'+vo.id+'"><div class="img">';
+                            if(vo.thumbnailUrl){
+                                arrHtml += '<img src="'+vo.thumbnailUrl+'" alt="" />';
+                            }else{
+                                arrHtml += '<img src="STATIC_PATH/assets/img/lazyloadImg.png" alt="" />';
+                            }
+                            arrHtml += '</div><div class="meal-info">'
+                                + '<div class="name"><span class="text">'+vo.name+'</span></div>'
+                                + '<div class="remark">'+vo.remark+'</div>'
+                                + '<div class="price">HK$<em>'+vo.salePrice+'</em></div>'
+                                + '</div></label></div>';
+                        });
+                        $('.meal-ul').html("").append(arrHtml);
+                    }else {
+                        arrHtml = '<div class="alert-fail">{:lang(\'暫無相關菜品\')}</div>';
+                        $('.meal-ul').append(arrHtml);
+                        $('.alert-fail').show().delay(1500).fadeOut();
+                    }
+                },
+                error:function (msg) {
+                    console.log(msg.errorMessage);
+                }
+            });
+        }
+    });
+
+
+    // 添加菜品
+    $(document).on('click', '.btn-add-confirm', function (e) {
+        e.returnValue=true;
+        $.ajax({
+            type: "POST",
+            url : '{:url("manage/addMealFood")}',
+            data: $('#addmealfood').serialize(),
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function(data) {
+                closeloading();
+                if (data.code) {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = "{:url('manage/setmeal',['id'=>$aid])}";
+                    });
+                } else {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function(request) {
+                closeloading();
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        })
+    });
+
+    //刪除分組菜品
+    function foodDel(id) {
+        $.ajax({
+            type:'POST',
+            url:'{:url("manage/delMealFood")}',
+            data:{'id':id},
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function (res) {
+                closeloading();
+                if (res.code) {
+                    swal({
+                        'text':res.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-add.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = "{:url('manage/setmeal',['id'=>$aid])}";
+                    });
+                } else {
+                    swal({
+                        'text':res.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function (msg) {
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    }
+
+
+    //修改菜品價格
+    function btnEdit(id) {
+        var itemArr = $('#item'+id).find('input[type="text"]');
+        var dataArr = [];
+        $.each(itemArr, function (index,item) {
+           dataArr.push($(item).attr('data-type')+$(item).val());
+        });
+        $.ajax({
+            type:"POST",
+            url:"{:url('manage/setMealFoodPrice')}",
+            dataType:"json",
+            data:{"price_data":dataArr,"id":id},
+            async:true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success:function (res) {
+                closeloading();
+                if(res.code){
+                    swal({
+                        'text':res.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        if(isConfirm){
+                            location.href = "{:url('manage/setmeal',['id'=>$aid])}";
+                        }
+
+                    });
+                }
+            },
+            error:function (msg) {
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    }
+
+</script>
+
+</html>

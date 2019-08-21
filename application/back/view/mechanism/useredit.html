@@ -1,0 +1,197 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">成員修改</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/mechanism/useradd',['mechanism'=>$mechanism.id])}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+			</ul>
+
+			<div class="clearfix"></div>
+		</header> -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('back/mechanism/useredit',['zid'=>$userRow['zid']])}" class="form-horizontal ajax-form" method="post" id="edit">
+									<div class="form-group">
+										<label for="inputrole_id" class="col-sm-3 control-label">用户组</label>
+										<div class="col-sm-5">
+											<select name="id" id="inputrole_id" class="form-control">
+												<option value="0">请选择用户组</option>
+												{volist name="groupRows" id="vo"} {if condition="$vo['id'] eq $userRow['uid']"}
+												<option value="{$vo.id}" selected="selected">{$vo.title}</option>
+												{else /}
+												<option value="{$vo.id}">{$vo.title}</option>
+												{/if} {/volist}
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">昵称</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="nick" value="{$userRow.nick}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputpassword" class="col-sm-3 control-label">修改密码</label>
+										<div class="col-sm-5">
+											<input type="password" class="form-control" name="password" placeholder="新密码">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">确认密码</label>
+										<div class="col-sm-5">
+											<input type="password" class="form-control" name="repassword" placeholder="确认新密码">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">邮箱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="email" id="inputemail" placeholder="邮箱" value="{$userRow.email}" maxlength="30">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">手机号</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="mobile" id="inputemobile" placeholder="手机号" value="{$userRow.mobile}" maxlength="40">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-3 control-label">头像</label>
+										<div class="col-sm-9">
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<div class="fileupload-new thumbnail small form-control">
+													<img src="{$userRow.head}"></div>
+												<div class="fileupload-preview form-control fileupload-exists thumbnail small">
+												</div>
+												<span class="btn btn-file btn-alt btn-sm">
+                            					<span class="fileupload-new">Select image</span>
+												<span class="fileupload-exists">Change</span>
+												<input type="file" name="image" id="image"/>
+												</span>
+												<a href="#" class="btn-sm btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">发款银行账号</label>
+										<div class="col-sm-5">
+											<select id="paynumber" class="form-control select2" name="paynumber" id="paynumber">
+											    <option value="">请选择</option>
+												{volist name="bn" id="vo"}
+												<option value="{$vo.id}" {if($vo.id==$userRow.payable_bn_id)}selected="selected"{/if}>{$vo.bank_number}({$vo.owner})</option>
+												{/volist} 
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">銀行賬號</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="bankNumber" id="inputebankNumber" placeholder="銀行賬號" value="{$userRow.account_number}">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">開戶人姓名</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="bankUser" id="inputebankUser" placeholder="開戶人姓名" value="{$userRow.account_name}">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">開戶銀行</label>
+										<div class="col-sm-5">
+											<select id="bank" class="form-control select2" name="bank">  
+											    <option value="">请选择</option>
+												{volist name="bank" id="vo"}
+												<option value="{$vo.id},{$vo.bankname}" {if($vo.id==$userRow.bank_id)}selected="selected"{/if}>{$vo.bankname}</option>
+												{/volist} 
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											{if condition="$userRow['status'] eq 1"}
+											<label><input type="radio" name="status" id="inputstatus" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="status" id="inputstatus" value="0" />停用</label>
+											{else /}
+											<label><input type="radio" name="status" id="inputstatus" value="1"/>启用</label>
+											<label><input type="radio" name="status" id="inputstatus" value="0" checked="checked"/>停用</label>
+											{/if}
+										</div>
+									</div>
+									<input type="hidden" name="mechanism" value="{$mechanism.id}">
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">  
+    //页面加载完成后初始化select2控件  
+    $(function () {
+		$("#bank").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该分类";
+		        }
+		    }
+		});
+		$("#paynumber").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该分类";
+		        }
+		    }
+		});
+		$(".submit").click(function(){
+	        var options = {
+	            "beforeSubmit" : checkForm,
+	            "success" : resultForm,
+	            "resetForm" : false,
+	            "dataType" : "json"
+	        };
+	        $("#edit").ajaxSubmit(options);
+	    });
+	 
+	    function checkForm(formData, form, options) {
+	    }
+	 
+	    function resultForm(data, status) {
+	        //表单完成
+	        if(data.code){
+		        alert(data.msg);
+	            window.history.go(-1);
+	        }else{
+		        alert(data.msg);
+	        }
+	    }
+	});
+</script> 

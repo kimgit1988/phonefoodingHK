@@ -1,0 +1,278 @@
+{layout name="layout" /}
+<style type="text/css">
+.show-div{border: 0;background: 0;}
+.foodlist{
+	width: 100%;
+	max-width: 900px;
+	float: left;
+}
+.li-item{
+	width: 100%;
+	height: 80px;
+	float:left;
+	font-size: 12px;
+	margin: 10px 0;
+}
+.li-meal-item{
+	width: 100%;
+	height: auto;
+	float:left;
+	font-size: 12px;
+}
+.li-meal-item .meal-icon{
+	width: 20px;
+	height: 20px;
+	margin-right: 5px;
+}
+.li-meal-item .li-item{
+	padding: 0;
+	height: auto;
+	font-size: 12px;
+	margin: 5px 0;
+}
+.li-meal-item .li-foods{
+	width: 100%;
+	height: auto;
+	float:left;
+}
+.li-meal-item .li-foods .li-item{
+	font-size: 10px;
+	height: 60px;
+}
+
+.li-item .li-img{
+	width: 100px;
+	padding-right: 20px;
+	float:left;
+}
+.li-item .li-img img{
+	width: 100%;
+}
+.li-item .li-text{
+	width: calc(70% - 100px);
+	float:left;
+}
+.li-item.meal .li-text{
+	width: 70%;
+	float:left;
+}
+.li-foods .li-item .li-img{
+	width: 100px;
+	padding-left: 20px;
+	float:left;
+}
+.li-foods .li-item .li-text{
+	width: calc(70% - 100px);
+	float:left;
+}
+.li-item .price{
+	width: max-content;
+	max-width: 20%;
+	float:right;
+}
+.li-item .num{
+	width: max-content;
+	max-width: 10%;
+	float:left;
+}
+.printer-table{
+	display: table;
+	height: auto;
+}
+.printer-tr{
+	display: table-row;
+	height: auto;
+}
+.printer-td{
+	display: table-cell;
+	vertical-align: middle;
+    word-break: break-all;
+}
+</style>
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">订单详情</h4>
+
+	<div class="listview list-container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('Order/index')}" enctype="multipart/form-data" class="form-horizontal ajax-form" method="post">
+									<input type="hidden" name="id" id="inputid" value="{$order.id}">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">商家编号</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.contactNumber}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">订单编号</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.orderSN}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">商家名称</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.contactName}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">支付金额</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.moneyPaid}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">餐桌名称</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.contactMemberName}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">订单总价</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.goodsAmount}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">订单状态</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.orderStatus}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">付款状态</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.payStatus}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">支付方式</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.payName}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">下单时间</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.createTime}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">支付时间</label>
+										<div class="col-sm-11">
+											<div class="form-control show-div">{$order.payTime}</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">菜品详情</label>
+										<div class="col-sm-11">
+											<div class="foodlist printer-table">
+											{volist name="foodlist" id="vo"}
+											{if($vo.goodsType<3)}
+											<div class="li-item printer-tr">
+												<div class="li-img printer-td">
+														<img src="{$vo.goodsThumbnailUrl}" />
+												</div>
+												<div class="li-text printer-td">
+														<span>{$vo.goodsName}</span>
+												</div>
+												<div class="num  printer-td">
+														<span class="num-text">x{$vo.num}</span>
+												</div>
+												<div class="price  printer-td">
+														<span class="pri-text">HKD&nbsp;{$vo.goodsPrice}</span>
+												</div>
+											</div>
+											{else}
+											<div class="li-meal-item">
+												<div class="li-item meal  printer-tr">
+													<div class="li-text printer-td">
+															<span><img class="meal-icon" src="/public/static/assets/img/meal-icon.png" /></span><span>{$vo.goodsName}</span>
+													</div>
+													<div class="num  printer-td">
+															<span class="num-text">x{$vo.num}</span>
+													</div>
+													<div class="price  printer-td">
+															<span class="pri-text">HKD&nbsp;{$vo.goodsPrice}</span>
+													</div>
+												</div>
+												<div class="li-foods  printer-table">
+													{volist name="vo._food" id="fo" key="k"}
+													<div class="li-item  printer-tr">
+														<div class="li-img printer-td">
+																<img src="{$fo.goodsThumbnailUrl}" />
+														</div>
+														<div class="li-text printer-td">
+																<span>{$fo.goodsName}</span>
+														</div>
+														<div class="num  printer-td">
+																<span class="num-text">x{$fo.num}</span>
+														</div>
+													</div>
+													{/volist}
+												</div>
+											</div>
+											{/if}
+											{/volist}
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-1" style="float: left;">
+											<button type="submit" class="btn btn-primary">返回</button>
+										</div>
+										{if($order.orderStatus=='已下单')}
+										<div class="col-sm-offset-1 col-sm-1" style="float: left;">
+											
+											<div class="btn btn-primary" onclick="href_ajax('{:url('Order/confirm',['id'=>$order['id'],'action'=>2])}')">确认订单</div>
+										</div>
+										<div class="col-sm-offset-1 col-sm-1" style="float: left;">
+											<div class="btn btn-primary delete" onclick="href_ajax('{:url('Order/cancel',['id'=>$order['id']])}')">取消订单</div></td>
+										</div>
+										{elseif($order.orderStatus=='已确认')}
+										<div class="col-sm-offset-1 col-sm-1" style="float: left;">
+											<div class="btn btn-primary" onclick="href_ajax('{:url('Order/confirm',['id'=>$order['id'],'action'=>3])}')">完成订单</div>
+										</div>
+										{else}
+										{/if}
+									</div>
+									
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	function href_ajax(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	            	window.history.go(-1);
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+</script>

@@ -1,0 +1,107 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">编辑餐桌分类</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('contactmember/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+			</ul>
+
+			<div class="clearfix"></div>
+		</header> -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('contactmember/edit',['id'=>$contactmember['id']])}" class="form-horizontal ajax-form" method="post">
+									<input type="hidden" name="id" value="{$contactmember['id']}">
+									<div class="form-group">
+										<label for="inputrole_id" class="col-sm-3 control-label">父级分类</label>
+										<div class="col-sm-5">
+											<select name="parent" id="inputparent" class="form-control">
+												{if condition="$contactmember['parentId'] eq 0"}
+													<option value="0,0" selected="selected">这是顶级分类</option>
+												{else}
+													<option value="0,0">
+												{/if}
+												{volist name="lists" id="vo"}
+												{if condition="$contactmember['parentId'] eq $vo.id"}
+												<option value="{$vo.id},{$vo.level}" selected="selected">{$vo.name}</option>
+												{else}
+												<option value="{$vo.id},{$vo.level}">{$vo.name}</option>
+												{/if}
+													{volist name="$vo->parent" id="Rows"}
+													{if condition="$contactmember['parentId'] eq $Rows.id"}
+													<option value="{$Rows.id},{$Rows.level}" selected="selected">{$Rows.name}</option>
+													{else}
+													<option value="{$Rows.id},{$Rows.level}">┗━{$Rows.name}</option>>
+													{/if}
+													
+													{/volist}
+
+												{/volist}
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">分类名</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="inputname" placeholder="分类名" value="{$contactmember.name}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">排序</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="sort" id="inputsort" placeholder="排序" value="{$contactmember.ordnum}">
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label for="inputpassword" class="col-sm-3 control-label">备注</label>
+										<div class="col-sm-5">
+											<textarea class="form-control" name="remark" id="inputremark" placeholder="备注">{$contactmember.remark}</textarea> 
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											{if condition="$contactmember['status'] eq 1"}
+											<label><input type="radio" name="status" id="inputstatus" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="status" id="inputstatus" value="0" />停用</label>
+											{else /}
+											<label><input type="radio" name="status" id="inputstatus" value="1"/>启用</label>
+											<label><input type="radio" name="status" id="inputstatus" value="0" checked="checked"/>停用</label>
+											{/if}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<button type="submit" class="btn btn-primary">提交</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('公告設置')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/manage.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+
+<div class="container-div">
+    <div class="title-div">
+        <div class="title" onclick="javascript:location.href='/index.php/mobile/manage/index.html';">
+            <i class="fab-left"></i><span>{:lang('公告設置')}</span>
+        </div>
+    </div>
+    <div class="content-main">
+        <form  action="{:url('noticeset')}" method="post" id="notice">
+        <div class="table-box b-3">
+            <div class="item-tr-5 border-b item-title">{:lang('選擇公告背景')}</div>
+            <div class="bg-ul">
+                <div class="bg-item" style="background-color:#FFDA46;color:#FFDA46;">
+                    <input type="radio" name="bg-color" id="one" value="1"  {if($notice.background==1||empty($notice.background))} checked="checked"{/if}>
+                    <label for="one"><i class="fab-check"></i></label>
+                </div>
+                <div class="bg-item" style="background-color:#3BCCA8;color:#3BCCA8;">
+                    <input type="radio" name="bg-color" id="two" value="2" {if($notice.background==2)} checked="checked"{/if}>
+                    <label for="two"><i class="fab-check"></i></label>
+                </div>
+                <div class="bg-item" style="background-color:#3B96CC;color:#3B96CC;">
+                    <input type="radio" name="bg-color" id="three" value="3" {if($notice.background==3)} checked="checked"{/if}>
+                    <label for="three"><i class="fab-check"></i></label>
+                </div>
+                <div class="bg-item" style="background-color:#DE6464;color:#DE6464;">
+                    <input type="radio" name="bg-color" id="four" value="4" {if($notice.background==4)} checked="checked"{/if}>
+                    <label for="four"><i class="fab-check"></i></label>
+                </div>
+            </div>
+        </div>
+        <div class="table-box">
+            <div class="item-tr-5 border-b item-title b-3">{:lang('設置公告語')}<span class="notice-add" onclick="addNotice()">{:lang('完成')}</span></div>
+            <div class="table-item" id="slider">
+                {if(!empty($notice.content)&&!is_array($notice.content))}
+                    <div class="border item-tr-5 b-3">
+                        <input type="hidden" class="notice-input" value="{$notice.content}" name="notice-input-more[1]">
+                        <span class="name">{$notice.content}</span><i class="fab-delete"></i>
+                    </div>
+                {elseif(is_array($notice.content))}
+                {volist name="notice.content" id="co" key="c"}
+                    <div class="border item-tr-5 b-3">
+                        <input type="hidden" class="notice-input" value="{$co}" name="notice-input-more[{$c}]">
+                        <span class="name">{$co}</span><i class="fab-delete"></i>
+                    </div>
+                {/volist}
+                {/if}
+            </div>
+            <div class="table-item">
+                <div class="border item-tr-5">
+                    <input type="text" class="notice-input" value="" name="notice-input" placeholder="{:lang('添加公告 請輸入需要展示的內容')}">
+                </div>
+            </div>
+        </div>
+        <div class="button">
+            <div class="button-normal confirm">{:lang('保存')}</div>
+        </div>
+            <div class="alert-fail"></div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+    window.onload=function(){ //在页面整体加载完毕时
+        $('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+    };
+    $('.confirm').click(function () {
+        $.ajax({
+            type: "POST",
+            url : '{:url("noticeset")}',
+            data: $('#notice').serialize(),
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function(data) {
+                closeloading();
+                if (data.code) {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '確認',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '確認',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function(request) {
+                closeloading();
+                swal({
+                    'text':'頁面錯誤',
+                    'confirmButtonText': '確認',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    });
+
+    $(document).on('click','.fab-delete',function () {
+        $(this).closest('.border').remove();
+    });
+    var ii = 100;
+    function addNotice() {
+        ii++;
+        var input = $('.table-item').find('input[type="text"][name="notice-input"]');
+        if(!input.val()){
+            $('.alert-fail').text('不能為空').show().delay(1500).fadeOut();
+        }else{
+            var html = '<div class="border item-tr-5 b-3"><input type="hidden" class="notice-input" value="'+input.val()+'" name="notice-input-more['+ii+']"><span class="name">'+input.val()+'</span><i class="fab-delete"></i></div>';
+            input.val("");
+            $('#slider').append(html);
+        }
+
+    }
+</script>
+</body>
+</html>

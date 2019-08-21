@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>餐厅列表</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/style.css">
+	<!-- <link rel="stylesheet" href="STATIC_PATH/assets/market/css/jquery.mobile-1.4.5.min.css"> -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery-3.3.1.min.js"></script>
+	<!-- <script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery.mobile-1.4.5.min.js"></script> -->
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<script>
+$(function(){
+	$("#order-hear li").click(function(){
+		$(this).css({
+			background: "#FFF",
+			color:"#ea831e"
+		}).siblings('li').css({
+			background: "#ea831e",
+			color:"#FFF"
+		});
+		$(this).find('p').css({
+			background: "#ea831e",
+			color:"#FFF"
+		});
+		$(this).siblings('li').find('p').css({
+			background: "#FFF",
+			color:"#ea831e"
+		});
+	});					
+		
+	$("#order-hear li").click(function(){
+		$(this).addClass("action").siblings().removeClass("action");
+		var index = $(this).index();
+		$("#order-list li").eq(index).css("display","block").siblings().css("display","none");
+	});
+});
+</script>
+<div class="container">
+	<div class="scroll-main bg-contact-order">
+		<!-- 头部图片 -->
+		<ul id="order-hear">
+			{if($action!=0)}
+			<li class="action" style="background: #FFF;color: #ea831e;"><div>全部</div></li>
+			<li style="background: #ea831e;color: #FFF;"><div>已通过</div></li>
+			<li style="background: #ea831e;color: #FFF;"><div>审核中</div></li>
+			<li style="background: #ea831e;color: #FFF;"><div>已拒绝</div></li>
+			{elseif($action==0)}
+			<li style="background: #ea831e;color: #FFF;"><div>全部</div></li>
+			<li style="background: #ea831e;color: #FFF;"><div>已通过</div></li>
+			<li class="action" style="background: #FFF;color: #ea831e;"><div>审核中</div></li>
+			<li style="background: #ea831e;color: #FFF;"><div>已拒绝</div></li>
+			{/if}
+		</ul>
+		<ul id="order-list">
+			{if($action!=0)}
+			<li style="display: block;">
+			{elseif($action==0)}
+			<li>
+			{/if}
+				{volist name="contact" id="vo"}
+				{if($vo.jumpType==1)}
+				{if(session('mar_user.mechanismAdmin')==1)}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/contactOrder',['id'=>$vo.id,'user'=>$userid])}'">
+				{else}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/contactOrder',['id'=>$vo.id])}'">
+				{/if}
+				{elseif($vo.disable!=1)}
+				{if(session('mar_user.mechanismAdmin')==1)}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/courtOrder',['id'=>$vo.id,'user'=>$userid])}'">
+				{else}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/courtOrder',['id'=>$vo.id])}'">
+				{/if}
+				{else}
+				<div class="contact-list-li mg-top">
+				{/if}
+					<div class="contact-list-li-head">
+						<div class="contact-list-head-icon"><img src="{$vo.logoUrl}"></div>
+						<div class="contact-list-head-name">{$vo.name}</div>
+						<div class="contact-list-head-type">
+							{if(!empty($type[$vo.contactType]['icon']))}
+							{foreach $type[$vo.contactType]['icon'] as $typeicon}
+							<img src="{$typeicon}">
+							{/foreach}
+							{/if}
+						</div>
+					</div>
+					<div class="contact-list-li-body">
+						<div class="contact-list-body-icon" style="background: url({$vo.bgImageUrl}) no-repeat center center;"></div>
+						{if($vo.disable==1)}
+						<div class="contact-list-body-money">
+							<div class="contact-list-money-title">订单总额</div>
+							<div class="contact-list-money-number">￥{if(isset($money[$vo.number]['money']))}{$money[$vo.number]['money']}{else}0{/if}</div>
+						</div>
+						<div class="contact-list-body-commission">
+							<div class="contact-list-commission-title">佣金总额</div>
+							<div class="contact-list-commission-number">￥{if(isset($money[$vo.number]['commission']))}{$money[$vo.number]['commission']}{else}0{/if}</div>
+						</div>
+						{elseif($vo.disable==0)}
+						<div class="contact-review">
+							<div class="contact-review-title">餐厅状态:审核中</div>
+						</div>
+						{elseif($vo.disable==2)}
+						<div class="contact-submission">
+							<div class="contact-submission-title">餐厅状态:已拒绝</div>
+							<div class="contact-submission-tip">拒绝原因:{$vo.reason}</div>
+						</div>
+						{/if}
+					</div>
+					<!-- <div class="contact-list-li-footer">地址：澳门永利酒店大堂酒廊旁</div> -->
+				</div>
+				{/volist}
+			</li>
+			<li>
+				{volist name="complete" id="vo"}
+				
+				{if($vo.jumpType==1)}
+				{if(session('mar_user.mechanismAdmin')==1)}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/contactOrder',['id'=>$vo.id,'user'=>$userid])}'">
+				{else}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/contactOrder',['id'=>$vo.id])}'">
+				{/if}
+				{elseif($vo.disable!=1)}
+				{if(session('mar_user.mechanismAdmin')==1)}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/courtOrder',['id'=>$vo.id,'user'=>$userid])}'">
+				{else}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/courtOrder',['id'=>$vo.id])}'">
+				{/if}
+				{else}
+				<div class="contact-list-li mg-top">
+				{/if}
+					<div class="contact-list-li-head">
+						<div class="contact-list-head-icon"><img src="{$vo.logoUrl}"></div>
+						<div class="contact-list-head-name">{$vo.name}</div>
+						<div class="contact-list-head-type">
+							{if(!empty($type[$vo.contactType]['icon']))}
+							{foreach $type[$vo.contactType]['icon'] as $typeicon}
+							<img src="{$typeicon}">
+							{/foreach}
+							{/if}
+						</div>
+					</div>
+					<div class="contact-list-li-body">
+						<div class="contact-list-body-icon" style="background: url({$vo.bgImageUrl}) no-repeat center center;"></div>
+						<div class="contact-list-body-money">
+							<div class="contact-list-money-title">订单总额</div>
+							<div class="contact-list-money-number">￥{if(isset($money[$vo.number]['money']))}{$money[$vo.number]['money']}{else}0{/if}</div>
+						</div>
+						<div class="contact-list-body-commission">
+							<div class="contact-list-commission-title">佣金总额</div>
+							<div class="contact-list-commission-number">￥{if(isset($money[$vo.number]['commission']))}{$money[$vo.number]['commission']}{else}0{/if}</div>
+						</div>
+					</div>
+					<!-- <div class="contact-list-li-footer">地址：澳门永利酒店大堂酒廊旁</div> -->
+				</div>
+				{/volist}
+			</li>
+			{if($action!=0)}
+			<li>
+			{elseif($action==0)}
+			<li style="display: block;">
+			{/if}
+				{volist name="audit" id="vo"}
+				
+				{if($vo.jumpType==1)}
+				{if(session('mar_user.mechanismAdmin')==1)}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/contactOrder',['id'=>$vo.id,'user'=>$userid])}'">
+				{else}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/contactOrder',['id'=>$vo.id])}'">
+				{/if}
+				{elseif($vo.disable!=1)}
+				{if(session('mar_user.mechanismAdmin')==1)}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/courtOrder',['id'=>$vo.id,'user'=>$userid])}'">
+				{else}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/courtOrder',['id'=>$vo.id])}'">
+				{/if}
+				{else}
+				<div class="contact-list-li mg-top">
+				{/if}
+					<div class="contact-list-li-head">
+						<div class="contact-list-head-icon"><img src="{$vo.logoUrl}"></div>
+						<div class="contact-list-head-name">{$vo.name}</div>
+						<div class="contact-list-head-type">
+							{if(!empty($type[$vo.contactType]['icon']))}
+							{foreach $type[$vo.contactType]['icon'] as $typeicon}
+							<img src="{$typeicon}">
+							{/foreach}
+							{/if}
+						</div>
+					</div>
+					<div class="contact-list-li-body">
+						<div class="contact-list-body-icon" style="background: url({$vo.bgImageUrl}) no-repeat center center;"></div>
+						<div class="contact-review">
+							<div class="contact-review-title">餐厅状态:审核中</div>
+						</div>
+					</div>
+					<!-- <div class="contact-list-li-footer">地址：澳门永利酒店大堂酒廊旁</div> -->
+				</div>
+				{/volist}
+			</li>
+			<li>
+				{volist name="refuse" id="vo"}
+				
+				{if($vo.jumpType==1)}
+				{if(session('mar_user.mechanismAdmin')==1)}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/contactOrder',['id'=>$vo.id,'user'=>$userid])}'">
+				{else}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/contactOrder',['id'=>$vo.id])}'">
+				{/if}
+				{elseif($vo.disable!=1)}
+				{if(session('mar_user.mechanismAdmin')==1)}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/courtOrder',['id'=>$vo.id,'user'=>$userid])}'">
+				{else}
+				<div class="contact-list-li mg-top" onclick="window.location.href='{:url('index/courtOrder',['id'=>$vo.id])}'">
+				{/if}
+				{else}
+				<div class="contact-list-li mg-top">
+				{/if}
+					<div class="contact-list-li-head">
+						<div class="contact-list-head-icon"><img src="{$vo.logoUrl}"></div>
+						<div class="contact-list-head-name">{$vo.name}</div>
+						<div class="contact-list-head-type">
+							{if(!empty($type[$vo.contactType]['icon']))}
+							{foreach $type[$vo.contactType]['icon'] as $typeicon}
+							<img src="{$typeicon}">
+							{/foreach}
+							{/if}
+						</div>
+					</div>
+					<div class="contact-list-li-body">
+						<div class="contact-list-body-icon" style="background: url({$vo.bgImageUrl}) no-repeat center center;"></div>
+						<div class="contact-submission">
+							<div class="contact-submission-title">餐厅状态:已拒绝</div>
+							<div class="contact-submission-tip">拒绝原因:{$vo.reason}</div>
+						</div>
+					</div>
+					<!-- <div class="contact-list-li-footer">地址：澳门永利酒店大堂酒廊旁</div> -->
+				</div>
+				{/volist}
+			</li>
+		</ul>
+	</div>
+	{include file="common:footer"}
+</div>
+	
+
+</body>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('管理')}支付設置</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+
+<div class="container-div">
+    <div class="title-div">
+        <div class="title" onclick="javascript:location.href='{:url(\'manage/index\')}';">
+            <i class="fab-left"></i>{:lang('支付設置')}
+        </div>
+    </div>
+    <div class="content-main">
+        <div class="register-scroll">
+            <form  action="{:url('laterPay')}" method="post" id="laterPay">
+                <div class="food-input-li b-n">
+                    <div class="food-cate-label">{:lang('允許餐後結賬')}</div>
+                    <div class="food-radio-div">
+                        <input name="laterpay" type="radio" value="1" id="label-yes" {if($contact['laterPay']==1)}checked="checked"{/if}>
+                        <label for="label-yes">{:lang('是')}</label>
+                        <input name="laterpay" type="radio" value="0" id="label-no" {if($contact['laterPay']==0)}checked="checked"{/if}>
+                        <label for="label-no">{:lang('否')}</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="member-cate-add-btn">{:lang('確認')}</div>
+    </div>
+</div>
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+	$('.member-cate-add-btn').click(function () {
+        $.ajax({
+            type: "POST",
+            url : '{:url("laterPay")}',
+            data: $('#laterPay').serialize(),
+            async: true,
+            beforeSend: function(){
+			    openloading("STATIC_PATH/assets/img/loading-2.gif");
+			},
+            success: function(data) {
+            	closeloading();
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/edit-ful.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+            	closeloading();
+                swal({
+					'text':'{:lang(\'頁面錯誤\')}',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+</script>
+</body>
+</html>

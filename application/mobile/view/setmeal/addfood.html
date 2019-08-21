@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{$mealCategory.name}{:lang('菜式添加')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/foods-add.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/summernote.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/select2.min.css"/>
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/summernote.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/lang/summernote-zh-CN.min.js"></script><!-- 移动端富文本 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/select2.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body class="btnF">
+<div class="container-div">
+    <div class="title-div">
+        <div class="title" onclick="javascript:window.history.go(-1);"><i class="fab-left"></i>
+            {$mealCategory.name}{:lang('菜式添加')}
+        </div>
+    </div>
+    <form  action="{:url('edit')}" method="post" id="edit">
+    <input type="hidden" name="mid" value="{$mid}">
+    <input type="hidden" name="cid" value="{$cid}">
+	<div class="main add-food">
+        <div class="food-input-li">
+            <div class="food-cate-label">{:lang('分類')}</div>
+            <div class="select" id="category" {if empty($list)} onclick="location='{:url(\'foods/add\')}'" {/if}>
+                <select type="select select2" id="categoryId">
+                    <option value="0">{:lang('全部')}</option>
+                    {volist name="category" id="vo"}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="food-input-li">
+            <div class="food-cate-label">{:lang('菜式')}</div>
+            <div class="select" id="category2" {if empty($list)} onclick="location='{:url(\'foods/add\')}'" {/if} >
+                <select type="select select2" id="foodId">
+                    <option value="0" data-category="0">{:lang('全部')}</option>
+                    {volist name="foods" id="vo"}
+                    <option value="{$vo.id}" data-category="{$vo.categoryId}">{$vo.name}</option>
+                    {/volist}
+                </select>
+                <select style="display: none" id="foodNotShow"></select>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+        $("#categoryId").select2({
+            width:'100%',
+            language: {
+                noResults: function (params) {
+                    return "{:lang('沒有該選項')}";
+                }
+            }
+        });
+        $("#foodId").select2({
+            width:'100%',
+            language: {
+                noResults: function (params) {
+                    return "{:lang('沒有該選項')}";
+                }
+            }
+        });
+        $("#categoryId").change(function(){
+            var cate = $("#categoryId").val();
+            var foodCategory = $("#foodId").attr('data-category');
+            if(cate&&cate!='0'){
+                $("#foodNotShow").append($("#foodId").find("option").not("[data-category=" + cate + "]").not("[data-category=0]"));
+                $("#foodId").append($("#foodNotShow").find("option[data-category=" + cate + "]"));
+            }
+
+        });
+        </script>
+        <div class="select-foods-btn">{:lang('篩選')}</div>
+        <div class="category-food-list">
+            {if empty($list)}
+                <div class="category-food-empty">{:lang('暫無可選菜品')}</div>
+            {else}
+                <div id="food-relation-list">
+                    <ul>
+                        <li class="parent_li  category-list">
+                            <div onclick="toggleFood(this);" class="icon minus"></div>
+                            <label id="all-food" onclick="allChecked(this)" class="category">
+								<input type="checkbox" class="add-checkbox" style="display: none;">
+								<div class="checkbox-div li-title">
+										<div class="checkbox-icon"></div>
+									   <div class="checkbox-name">{:lang('全部')}</div>
+								   </div>
+							</label>
+                            <ul class="category-food" id="category-food">
+
+                            {volist name="list" id="obj"}
+                            {if(!empty($obj._food))}
+                            <li class="parent_li category-food-li" id="category-{$obj.id}">
+                                <div onclick="toggleFood(this);" class="icon minus"></div>
+								<label id="food-category-{$obj.id}" onclick="allChecked(this)" class="category">
+									<input type="checkbox" class="add-checkbox en" style="display: none;">
+									<div class="checkbox-div li-title">
+										<div class="checkbox-icon"></div>
+									   <div class="checkbox-name">{$obj.name}</div>
+								   </div>
+								</label>
+                                <ul>
+                                {volist name="obj._food" id="vo" key="i"}
+                                    <li class="parent_li category-food-checked-li {if($i % 4 > 0 )}m-r-3{/if}" id="food-{$vo.id}">
+										<label>
+											<input type="checkbox" name="food[]" style="display: none;" {if(in_array($vo.id,$categoryFoodId))}class="add-checkbox dis" checked="checked" disabled="disabled" {else} class="add-checkbox en"{/if} value="{$vo.id}">
+											<div class="checkbox-div">
+												<div class="checkbox-icon"></div>
+												<div class="checkbox-shelter"></div>
+											   <div class="checkbox-img"><img src="{$vo.thumbnailUrl}"></div>
+											   <div class="checkbox-name">{$vo.name}</div>
+										   </div>
+										</label>
+                                    </li>
+                                {/volist}
+                                </ul>
+                            </li>
+                            {/if}
+                            {/volist}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            {/if}
+        </div>
+	<div class="member-cate-add-btn">{:lang('添加')}</div>
+    </form>
+</div>
+<script type="text/javascript">
+    var submitInfo = true;
+    function allChecked(e){
+        if($(e).find('input[type="checkbox"]').is(':checked')){
+            $(e).parent().find('input.en').prop("checked", true);
+        }else{
+            $(e).parent().find('input.en').prop("checked", false);
+        }
+    }
+
+    function toggleFood(e){
+        var children = $(e).parent('li.parent_li').find('>ul>li');
+        if (children.is(":visible")) {
+            children.hide('fast');
+            $(e).addClass('plus').removeClass('minus');
+        } else {
+            children.show('fast');
+            $(e).addClass('minus').removeClass('plus');
+        }
+        // e.stopPropagation();
+    }
+
+    $('.select-foods-btn').click(function () {
+        var categoryId = $("#categoryId").val();
+        var foodId = $("#foodId").val();
+        if(foodId&&foodId!='0'){
+            var foodCategory = $("#foodId").find("option:selected").attr('data-category');
+            categoryId = foodCategory;
+        }
+        if(categoryId&&categoryId!='0'){
+            $(".category-food-li").not("#category-"+categoryId).hide();
+            $("#category-"+categoryId).show();
+            if(foodId!='0'){
+                $(".category-food-checked-li").not("#food-"+foodId).hide();
+                $("#food-"+foodId).show();
+            }else{
+                $(".category-food-checked-li").show();
+            }
+        }else{
+            $(".category-food-li").show();
+            $(".category-food-checked-li").show();
+        }
+    });
+
+	$('.member-cate-add-btn').click(function () {
+        if(submitInfo){
+            $.ajax({
+                type: "POST",
+                url : "{:url('addfood')}",
+                data: $('#edit').serialize(),
+                async: true,
+                beforeSend: function(){
+                    openloading("STATIC_PATH/assets/img/loading-2.gif");
+                },
+                success: function(data) {
+                    closeloading();
+                    if (data.code) {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/a-add.png',
+							'imageSize': '16x16',
+							'customClass': 'success'
+						}).then(function(isConfirm) {
+                            window.location.href='{:url(\'setmeal/food\',[\'mid\'=>$mid,\'cid\'=>$cid])}';
+                        });
+                    } else {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+                    closeloading();
+					swal({
+						'text':'{:lang(\'頁面錯誤\')}',
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+        }else{
+            swal({
+                'text':'{:lang(\'圖片上傳中,請稍後\')}',
+				'confirmButtonText': '{:lang(\'確認\')}',
+                'confirmButtonColor':'#e07a0a',
+				'customClass': 'default'
+            });
+        }
+
+    });
+</script>
+</body>
+</html>

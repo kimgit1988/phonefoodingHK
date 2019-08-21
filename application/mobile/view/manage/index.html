@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('設置')}</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/manage.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="container-div" id="main">
+<!--
+	<div class="main">
+		<img src="{$contact.bgImageUrl}" class="header">
+		<div class="header-div">
+			<div class="header-icon"><img src="{if(!empty($head))}{$head}{else}STATIC_PATH/assets/market/images/user-manage.png{/if}"></div>
+			<div class="header-text">
+				<div class="header-name">{:session('mob_user.nick')}</div>
+				<div class="header-contanct">{$contact.name}&nbsp;&nbsp;{if(session('mob_user.is_contact')==1)}店长{else if(session('mob_user.is_contact')==2}店员{/if}</div>
+			</div>
+		</div>
+		<div class="manage-list">
+			<div class="li-image">
+				<div class="li-contact" onclick="window.location.href='{:url('manage/contact')}'"><img src="STATIC_PATH/assets/mobile/images/contanct.png"><div>餐廳</div></div>
+				<div class="li-member"><img src="STATIC_PATH/assets/mobile/images/member.png"><div>餐檯（{$member}）</div></div>
+				<div class="li-staff" onclick="window.location.href='{:url('manage/staff')}'"><img src="STATIC_PATH/assets/mobile/images/card.png"><div>員工</div></div>
+			</div>
+			<div class="li-category">
+				<div class="li-div" onclick="window.location.href='{:url('manage/goodsCategory')}'">
+					<div class="li-name">菜品分類</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/mobile/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+			</div>
+			<div class="li-self">
+				<div class="li-div" onclick="window.location.href='{:url('manage/repass')}'">
+					<div class="li-name">修改密碼</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/mobile/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+				<div class="li-div" onclick="window.location.href='{:url('manage/reset')}'">
+					<div class="li-name">修改資料</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/mobile/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+			</div>
+			<div class="li-loginout">退出</div>
+		</div>
+	</div>
+-->
+	<div class="order-main">
+		<!-- 头部图片 -->
+		<!--<div class="owner-header">
+			<div class="owner-header-icon"><img src="{if(!empty($head))}{$head}{else}STATIC_PATH/assets/market/images/user-manage.png{/if}"></div>
+			<div class="owner-header-name">{:session('mob_user.name')}</div>
+		</div>-->
+		<div class="title-div">
+			<div class="title" onclick="javascript:location.href='/index.php/mobile/owner/index.html';">
+				<i class="fab-left"></i>{:lang('設置')}
+			</div>
+		</div>
+		<div class="owner-avatar" onclick="window.location.href='{:url(\'manage/contact\')}'">
+			<img class="avatar" src="{if(!empty($head))}{$head}{else}STATIC_PATH/assets/market/images/user-manage.png{/if}">
+			<div class="owner-name">{:session('mob_user.name')}</div>
+		</div>
+		<div class="owner-list">
+			<div class="owner-item" onclick="window.location.href='{:url(\'manage/contactSet\')}'">
+				<i class="fab fab-restaurant"></i><span class="owner-text">{:lang('餐廳設置')}</span><i class="fab-right"></i>
+			</div>
+
+			<div class="owner-item" onclick="window.location.href='{:url(\'manage/bannerSet\')}'">
+				<img src="STATIC_PATH/assets/mobile/images/banner-icon.png"><span class="owner-text">&nbsp;&nbsp;{:lang('廣告設置')}</span><i class="fab-right"></i>
+			</div>
+
+			<div class="owner-item" onclick="window.location.href='{:url(\'manage/payset\')}'">
+				<i class="fab fab-thirdpay"></i><span class="owner-text">{:lang('第三方設置')}</span><i class="fab-right"></i>
+			</div>
+
+			<!--<div class="owner-item" onclick="window.location.href='{:url(\'manage/noticeset\')}'">
+				<i class="fab fab-notice"></i><span class="owner-text">公告設置</span><i class="fab-right"></i>
+			</div>-->
+
+			<div class="owner-item" onclick="window.location.href='{:url(\'manage/repass\')}'">
+				<i class="fab fab-rpassword"></i><span class="owner-text">{:lang('修改密碼')}</span><i class="fab-right"></i>
+			</div>
+
+			<div class="owner-item" onclick="window.location.href='{:url(\'manage/reset\')}'">
+				<i class="fab fab-edit"></i>
+				<div class="owner-text">{:lang('修改資料')}</div><i class="fab-right"></i>
+			</div>
+		</div>
+		<!--<div class="owner-list">
+			<div class="owner-ul">
+				<div class="owner-li b-b-e" onclick="window.location.href='{:url('manage/contact')}'">
+					<img src="STATIC_PATH/assets/mobile/images/restaurant.png" />
+					<div class="owner-li-name">餐廳</div>
+				</div>
+				<div class="owner-li b-b-e" onclick="window.location.href='{:url('manage/staff')}'">
+					<img src="STATIC_PATH/assets/mobile/images/staff.png" />
+					<div class="owner-li-name">員工</div>
+				</div>
+				<div class="owner-li b-b-e" onclick="window.location.href='{:url('manage/goodsCategory')}'">
+					<img src="STATIC_PATH/assets/mobile/images/goodscategory.png"/>
+					<div class="owner-li-name">菜式分類</div>
+					&lt;!&ndash;<div class="owner-li-number"><img class="jiantuo" src="STATIC_PATH/assets/mobile/images/jiantou1.png"/></div>&ndash;&gt;
+				</div>
+				<div class="owner-li b-b-e" onclick="window.location.href='{:url('manage/spec')}'">
+					<img src="STATIC_PATH/assets/mobile/images/spec.png"/>
+					<div class="owner-li-name">菜式選項</div>
+				</div>
+				<div class="owner-li" onclick="window.location.href='{:url('manage/repass')}'">
+					<img src="STATIC_PATH/assets/mobile/images/key.png"/>
+					<div class="owner-li-name">修改密碼</div>
+				</div>
+				<div class="owner-li b-b-e" onclick="window.location.href='{:url('manage/autoOrder')}'">
+					<img src="STATIC_PATH/assets/mobile/images/orders.png"/>
+					<div class="owner-li-name">自動接單</div>
+				</div>
+                &lt;!&ndash;<div class="owner-li b-b-e" onclick="window.location.href='{:url('manage/laterPay')}'">
+                    <img src="STATIC_PATH/assets/mobile/images/orders.png"/>
+                    <div class="owner-li-name">結賬设置</div>
+                </div>&ndash;&gt;
+				<div class="owner-li b-b-e" onclick="window.location.href='{:url('manage/getKey')}'">
+					<img src="STATIC_PATH/assets/mobile/images/interface-key.png"/>
+					<div class="owner-li-name">API金鑰</div>
+				</div>
+				&lt;!&ndash;<div class="owner-li b-b-e" onclick="window.location.href='{:url('manage/editCoverCharge')}'">
+					<img src="STATIC_PATH/assets/mobile/images/caipin.png"/>
+					<div class="owner-li-name">茶位費</div>
+				</div>&ndash;&gt;
+				<div class="owner-li b-b-e" onclick="window.location.href='{:url('manage/reset')}'">
+					<img src="STATIC_PATH/assets/mobile/images/edit.png"/>
+					<div class="owner-li-name">修改資料</div>
+				</div>
+				<div class="owner-li logout-btn">
+					<img src="STATIC_PATH/assets/mobile/images/drop-out.png"/>
+					<div class="owner-li-name">退出賬號</div>
+				</div>
+				</div>
+			</div>
+		</div>-->
+	</div>
+	{include file="common:footer"}
+</div>
+</body>
+</html>

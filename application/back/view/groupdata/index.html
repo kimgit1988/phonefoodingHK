@@ -1,0 +1,67 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">用户组列表</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/groupdata/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-12">
+
+							</div>
+						</div>
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>ID</th>
+									<th>角色名称</th>
+									<th>用户数量</th>
+									<th>操作</th>
+								</tr>
+
+								{volist name="lists" id="list"}
+								<tr>
+									<td>
+										{$list.id}
+									</td>
+									<td>{$list.title}</td>
+									<td>{$list.user_count}</td>
+
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/groupdata/edit',['id'=>$list['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('back/groupdata/destroy',['id'=>$list['id']])}')">删除</div>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer text-center">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

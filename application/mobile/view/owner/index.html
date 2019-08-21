@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('店主')}</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/owner.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="container" id="main">
+	<div class="order-main">
+		<!-- 头部图片 -->
+		<div class="owner-header">
+			<div class="owner-header-icon"><img src="{if(!empty($head))}{$head}{else}STATIC_PATH/assets/market/images/user-manage.png{/if}"></div>
+			<div class="owner-header-info">
+				<div class="owner-header-name">{$nick}</div>
+				<div class="owner-order owner-order-index">
+					<div class="owner-order-today">
+						<div class="owner-order-number today" onclick="window.location.href='{:url(\'order/index\')}'">{$info.todayOrder}</div>
+						<div class="owner-order-name">{:lang('今日訂單')}</div>
+					</div>
+					<div class="owner-order-price">
+						<div class="owner-order-number total" onclick="window.location.href='{:url(\'order/index\')}'">{$info.todayPrice}</div>
+						<div class="owner-order-name">{:lang('訂單總額')}</div>
+					</div>
+				</div>
+				<div class="login-out logout-btn">
+					<i class="fab-logout"></i>
+				</div>
+			</div>
+		</div>
+		<div class="owner-list">
+			<div class="owner-order-ul">
+				<div class="owner-order-li" onclick="window.location.href='{:url(\'order/index\')}'">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-orders"></use>
+					</svg>
+					<div class="owner-li-name">{:lang('訂單管理')}</div>
+				</div>
+				<div class="owner-order-li" onclick="window.location.href='{:url(\'order/index\')}'">
+					<span class="new-order-total">{$info.newOrder}</span>
+					<div class="owner-li-name">{:lang('新訂單')}</div>
+				</div>
+			</div>
+			<div class="owner-ul">
+				{if(session('mob_user.is_contact')==1)}
+				<div class="owner-li" onclick="window.location.href='{:url(\'order/orderstatis\')}'">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-data"></use>
+					</svg>
+					<div class="owner-li-name">{:lang('數據統計')}</div>
+				</div>
+				<div class="owner-li" onclick="window.location.href='{:url(\'foods/topfood\')}'">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-rank"></use>
+					</svg>
+					<div class="owner-li-name">{:lang('菜品排行榜')}</div>
+				</div>
+				<div class="owner-li" onclick="window.location.href='{:url(\'order/orderchart\')}'">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-chart"></use>
+					</svg>
+					<div class="owner-li-name">{:lang('圖表分析')}</div>
+				</div>
+				{/if}
+				<div class="owner-li" onclick="window.location.href='{:url(\'order/paybill\')}'">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-dollar"></use>
+					</svg>
+					<div class="owner-li-name">{:lang('埋單')}</div>
+				</div>
+				<div class="owner-li" onclick="window.location.href='{:url(\'manage/tablemanage\')}'">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-table-manage"></use>
+					</svg>
+					<div class="owner-li-name">{:lang('餐枱管理')}</div>
+				</div>
+				<div class="owner-li" onclick="window.location.href='{:url(\'manage/foodmanage\')}'">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-foods-manage"></use>
+					</svg>
+					<div class="owner-li-name">{:lang('菜品管理')}</div>
+				</div>
+				{if(session('mob_user.is_contact')==1)}
+				<div class="owner-li" onclick="window.location.href='{:url(\'manage/staff\')}'">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-staff"></use>
+					</svg>
+					<div class="owner-li-name">{:lang('員工管理')}</div>
+				</div>
+				{/if}
+				<div class="owner-li" onclick="window.location.href='{:url(\'manage/index\')}'">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-manage"></use>
+					</svg>
+					<div class="owner-li-name">{:lang('設置')}</div>
+				</div>
+				<!--{if(session('mob_user.is_contact')==1)}
+				<div class="owner-li">
+					<svg class="icon" aria-hidden="true">
+						<use xlink:href="#icon-waimai"></use>
+					</svg>
+					<div class="owner-li-name">外賣訂單管理</div>
+				</div>
+				{/if}-->
+			</div>
+		</div>
+	</div>
+	{include file="common:footer"}
+</div>
+
+<script type="text/javascript">
+    $('.logout-btn').click(function () {
+        $.ajax({
+            type: "POST",
+            url : "{:url('manage/loginout')}",
+            data: {},
+        	async: true,
+            success: function(data) {
+            if (data.code) {
+                swal({
+                    'text':data.msg,
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/logout-ful.png',
+                    'imageSize': '16x16',
+                    'customClass': 'success'
+                }).then(function(isConfirm) {
+                    location.href = data.url;
+                });
+            } else {
+                swal({
+                    'text':data.msg,
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/a-delete.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        },
+        error: function(request) {
+            swal({
+                'text':'{:lang(\'頁面錯誤\')}',
+                'confirmButtonText': '{:lang(\'確認\')}',
+                'confirmButtonColor':'#e07a0a',
+                'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                'imageSize': '16x16',
+                'customClass': 'fail'
+            });
+        }
+    });
+    });
+</script>
+</body>
+</html>

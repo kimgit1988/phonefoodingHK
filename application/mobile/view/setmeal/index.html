@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('套餐管理')}</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+	<!--<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">-->
+	<!--<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<script type="assets/mobile/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!--<div class="title-div">
+	<img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="javascript:location.href='{:url(\'manage/index\')}';"/>
+	<div class="title">
+		套餐管理
+	</div>
+</div>-->
+<div class="container">
+	<div class="head-div">
+		<i class="fab-left" onclick="javascript:location.href='{:url(\'manage/index\')}';"></i>
+		<div class="title">{:lang('套餐管理')}</div>
+	</div>
+	<div class="main">
+		<div class="member-cate-li" onclick="window.location.href='{:url(\'setmeal/edit\')}'">
+			<div class="staff-li-nick">{:lang('套餐名')}:樣式</div>
+			<div class="staff-li-info">{:lang('價格')}:$HKD 123.00</div>
+		</div>
+		<div class="member-cate-li-add" onclick="window.location.href='{:url(\'setmeal/add\')}'">+{:lang('添加套餐')}</div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta name="full-screen" content="yes" />
+    <meta name="x5-fullscreen" content="true" /> 
+    <title>{:config('web_title')}</title>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+    <link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+    <link href="STATIC_PATH/assets/wxweb/css/payment.css" rel="stylesheet">
+    <link href="STATIC_PATH/assets/css/icon.css" rel="stylesheet">
+    <script type="text/javascript">
+        /*var personcount = "{:session('personCount')}";
+        var is_cover_charge = "{$contact_info.is_cover_charge}";
+        var addstatus = "{$addstatus}";
+        if(is_cover_charge==1&&personcount.length==0&&addstatus==0){
+            window.location.href = "{:url('personcount')}";
+        }*/
+    </script>
+</head>
+<body>
+<div class="container-div">
+    <div class="row title-div">
+        <i class="fab-left" onclick="javascript:history.back(-1);"></i>
+        <div class="title">{:lang('確認訂單')}</div>
+        <i class="fab-order" onclick="getHistory()"></i>
+        <!--<img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="javascript:history.back(-1);"/>-->
+        <!--<img class="icon-history" src="STATIC_PATH/assets/wxweb/images/history.png" onclick="getHistory()"/>-->
+    </div>
+</div>
+<!--<div class="container-div">
+  <div class="row head-div">
+	訂單詳情
+  </div>
+</div>-->
+<div class="container-div m-b-120">
+    <div class="pro printer-table">
+        {volist name="show_order" id="vo" key="k"}
+        {if($vo.payType<3)}
+        <div class="li-item printer-tr" onclick="backPre()">
+            <!--<div class="li-img printer-td">
+                <img src="{$vo.thumbnailUrl}"/>
+            </div>-->
+            <div class="li-text printer-tr">
+                {$vo.name}{if(!empty($vo.weight))}[{$vo.weight}{$vo.payUnit}]{/if}{if(!empty($vo.specNames))}{$vo.specNames}{/if}
+            </div>
+            <div>
+                <div class="num  printer-td">
+                    <span class="num-text">x{$vo.counter}</span>
+                </div>
+                <div class="price  printer-td">
+                    <span class="pri-text">HK$&nbsp;<em>{$vo.salePrice}</em></span>
+                </div>
+            </div>
+        </div>
+        {else}
+        <div class="li-meal-item">
+            <div class="li-item meal printer-tr">
+                <div class="li-text printer-td">
+                    <span>{$vo.name}</span>
+                </div>
+                <div class="num  printer-td">
+                    <span class="num-text">x{$vo.counter}</span>
+                </div>
+            </div>
+            <div class="li-foods printer-table">
+                {volist name="vo._food" id="fo" key="k"}
+                <div class="li-item printer-tr" onclick="backPre()">
+                    <!--<div class="li-img printer-td">
+                        <img src="{$fo.thumbnailUrl}"/>
+                    </div>-->
+                    <div class="li-text printer-td">
+                        <span>{$fo.name}{if(!empty($fo.weight))}[{$fo.weight}{$fo.payUnit}]{/if}{if(!empty($fo.specNames))}{$fo.specNames}{/if}</span>
+                    </div>
+                    <div class="num  printer-td">
+                        <span class="num-text">x{$fo.counter}</span>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+            <div class="price  printer-td">
+                <span class="pri-text">HK$&nbsp<em>{$vo.salePrice}</em></span>
+            </div>
+        </div>
+        {/if}
+        {/volist}
+    </div>
+    <div class="sale-div">
+        {if($contact_info.is_cover_charge==1)}
+            <div class="card-div border-b">
+                <span class="card-tit">{:lang('茶位費')}</span>
+                <span class="card-pre">HK$ {:price_format($order.tea_fee)}</span>
+            </div>
+        {/if}
+        {if($contact_info.is_service_fee==1)}
+            <div class="card-div border-b">
+                <span class="card-tit">{:lang('服務費')}</span>
+                <span class="card-pre">HK$ {:price_format($order.service_fee)}</span>
+            </div>
+        {/if}
+        <!--<div class="card-div border-b">
+            <span class="card-tit">減滿抵用券優惠</span>
+            <span class="card-pre">-5</span>
+        </div>-->
+    </div>
+    <!--<div class="sale-div t-3">
+        <div class="card-div cardselect">
+            <div class="card-tit">優惠券</div>
+            <div class="card-pre"><span id="cardName"></span><i class="fab-right"></i></div>
+            <input type="hidden" name="card" id="cardCode">
+        </div>
+    </div>-->
+</div>
+<div class="container-div">
+    <div class="pay-div">
+        <div class="pay" onclick="backPre();">
+            <!--<div class="t">
+                待付款 &nbsp;
+            </div>-->
+            <div class="car">
+                <img id="car" src="/static/assets/wxweb/images/shopcart.png">
+                <div class="car-num" style="display: block;"></div>
+            </div>
+            <div class="price">
+                <span class="unit">HK$</span><span class="tprice" id="totalPrice">{:price_format($order.totalPrice)}</span>
+            </div>
+        </div>
+        <div class="button payorder">
+            確定落單
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-head">{:lang('請選擇支付方式')}</div>
+            <div class="modal-body">
+                <!-- {if($user.user_type!=$user_type.alipay.type)}
+                        <div class="payType" onclick="paymethod(1)">
+                            <div class="payImg">
+                                <img src="STATIC_PATH/assets/wxweb/images/weixin.png" />
+                            </div>
+                            微信支付
+                        </div>
+                {/if}
+                {if($user.user_type!=$user_type.wechat.type)}
+                        <div class="payType" onclick="paymethod(2)">
+                            <div class="payImg">
+                                <img src="STATIC_PATH/assets/wxweb/images/zhifubao.png" />
+                            </div>
+                            支付寶支付
+                        </div>
+                {/if}
+                        <div class="payType" onclick="paymethod(3)">
+                            <div class="payImg">
+                                <img class="wangyin" src="STATIC_PATH/assets/wxweb/images/wangyinzhifu.png" />
+                            </div>
+                            網銀支付
+                        </div>
+                        <div class="payType" onclick="paymethod(4)">
+                            <div class="payImg">
+                                <img src="STATIC_PATH/assets/wxweb/images/kuaijiezhifu.png" />
+                            </div>
+                            快捷支付
+                        </div> -->
+                <!--{if($contact_info.laterPay)}-->
+                <!--<div class="payType" onclick="paymethod(99)">-->
+                    <!--<div class="payImg">-->
+                        <!--<img class="wangyin" src="/static/assets/img/laterPay.jpg" />-->
+                    <!--</div>-->
+                    <!--{:lang('現金/刷卡支付')}-->
+                <!--</div>-->
+                <!--{/if}-->
+
+                {volist name="paymethod" id="vo"}
+                {if($vo.id==3&&$user.user_type==$user_type.wechat.type)}
+                {elseif($vo.id==4&&$user.user_type==$user_type.alipay.type)}
+                {else}
+                <div class="payType" onclick="paymethod('{$vo.id}')">
+                    <div class="payImg">
+                        <img class="wangyin" src="{$vo.icon}"/>
+                    </div>
+                    {$vo.name}{:lang('支付')}
+                </div>
+                {/if}
+                {/volist}
+                <!-- <div class="payType" onclick="paymethod(1)">
+                    <div class="payImg">
+                        <img class="wangyin" src="STATIC_PATH/assets/wxweb/images/wangyinzhifu.png" />
+                    </div>
+                    澳門工行支付
+                </div> -->
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="cardModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-head">
+                {:lang('可用优惠券列表')}
+            </div>
+            <div class="modal-body" id="cardlist">
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+    var totalPrice = {$order.totalPrice};
+    var cardList = {
+        {volist name="cardlist" id="vo"}
+        '{$vo.cardCode}' : {
+            // 编号
+            code:'{$vo.cardCode}',
+                // 名称
+                name:'{$vo.cName}',
+                // 类型
+                type: '{$vo.cCardType}',
+                // 优惠金额
+                discount: '{$vo.cDiscountMoney}',
+                // 折扣率
+                rate: '{$vo.cDiscountRate}',
+                // 最低消费金额
+                minMoney: '{$vo.cMinDiscountPaid}',
+                // 折扣封顶金额
+                maxMoney: '{$vo.cMaxDiscountRateMoney}',
+                // 折扣名称
+                discountname: '',
+        },
+        {/volist}
+        //可用优惠券选项
+    };
+    add_card_list();
+    function add_card_list(){
+        var cardHTML = '';
+        $.each(cardList, function(i, item){
+            cardHTML += '<div class="payType" onclick="selectcard(\''+item.code+'\')">';
+            if(item.type==1){
+                discountname = (100-parseInt(item.rate))/10+'{:lang(\'折\')}';
+                item.discountname = discountname;
+                cardHTML += item.name+'-'+discountname;
+            }else{
+                discountname = item.discount+'元';
+                item.discountname = discountname;
+                cardHTML += item.name+'-'+discountname;
+            }
+
+            cardHTML += '</div>';
+        });
+        cardHTML += '<div class="payType" onclick="selectcard(\'\')">';
+        cardHTML += '{:lang(\'不使用优惠券\')}';
+        cardHTML += '</div>';
+        $("#cardlist").html(cardHTML);
+
+    }
+    function selectcard(code){
+        if(code==''){
+            $("#totalPrice").text(totalPrice);   // 应付
+            $("#cardName").text('');
+            $("#cardCode").val('');
+        }else{
+            if(cardList[code]){
+                if(cardList[code].type==1){
+                    var discount = Math.ceil(parseFloat(totalPrice) * parseFloat(cardList[code].rate)) / 100;
+                    if(cardList[code].maxMoney!=null&&cardList[code].maxMoney!=''){
+                        if(discount>cardList[code].maxMoney){
+                            discount = parseFloat(cardList[code].maxMoney);
+                        }
+                    }
+                    var price= totalPrice - discount;
+                    $("#totalPrice").text(price.toFixed('2'));// 实付
+                }else{
+                    var discount = cardList[code].discount;
+                    var price= totalPrice - discount;
+                    $("#totalPrice").text(price.toFixed('2'));// 实付
+                }
+                $("#cardName").text('优惠'+cardList[code].discountname+'\n');
+                $("#cardCode").val(code);// 优惠
+            }
+
+        }
+        $('#cardModal').modal('hide');
+    }
+    var unifiedOrder = {
+        appId: '',
+        timeStamp: '',
+        nonceStr: '',
+        package: '',
+        signType: '',
+        paySign: '',
+    }
+    $(".cardselect").click(function () {
+        $('#cardModal').modal('show');
+    });
+    $(".payorder").one('click',function () {
+        //设置了餐后支付的，使用餐后支付方式
+        //现阶段默认全部使用餐后支付
+        {if (!$contact_info.laterPay)}
+        $.ajax({
+            type: "POST",
+            url: "{:url('payOrder')}",
+            //暂定餐后支付方式的id为99
+            data: {method: 99},
+            async: true,
+            success: function (data) {
+                window.location.href = data.url;
+            },
+            error: function (request) {
+            }
+        });
+        {else}
+        $('#alertModal').modal('show');
+        {/if}
+        }
+    );
+
+    function paymethod(method) {
+        $('#alertModal').modal('hide');
+        var code = $("#cardCode").val();
+        openloading("STATIC_PATH/assets/img/loading-2.gif");
+        $.ajax({
+            type: "POST",
+            url: "{:url('payOrder')}",
+            data: {method: method,code:code},
+            async: true,
+            success: function (data) {
+                setTimeout('closeloading()', 500);
+                if (data.code == 1) {
+                    //支付成功直接跳转
+                    window.location.href = data.url;
+                    // console.log(data);
+                } else if (data.code == 2) {
+                    // 调起微信支付
+                    unifiedOrder.appId = data.msg.appId;
+                    unifiedOrder.timeStamp = data.msg.timeStamp;
+                    unifiedOrder.nonceStr = data.msg.nonceStr;
+                    unifiedOrder.package = data.msg.package;
+                    unifiedOrder.signType = data.msg.signType;
+                    unifiedOrder.paySign = data.msg.paySign;
+                    // page.loadClose();
+                    callpay();
+                } else if (data.code == 3) {
+                    if ($("#payForm").length > 0) {
+                        $("#payForm").remove();
+                    }
+                    // 调起微信支付
+                    $("body").append(data.msg);
+                } else if (data.code == 6) {
+                    //前方支付使用跳转
+                    window.location.href = data.url;
+                } else {
+                    // swal({
+                    //     'title': '潮食点餐系统',
+                    //     'text':data.msg,
+                    //     'confirmButtonColor':'#AAA',
+                    // });
+                }
+            },
+            error: function (request) {
+                setTimeout('closeloading()', 500);
+                // swal({
+                //     'title': '潮食点餐系统',
+                //     'text':'页面错误',
+                //     'confirmButtonColor':'#AAA',
+                // });
+            }
+        });
+    };
+
+    //调用微信JS api 支付
+    function jsApiCall() {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+            {
+                "appId": unifiedOrder.appId,     //公众号名称，由商户传入
+                "timeStamp": unifiedOrder.timeStamp,         //时间戳，自1970年以来的秒数
+                "nonceStr": unifiedOrder.nonceStr, //随机串
+                "package": unifiedOrder.package,
+                "signType": unifiedOrder.signType,         //微信签名方式：
+                "paySign": unifiedOrder.paySign //微信签名
+            },
+            function (res) {
+                console.log(res);
+                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                    console.log("{:lang('支付成功')}");
+                } else {
+                    console.log("{:lang('支付失敗')}");
+                }
+            }
+        );
+    }
+
+    function callpay() {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        } else {
+            jsApiCall();
+        }
+    }
+
+    function backPre() {
+        var u_cart = document.referrer + "#cart";
+        window.location.href = u_cart;
+    }
+
+    function getHistory() {
+        window.location.href = "{:url('index/allOrder')}";
+    }
+
+
+    $(function () {
+        $('.car-num').text(sessionStorage.getItem('car-count'));
+    })
+
+
+</script>
+</body>
+</html>

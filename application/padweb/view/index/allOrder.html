@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<!--<meta name="theme-color" content="#ff6600" />-->
+    <title>{:config('web_title')}</title>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+	<script src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+	<link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+	<link href="STATIC_PATH/assets/wxweb/css/order.css" rel="stylesheet">
+	<link href="STATIC_PATH/assets/css/dropload.css" rel="stylesheet" >
+
+</head>
+<script>
+	$(function(){
+		var X = 0;
+		var moveEndX = 0;
+		var startX = 0;
+		var Y = 0;
+		var moveEndY = 0; 
+		var startY = 0;
+		$("#myCarousel").on("touchstart", function(e) {
+			// 判断默认行为是否可以被禁用
+			if (e.cancelable) {
+				// 判断默认行为是否已经被禁用
+				if (!e.defaultPrevented) {
+					e.preventDefault();
+				}
+			}   
+			startX = e.originalEvent.changedTouches[0].pageX,
+			startY = e.originalEvent.changedTouches[0].pageY;
+		});
+		$("#myCarousel").on("touchend", function(e) { 
+			// 判断默认行为是否可以被禁用
+			if (e.cancelable) {
+				// 判断默认行为是否已经被禁用
+				if (!e.defaultPrevented) {
+					e.preventDefault();
+				}
+			}               
+			moveEndX = e.originalEvent.changedTouches[0].pageX,
+			moveEndY = e.originalEvent.changedTouches[0].pageY,
+			X = moveEndX - startX,
+			Y = moveEndY - startY;
+			//左滑
+			if ( X > 20 ) {
+				// alert('左滑'); 
+				$("#carousel-left").click();				
+			}
+			//右滑
+			else if ( X < -20 ) {
+				$("#carousel-right").click();
+				// alert('右滑');    
+			}
+			/*
+			//下滑
+			else if ( Y > 0) {
+				alert('下滑');    
+			}
+			//上滑
+			else if ( Y < 0 ) {
+				alert('上滑');    
+			}*/
+			//单击
+			else{
+				var id = $(".carousel-inner>.active").attr('data-val');
+				$.ajax({ 
+					type: "POST",  
+					url: "{:url('index/clickbanner')}",
+					dataType: 'json',  
+					data:{  
+					    'id':id,
+					},
+					success: function (res) {
+						if(res.code==1){
+							window.location.href = res.msg;
+						}
+					}
+				});    
+			}
+			
+		});
+		$('#myCarousel').carousel({interval:5000});
+	});
+	 </script>
+<body>
+<div class="scroll-main" id="scroll-main">
+<div class="container-div" id="container-div">
+	<div class="row head-wrapper">
+		<img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="javascript:history.back(-1);"/>
+		<div class="logo">
+			<span>我的訂單</span>
+		</div>
+	</div>
+{if(!empty($ad))}
+<div class="head-div">
+<!--
+	<div class="logo">
+		<div class="logo-img">
+			<img src="STATIC_PATH/assets/wxweb/images/logo.png" />
+		</div>
+		<div class="logo-tit">
+			<h5>潮<span>|</span>食 智<span>|</span>能<span>|</span>點 餐<span>|</span>系<span>|</span>統</h5>
+		</div>
+	</div>
+	-->
+	<div class="banner">
+		<div id="myCarousel" class="carousel slide" >
+			<!-- 轮播（Carousel）指标 -->
+			<ol class="carousel-indicators">
+				{volist name="ad" id="vo"}
+				<li data-target="#myCarousel" data-slide-to="0" {if $key==0}class="active"{/if}></li>
+				{/volist}
+			</ol>
+			<!-- 轮播（Carousel）项目 -->
+			<div class="carousel-inner">
+				{volist name="ad" id="vo"}
+				<div class="item {if $key==0}active{/if}" data-val="{$vo.id}">
+					<img src="{$vo.path}" alt="{$vo.name}" class="img-responsive">
+				</div>
+				{/volist}
+			</div>
+		</div>
+	</div>
+	<!-- 轮播（Carousel）导航 -->
+	<a class="carousel-control left hide" id="carousel-left" href="#myCarousel" 
+	   data-slide="prev"> <span _ngcontent-c3="" aria-hidden="true"></span></a>
+	<a class="carousel-control right hide"  id="carousel-right" href="#myCarousel" 
+	   data-slide="next"></a>
+</div>
+{/if}
+	<div class="order-list" id="order-list">
+
+	</div>
+</div>
+</div>
+<script type="text/javascript">
+	var allpage = 1;
+
+	var dropload = $('#scroll-main').dropload({
+		domUp : {
+			domClass   : 'dropload-up',
+			domRefresh : '<div class="dropload-refresh">↓下拉更新</div>',
+			domUpdate  : '<div class="dropload-update">↑釋放更新</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加載中...</div>'
+		},
+		domDown : {
+			domClass   : 'dropload-down',
+			domRefresh : '<div class="dropload-refresh">↑上拉加載更多</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>加載中...</div>',
+			domNoData  : '<div class="dropload-noData"></div>'
+		},
+		loadUpFn : function(me){
+			return;
+		},
+		loadDownFn : function(me){
+			// var action;
+			// var minOrder;
+			// if($(".action").attr('id')=='newsOrder'){
+			// 	action = 1;
+			// 	minOrder = minNewOrder;
+			// }else if ($(".action").attr('id')=='allOrder') {
+			// 	action = 0;
+			// 	minOrder = minAllOrder;
+			// }
+			$.ajax({ 
+			    type: "POST",  
+			    url: "{:url('index/getOrder')}",
+			    dataType: 'json',  
+			    data:{
+			        'page':allpage,
+			    },
+			    success: function (res) {
+					if(res.code==1){
+						if(!$.isEmptyObject(res.msg)){
+							var addorder = '';
+							$.each(res.msg,function(n,vo) {
+								addorder += '<div class="row">';
+								addorder += '<div class="dno">';
+								addorder += '<div class="date">'+vo.create_time+'</div>';
+								addorder += '<div class="no">訂單號：'+vo.orderSN+'</div>';
+								addorder += '</div>';
+								addorder += '<div class="head-div">';
+								addorder += '<div class="logo"><img src="'+vo.contactLogoUrl+'"/><span>'+vo.contactName+'</span></div>';
+								addorder += '<div class="no printer-td"><span>'+vo.contactMemberName+'枱</span></div></div>';
+								addorder += '<div class="pro printer-table">';
+								$.each(vo._food,function(i,food) {
+									if(food.goodsType==3){
+										addorder += '<div class="li-meal-item">';
+										addorder += '<div class="li-item meal printer-tr">';
+										addorder += '<div class="li-text printer-td"><img class="meal-icon" src="'+food.goodsThumbnailUrl+'" /><span>'+food.goodsName+'</span></div>';
+										addorder += '<div class="num  printer-td"><span class="num-text">x'+food.num+'</span></div>';
+										addorder += '<div class="pir  printer-td"><span class="pri-text">HKD$&nbsp;'+food.goodsPrice+'</span></div>';
+										addorder += '</div>';
+										addorder += '<div class="li-foods printer-table">';
+										$.each(food._food,function(i,mealFood) {
+											addorder += '<div class="li-item printer-tr">';
+											addorder += '<div class="li-img printer-td"><img src="'+mealFood.goodsThumbnailUrl+'"></div>';
+											addorder += '<div class="li-text printer-td"><span>'+mealFood.goodsName+'</span></div>';
+											addorder += '<div class="num  printer-td"><span class="num-text">x'+mealFood.num+'</span></div>';
+											addorder += '</div>';
+										});
+										addorder += '</div>';
+										addorder += '</div>';
+									}else{
+										addorder += '<div class="li-item printer-tr">';
+										addorder += '<div class="li-img printer-td"><img src="'+food.goodsThumbnailUrl+'"></div>';
+										addorder += '<div class="li-text printer-td"><span>'+food.goodsName+'</span></div>';
+										addorder += '<div class="num  printer-td"><span class="num-text">x'+food.num+'</span></div>';
+										addorder += '<div class="pir  printer-td"><span class="pri-text">HKD$&nbsp;'+food.goodsPrice+'</span></div>';
+										addorder += '</div>';
+									}
+									
+								});
+								addorder += '</div>';
+								addorder += '<div class="total">';
+								addorder += '<div class="total-div">';
+                                var sStatu = "";
+                                if(vo.payStatus==0){
+                                    sStatu = '未支付';
+                                }else if(vo.payStatus==1){
+                                    sStatu = '已支付';
+                                }else if(vo.payStatus==2){
+                                    sStatu = '已退款';
+                                }
+								if(vo.orderStatus==0){
+									addorder += '<div class="total-tit"><span style="color:#FF7E3A;">已取消</span></div>';
+								}else if(vo.orderStatus==1){
+									addorder += '<div class="total-tit" ><span style="color:#FF7E3A;">未支付</span></div>';
+								}else if(vo.orderStatus==2){
+									addorder += '<div class="total-tit"><img src="STATIC_PATH/assets/wxweb/images/zhifucg.png" /><span id="'+vo.orderSN+'">未接單('+sStatu+')</span></div>';
+								}else if(vo.orderStatus==3){
+									addorder += '<div class="total-tit"><img src="STATIC_PATH/assets/wxweb/images/zhifucg.png" /><span  id="'+vo.orderSN+'">已接單('+sStatu+')</span></div>';
+								}else if(vo.orderStatus==4){
+									addorder += '<div class="total-tit"><img src="STATIC_PATH/assets/wxweb/images/zhifucg.png" /><span  id="'+vo.orderSN+'">已確認</span></div>';
+								}else if(vo.orderStatus==5){
+									addorder += '<div class="total-tit"><img src="STATIC_PATH/assets/wxweb/images/zhifucg.png" /><span>已完成('+vo.payName+')</span></div>';
+								}
+								addorder += '<div class="total-pre"><div class="t"><span>HKD$&nbsp;'+vo.moneyPaid+'</span></div>'
+								addorder += '<div class="t">合計:&nbsp;</div></div></div>'
+								addorder += '</div>';
+								addorder += '</div>';
+							});
+							allpage = allpage+1;
+							$("#order-list").append(addorder);
+							// if(action == 0){
+							// 	$("#container-div").append(addorder);
+							// }else if(action == 1){
+							// 	$("#news-list").append(addorder);
+							// }
+							me.resetload();
+						}else{
+							me.lock();
+							me.noData(true);
+							me.resetload();
+							if(allpage==1){
+								var notorder = '<img src="STATIC_PATH/assets/wxweb/images/no-order.png" style="width:50vw;margin-left:25vw;"><div style="font-size: 6vw;padding: 0 14vw;text-align:center;margin-top:5vw;">您好！您當前無任何訂單，請返回首頁掃碼點餐。</div>';
+								$("#container-div").append(notorder);
+							}else{
+								$(".dropload-noData").text('暫無更多');
+							}
+						}
+					}else{
+						me.lock();
+						me.noData();
+						me.resetload();
+						if(allpage==1){
+							var notorder = '<img src="STATIC_PATH/assets/wxweb/images/no-order.png" style="width:30vw;margin-top:25vw;"><div style="font-size: 6vw;padding: 0 14vw;text-align:center;margin-top:5vw;">您好！您當前無任何訂單，請返回首頁掃碼點餐。</div>';
+							$("#container-div").append(notorder);
+						}else{
+							$(".dropload-noData").text('暫無更多');
+						}
+					}
+
+				}
+			});
+		}
+	});
+	dropload.lock('up');
+
+	setInterval(function () {
+        $.ajax({
+            type: "POST",
+            url: "{:url('index/getOrder')}",
+            dataType: 'json',
+            data: {},
+            success: function (res) {
+                if (res.code == 1) {
+                    $.each(res.msg, function (n, vo) {
+                        var sName = "";
+                        var sStatu = "";
+                        if(vo.payStatus==0){
+                            sStatu = '未支付';
+						}else if(vo.payStatus==1){
+                            sStatu = '已支付';
+						}else if(vo.payStatus==2){
+                            sStatu = '已退款';
+						}
+                        if(vo.orderStatus==0){
+                            sName = '已取消('+sStatu+')';
+                        }else if(vo.orderStatus==1){
+                            sName = '未支付('+sStatu+')';
+                        }else if(vo.orderStatus==2){
+                            sName = '未接單('+sStatu+')';
+                        }else if(vo.orderStatus==3){
+                            sName = '已接單('+sStatu+')';
+                        }else if(vo.orderStatus==4){
+                            sName = '已確認('+sStatu+')';
+                        }else if(vo.orderStatus==5){
+                            sName = '已完成('+sStatu+')';
+                        }
+                        $('#'+vo.orderSN).text(sName);
+                    })
+                }
+            }
+        });
+    }, 5000)
+</script>
+</body>
+</html>

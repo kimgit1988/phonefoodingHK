@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>首頁</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/style.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div class="container">
+	<div class="scroll-main bg-index">
+		<div class="index-head">
+			<div class="header-div">
+				<div class="header-icon"><img src="{:session('court_user.head')}"></div>
+				<div class="header-text">
+					<div class="header-name">{:session('court_user.courtName')}</div>
+					<div class="header-number">{:session('court_user.nick')}</div>
+				</div>
+			</div>
+		</div>
+		<div class="index-today" onclick="window.location.href='{:url('index/allOrder',['type'=>1])}'">
+			<div class="index-today-head">
+				<div class="index-today-name">今日訂單</div>
+				<div class="index-today-date">{:date('Y-m-d')}</div>
+			</div>
+			<div class="index-today-bottom">
+				<div class="index-today-order">
+					<div class="index-today-center">
+						<img src="STATIC_PATH/assets/court/images/order.png"><span class="index-today-number">{$info['today']['ordernumber']}</span>
+					</div>
+				</div>
+				<div class="index-today-money">
+					<div class="index-today-center">
+						<img src="STATIC_PATH/assets/court/images/money.png"><span class="index-today-number">{$info['today']['price']}</span>
+					</div>
+				</div>
+				<div class="index-today-commission">
+					<div class="index-today-center">
+						<img src="STATIC_PATH/assets/court/images/commission.png"><span class="index-today-number">{$info['today']['commission']}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="index-commission">
+			<div class="index-commission-this" onclick="window.location.href='{:url('index/allOrder',['type'=>3])}'">
+				<div class="index-commission-head">
+					<div class="index-commission-radius index-last-bg">
+						<div class="index-commission-name">上月</div>
+						<div class="index-commission-money">￥{$info['prevmonth']['price']}</div>
+					</div>
+				</div>
+				<div class="index-commission-bottom">
+					<div class="index-commission-li border-right">
+						<div class="index-commission-center">
+							<img src="STATIC_PATH/assets/court/images/order.png"><span class="index-commission-number">{$info['prevmonth']['ordernumber']}</span>
+						</div>
+					</div>
+					<div class="index-commission-li">
+						<div class="index-commission-center">
+							<img src="STATIC_PATH/assets/court/images/commission.png"><span class="index-commission-number">{$info['prevmonth']['commission']}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="index-commission-last" onclick="window.location.href='{:url('index/allOrder',['type'=>2])}'">
+				<div class="index-commission-head">
+					<div class="index-commission-radius index-this-bg">
+						<div class="index-commission-name">本月</div>
+						<div class="index-commission-money">￥{$info['thismonth']['price']}</div>
+					</div>
+				</div>
+				<div class="index-commission-bottom">
+					<div class="index-commission-li border-right">
+						<div class="index-commission-center">
+							<img src="STATIC_PATH/assets/court/images/order.png"><span class="index-commission-number">{$info['thismonth']['ordernumber']}</span>
+						</div>
+					</div>
+					<div class="index-commission-li">
+						<div class="index-commission-center">
+							<img src="STATIC_PATH/assets/court/images/commission.png"><span class="index-commission-number">{$info['thismonth']['commission']}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="index-contact" onclick="window.location.href='{:url('index/contactList')}';">
+			<div class="index-contact-name">餐厅总数</div>
+			<div class="index-contact-footer">
+				<div class="index-contact-center">
+					<img src="STATIC_PATH/assets/court/images/shop-icon.png"><span class="index-contact-number">{$contactNumber}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	{include file="common:footer"}
+</div>
+	
+
+</body>
+
+</html>

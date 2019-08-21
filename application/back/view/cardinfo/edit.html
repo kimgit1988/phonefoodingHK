@@ -1,0 +1,431 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">卡券編輯</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Bank/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+ -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Cardinfo/edit')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="edit">
+									<input type="hidden" name="id" value="{$card.id}">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">卡券名稱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="inputname" placeholder="卡券名稱(建議涵蓋卡券屬性、服務及金額)" maxlength="20" value="{$card.name}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputnotice" class="col-sm-3 control-label">卡券提示</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="notice" id="inputnotice" placeholder="卡券提示" maxlength="30" value="{$card.notice}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputcount" class="col-sm-3 control-label">卡券總數</label>
+										<div class="col-sm-5">
+											<div type="text" class="form-control">{$card.cardCount}</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputcount" class="col-sm-3 control-label">卡券剩餘</label>
+										<div class="col-sm-5">
+											<div type="text" class="form-control">{$card.cardNumber}</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label"> 可用商戶 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="useType" id="ut1" value="1" {if $card.useType==1}checked="checked"{/if}>全平台</label>
+											<label><input type="radio" name="useType" id="ut2" value="2" {if $card.useType==2}checked="checked"{/if}>指定商戶</label>
+										</div>
+									</div>
+
+									<div id="utselect" style="display: none;">
+										<div class="form-group">
+											<label for="inputcontact" class="col-sm-3 control-label">餐廳選擇</label>
+											<div class="col-sm-5">
+												<select id="contactNumber" class="form-control select2" name="contactNumber">  
+												    <option value="">請選擇</option>
+													{volist name="contact" id="vo"}
+													<option value="{$vo.number}" {if($card.contactNumber==$vo.number)}selected="selected"{/if}>{$vo.name}</option>
+													{/volist} 
+												</select>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label"> 卡券類型 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="cardType" id="ct1" value="1" {if $card.cardType==1}checked="checked"{/if}/>折扣券</label>
+											<label><input type="radio" name="cardType" id="ct2" value="2" {if $card.cardType==2}checked="checked"{/if}/>滿減券</label>
+											<label><input type="radio" name="cardType" id="ct3" value="3" {if $card.cardType==3}checked="checked"{/if}/>指定菜品券</label>
+										</div>
+									</div>
+
+									<div id="ctselect3" style="display: none;">
+										<div class="form-group">
+											<label for="inputcontact" class="col-sm-3 control-label">菜品選擇</label>
+											<div class="col-sm-5">
+												<select id="goodinfo" class="form-control select2" name="goodId">  
+												    <option value="">請選擇</option>
+												    {volist name="goods" id="vo"}
+												    <option value="{$vo.id}" {if($vo.id==$card.goodsId)}selected="selected"{/if}>{$vo.name}</option>
+												    {/volist} 
+												</select>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">最低使用金額</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="minDiscountPaid" id="minDiscountPaid" placeholder="最低使用金額 滿減指定菜品優惠券必填 折扣券選填" maxlength="30" value="{$card.minDiscountPaid}">
+										</div>
+									</div>
+
+									<div id="ctselect1" style="display: none;">
+										<div class="form-group">
+											<label class="col-sm-3 control-label">折扣率</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" name="discountRate" id="discountRate" placeholder="折扣率 折扣券7折为30 75折为25 数值小于100" maxlength="2" value="{$card.discountRate}">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label">封頂金額</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" name="maxDiscountRateMoney" id="maxDiscountRateMoney" placeholder="最高减免金额(非必填)" maxlength="10" value="{$card.maxDiscountRateMoney}">
+											</div>
+										</div>
+									</div>
+
+									<div id="ctselectno1" style="display: none;">
+										<div class="form-group">
+											<label class="col-sm-3 control-label">减免金额</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" name="discountMoney" id="discountMoney" placeholder="减免金额 需小于最低消费金额" maxlength="10" value="{$card.discountMoney}">
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">领取开始时间</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="receiptStartTime" id="receiptStartTime" placeholder="领取开始时间" maxlength="25" readonly="readonly" style="cursor: pointer;" value="{:date('Y-m-d H:i:s',$card.receiptStartTime)}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">领取結束时间</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="receiptEndTime" id="receiptEndTime" placeholder="领取結束时间" maxlength="25" readonly="readonly" style="cursor: pointer;"  value="{:date('Y-m-d H:i:s',$card.receiptEndTime)}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label"> 卡券派發方式 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="distributeType" id="dt1" value="1" {if $card.distributeType==1}checked="checked"{/if}/>:二维码扫码派发</label>
+											<label><input type="radio" name="distributeType" id="dt2" value="2" {if $card.distributeType==2}checked="checked"{/if}/>消费满派发</label>
+											<label><input type="radio" name="distributeType" id="dt3" value="3" {if $card.distributeType==3}checked="checked"{/if}/>批量派发</label>
+											<label><input type="radio" name="distributeType" id="dt4" value="4" {if $card.distributeType==4}checked="checked"{/if}/>登錄派发</label>
+										</div>
+									</div>
+
+									<div id="dtselect2" style="display: none;">
+										<div class="form-group">
+											<label for="inputcontact" class="col-sm-3 control-label">起派金額</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" name="distributeMoney" id="distributeMoney" placeholder="起派金額" maxlength="10" value="{$card.distributeMoney}">
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label"> 有效期類型 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="timeType" id="tt1" value="1" {if $card.timeType==1}checked="checked"{/if}/>領取后有效時長</label>
+											<label><input type="radio" name="timeType" id="tt2" value="2" {if $card.timeType==2}checked="checked"{/if}/>指定時間區間</label>
+											<label><input type="radio" name="timeType" id="tt3" value="3" {if $card.timeType==3}checked="checked"{/if}/>永久有效</label>
+										</div>
+									</div>
+
+									<div id="ttselect1" style="display: none;">
+										<div class="form-group">
+											<label for="inputcontact" class="col-sm-3 control-label">有效時長</label>
+											<div class="col-sm-5">
+												<label style="width: 32%;display: inline-block;">
+													<input type="text" class="form-control" name="timeLength[year]" id="yearLength" maxlength="2" style="width: 80%;display: inline-block;" value="{if(!empty($card['timeLengthList'][0]))}{$card['timeLengthList'][0]}{/if}">
+													年
+												</label>
+												<label style="width: 32%;display: inline-block;">
+													<input type="text" class="form-control" name="timeLength[month]" id="monthLength" maxlength="2" style="width: 80%;display: inline-block;" value="{if(!empty($card['timeLengthList'][0]))}{$card['timeLengthList'][1]}{/if}">
+													月
+												</label>
+												<label style="width: 32%;display: inline-block;">
+													<input type="text" class="form-control" name="timeLength[day]" id="dayLength" maxlength="2" style="width: 80%;display: inline-block;" value="{if(!empty($card['timeLengthList'][0]))}{$card['timeLengthList'][2]}{/if}">
+													日
+												</label>
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="inputcontact" class="col-sm-3 control-label"></label>
+											<div class="col-sm-5">
+												<label style="width: 32%;display: inline-block;">
+													<input type="text" class="form-control" name="timeLength[hour]" id="hourLength" maxlength="2" style="width: 80%;display: inline-block;" value="{if(!empty($card['timeLengthList'][0]))}{$card['timeLengthList'][3]}{/if}">
+													時
+												</label>
+												<label style="width: 32%;display: inline-block;">
+													<input type="text" class="form-control" name="timeLength[minute]" id="minuteLength" maxlength="2" style="width: 80%;display: inline-block;" value="{if(!empty($card['timeLengthList'][0]))}{$card['timeLengthList'][4]}{/if}">
+													分
+												</label>
+												<label style="width: 32%;display: inline-block;">
+													<input type="text" class="form-control" name="timeLength[second]" id="secondLength" maxlength="2" style="width: 80%;display: inline-block;" value="{if(!empty($card['timeLengthList'][0]))}{$card['timeLengthList'][5]}{/if}">
+													秒
+												</label>
+											</div>
+										</div>
+									</div>
+
+									<div id="ttselect2" style="display: none;">
+										<div class="form-group">
+											<label class="col-sm-3 control-label">有效期开始时间</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" name="validStartTime" id="validStartTime" placeholder="有效期开始时间" maxlength="25" readonly="readonly" style="cursor: pointer;" value="{:date('Y-m-d H:i:s',$card.validStartTime)}">
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label class="col-sm-3 control-label">有效期結束时间</label>
+											<div class="col-sm-5">
+												<input type="text" class="form-control" name="validEndTime" id="validEndTime" placeholder="有效期結束时间" maxlength="25" readonly="readonly" style="cursor: pointer;" value="{:date('Y-m-d H:i:s',$card.validEndTime)}">
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label">用户領取次數</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="limitNumber" id="limitNumber" placeholder="用户領取次數" maxlength="2" value="{$card.limitNumber}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="status" id="status1" value="1" {if $card.status==1}checked="checked"{/if}/>启用</label>
+											<label><input type="radio" name="status" id="status0" value="0" {if $card.status==0}checked="checked"{/if}/>停用</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script src="{$Think.config.Houtai}js/laydate.js"></script>
+<script type="text/javascript">
+	laydate.render({
+		elem: '#receiptStartTime', //指定元素
+		type:'datetime',
+	});
+	laydate.render({
+		elem: '#receiptEndTime', //指定元素
+		type:'datetime',
+	});
+	laydate.render({
+		elem: '#validStartTime', //指定元素
+		type:'datetime',
+	});
+	laydate.render({
+		elem: '#validEndTime', //指定元素
+		type:'datetime',
+	});
+    function getgoodlist(){
+		var contactNumber = $("#contactNumber").val();
+		$.ajax({
+	        type: "POST",
+	        url : '{:url('base/getgoods')}',
+	        data: {contactNumber:contactNumber},
+	        async: true,
+	        success: function(data) {
+	            var str = '<option value="">请选择</option>';
+	            if(!$.isEmptyObject(data.msg)){
+		            $.each(data.msg,function(n,vo) {
+		            	str += '<option value="'+vo.id+'">'+vo.name+'</option>';
+		            });
+	        	}
+	        	$("#goodinfo").html(str);
+	        },
+	        error: function(request) {
+	            alert('頁面錯誤');
+	        }
+	    });	
+	}
+
+    //页面加载完成后初始化select2控件  
+    $(function () {
+		$("#contactNumber").select2({
+	    	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该餐廳";
+		        }
+		    }
+		}); 
+		$("#goodinfo").select2({
+	    	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该菜品";
+		        }
+		    }
+		});
+    	setForm();
+    	function setForm(){
+	    	var useType = $("input[name='useType']:checked").val();
+	    	var cardType = $("input[name='cardType']:checked").val();
+	    	var distributeType = $("input[name='distributeType']:checked").val();
+	    	var timeType = $("input[name='timeType']:checked").val();
+	    	var contactNumber = $("#contactNumber").val();
+    		if(useType==2){
+				$("#utselect").show();
+				$('#ct3').iCheck('enable');
+			}else{
+				$("#utselect").hide();
+				$('#ct3').iCheck('disable');
+				if(cardType==3){
+					$('#ct3').iCheck('uncheck');
+					cardType = '';
+				}
+			}
+
+			if(cardType==1){
+				$("#ctselect1").show();
+				$("#ctselectno1").hide();
+				$("#ctselect3").hide();
+			}else if(cardType==2){
+				$("#ctselect1").hide();
+				$("#ctselectno1").show();
+				$("#ctselect3").hide();
+			}else if(cardType==3){
+				$("#ctselect1").hide();
+				$("#ctselectno1").show();
+				$("#ctselect3").show();
+			}else{
+				$("#ctselect1").hide();
+				$("#ctselectno1").hide();
+				$("#ctselect3").hide();
+			}
+
+			if(distributeType==1){
+				$("#dtselect2").hide();
+			}else if(distributeType==2){
+				$("#dtselect2").show();
+			}else{
+				$("#dtselect2").hide();
+			}
+
+			if(timeType==1){
+				$("#ttselect1").show();
+				$("#ttselect2").hide();
+			}else if(timeType==2){
+				$("#ttselect1").hide();
+				$("#ttselect2").show();
+			}else{
+				$("#ttselect1").hide();
+				$("#ttselect2").hide();
+			}
+    	}
+
+	    $("input[name='useType']").on('ifChecked', function(event){
+	    	setForm();
+		});
+
+		$("input[name='cardType']").on('ifChecked', function(event){
+	    	setForm();
+	    	if(contactNumber==''||contactNumber==null){
+				$("#goodinfo").html('<option disabled="disabled">請先選擇商家</option>');
+			}else{
+				$("#goodinfo").html('<option disabled="disabled">加載中...</option>');
+				getgoodlist();
+			}
+		});
+
+		$("input[name='distributeType']").on('ifChecked', function(event){
+	    	setForm();
+		});
+
+		$("input[name='timeType']").on('ifChecked', function(event){
+	    	setForm();
+		});
+
+		$("#contactNumber").change(function(){
+	    	setForm();
+	    	if(contactNumber==''||contactNumber==null){
+				$("#goodinfo").html('<option disabled="disabled">請先選擇商家</option>');
+			}else{
+				$("#goodinfo").html('<option disabled="disabled">加載中...</option>');
+				getgoodlist();
+			}
+		});
+
+		$(".submit").click(function(){
+			$.ajax({
+                type: "POST",
+                url : '{:url('Cardinfo/edit')}',
+                data: $("#edit").serialize(),
+                async: true,
+                success: function(data) {
+                	if(data.code){
+	                    alert(data.msg);
+	            		window.history.go(-1);
+                	}else{
+	                    alert(data.msg);
+                	}
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+		});
+	});
+</script> 

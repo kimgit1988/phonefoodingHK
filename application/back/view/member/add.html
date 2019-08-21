@@ -1,0 +1,88 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">添加餐桌</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Member/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header> -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('Member/add')}" enctype="multipart/form-data" class="form-horizontal ajax-form" method="post">
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">餐桌分类</label>
+										<div class="col-sm-11">
+											<select name="cCategory" class="form-control">
+												<option value="">请选择</option>
+												{volist name="type" id="vo"}
+												<option value="{$vo.id}">{$vo.name}</option>
+												{if(isset($vo.child))}{:getChildOption($vo.child)}{/if}
+												{/volist}
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">餐桌名</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="name" id="inputname" placeholder="餐桌名">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputurl"> 餐桌号 </label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="number" id="inputnumber" placeholder="餐桌号">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="disable" id="inputstatus" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="0" />停用</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputremark"> 备注 </label>
+										<div class="col-sm-11">
+											<textarea name="remark" class="form-control"></textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-9">
+											<button type="submit" class="btn btn-primary">提交</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

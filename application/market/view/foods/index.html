@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>菜品</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/style.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div class="container">
+	<div class="main">
+		<!-- 头部图片 -->
+		<div class="foods-header">
+			<div class="foods-header-icon"><img src="STATIC_PATH/assets/market/images/category.png"></div>
+			<div class="foods-header-search"><img src="STATIC_PATH/assets/market/images/search-no.png"><input type="text" name="search" placeholder="請輸入搜索信息"></div>
+		</div>
+		<div class="foods-list">
+			{volist name="list" id="vo"}
+				{if(!empty($vo['_child']))}
+					<div class="foods-category">
+						<div class="foods-category-name">{$vo['name']}</div>
+					</div>
+					{volist name="vo['_child']" id="food"}
+					<div class="foods-li" onclick="window.location.href='{:url('foods/edit',['id'=>$food['id']])}';">
+						<div class="foods-li-img"><img src="{$food['thumbnailUrl']}"></div>
+						<div class="foods-li-name">{$food['name']}</div>
+						<div class="foods-li-detail">
+							<div class="foods-li-number">菜品編號：{$food['number']}</div>
+							<div class="foods-li-price">單價：{$food['salePrice']}</div>
+						</div>
+					</div>
+					{/volist}
+				{/if}
+			{/volist}
+			
+		</div>
+		<div class="add-foods-btn"><img src="STATIC_PATH/assets/market/images/add.png"><span>新增菜品</span></div>
+	</div>
+	{include file="common:footer"}
+</div>
+<script type="text/javascript">
+	$('.add-foods-btn').click(function () {
+		window.location.href="{:url('foods/add')}";
+	}); 
+</script>
+
+</body>
+
+</html>

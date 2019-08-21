@@ -1,0 +1,1 @@
+{"app_code":"A6A49A66B4CB4F0589CFDFE94EA95032","redirect_uri":"http:\/\/test.qfpay.com\/get_code7","mchid":"R1zQrTdJnn","sign":"c8824938da3a212d690f9452084f06a6"}

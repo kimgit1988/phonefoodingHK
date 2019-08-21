@@ -1,0 +1,74 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>
+	<h4 class="page-title b-0">發送郵件</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Mechanism/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header> -->
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('balance/sendxls')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="send">
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">结算日期</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="account" id="account" placeholder="结算日期">
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<button class="btn btn-primary submit">發送</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script src="{$Think.config.Houtai}js/laydate.js"></script>
+<script type="text/javascript">  
+    //页面加载完成后初始化select2控件  
+    $(function () {
+		$("#commission").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该分类";
+		        }
+		    }
+		});
+	});
+	//执行一个laydate实例
+	laydate.render({
+	  elem: '#account', //指定元素
+	  type:'date',
+	});
+</script>

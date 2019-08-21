@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('訂單')}</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/dropload.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<!--<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery.mobile-1.4.5.min.js"></script>-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+</head>
+<body>
+<script>
+	$(function(){
+		$("#order-hear li").click(function(){
+			$(this).css({
+				"color":"#52B293",
+				"border-bottom":"0.8vw solid #52B293",
+			}).siblings('li').css({
+				"color":"#333333",
+				"border-bottom":"none",
+			});
+		});					
+			
+		$("#order-hear li").click(function(){
+			$(this).addClass("action").siblings().removeClass("action");
+			var index = $(this).index();
+			$("#order-list li").eq(index).css("display","block").siblings().css("display","none");
+			// 需先解锁下拉面再关闭上拉否则上拉也会打开(插件问题)
+            if(index==2 || index==3){
+                dropload.lock('up');
+            }
+			dropload.lock('up');
+			dropload.noData(false);
+			dropload.resetload();
+		});
+	});
+</script>
+<div class="container">
+	<div class="user-order-main">
+		<div class="user-logout staff-logout">
+			<!--<div class="user-out-name">{$name}</div>-->
+			<img src="STATIC_PATH/assets/mobile/images/login-out-icon.png">
+		</div>
+		<!-- 头部图片 -->
+		<ul id="order-hear">
+			{if($action!=1)}
+			<li id="allOrder" style="color:#52B293;border-bottom:0.8vw solid #52B293;" class="action">{:lang('已支付')}</li>
+			<li id="newsOrder" style="color: #333333;border-bottom:none;">{:lang('未支付')}<span style="background: #FF5901;
+				color:#FFF;" id="newsNum" data-number="{$num}">{if($num>99)}99+{else}{$num}{/if}</span></li>
+			{else}
+			<li id="allOrder" style="color:#333333;border-bottom:none;">{:lang('已支付')}</li>
+			<li id="newsOrder" style="color:#52B293;border-bottom:0.8vw solid #52B293;" class="action">{:lang('未支付aaaa')}<span style="background: #FF5901;
+				color:#FFF;" id="newsNum" data-number="{$num}">{if($num>99)}99+{else}{$num}{/if}</span></li>
+			{/if}
+		</ul>
+		<div id="order-scroll">
+			<ul id="order-list">
+				{if($action!=1)}
+				<li style="display: block;" id="all-list">
+				{else}
+				<li id="all-list">
+				{/if}
+				</li>
+				{if($action==1)}
+				<li style="display: block;" id="news-list">
+				{else}
+				<li id="news-list">
+				{/if}
+				</li>
+			</ul>
+		</div>
+		<div class="new-order-click" onclick="window.location.href='{:url(\'order/index\',[\'action\'=>1])}'"><div class="new-order-tip">{:lang('你有新訂單')}</div></div>
+	</div>
+</div>
+<script type="text/javascript">
+	function getOrder(orderSN){
+	    console.log('000');
+		$.ajax({
+          type: "POST",
+          url : '{:url(\'order/getOrder\')}',
+          data: {'orderSN':orderSN},
+          async: true,
+            success: function(data) {
+            	if(data.code) {
+            		newsNum = Number($("#newsNum").attr('data-number'));
+            		newsNum = newsNum - 1;
+            		if (newsNum>99) {
+            			$("#newsNum").attr('data-number',newsNum);
+            			$("#newsNum").text('99+');
+            		}else{
+            			$("#newsNum").attr('data-number',newsNum);
+            			$("#newsNum").text(newsNum);
+            		}
+            		swal({
+						'text':data.msg.tip,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					});
+            		$("#order"+orderSN).addClass('order-btn-no').removeClass('order-btn');
+            		$("#order"+orderSN).empty();
+            		$("#order"+orderSN).html('<span>{:lang(\'已打單\')}</span>');
+            		$("#order"+orderSN).removeAttr('onclick');
+            		$("#new"+orderSN).addClass('order-btn-no').removeClass('order-btn');
+            		$("#new"+orderSN).empty();
+            		$("#new"+orderSN).html('<span>{:lang(\'已打單\')}</span>');
+            		$("#new"+orderSN).removeAttr('onclick');
+            	}else{
+            		swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+            	}
+            },
+            error: function(request) {
+              	swal({
+					'text':'{:lang(\'頁面錯誤\')}',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+	};
+	$('.user-logout').click(function () {
+		$.ajax({
+          type: "POST",
+          url : "{:url('manage/loginout')}",
+          data: {},
+          async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/logout-ful.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')} ',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+                swal({
+					'text':'頁面錯誤',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+	});
+	var maxorder;
+	var minAllOrder;
+	var minNewOrder;
+	var getNewOrder = setInterval("order()",10000);
+	function order(){
+		if(maxorder!=null&&maxorder!=''&&maxorder!=undefined){
+			$.ajax({
+			    type: "POST",
+			    url: "{:url('Order/newOrders')}",
+			    dataType: 'json',
+			    data:{
+			        'maxorder':maxorder,
+			    },
+			    success: function (data) {
+			    	if(data.code==1){
+			        	$(".new-order-click").show();
+			        	$(".new-order-tip").html(data.msg);
+			        	action = 0;
+			        }
+			    }
+			});
+		}
+	}
+	var dropload = $('#order-scroll').dropload({
+		domUp : {
+			domClass   : 'dropload-up',
+			domRefresh : '<div class="dropload-refresh">↓{:lang(\'下拉刷新\')}</div>',
+			domUpdate  : '<div class="dropload-update">↑{:lang(\'釋放更新\')}</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>{:lang(\'加載中\')}...</div>'
+		},
+		domDown : {
+			domClass   : 'dropload-down',
+			domRefresh : '<div class="dropload-refresh">↑{:lang(\'上拉加載更多\')}</div>',
+			domLoad    : '<div class="dropload-load"><span class="load"></span>{:lang(\'加載中\')}...</div>',
+			domNoData  : '<div class="dropload-noData">{:lang(\'暫無更多\')}</div>'
+		},
+		loadUpFn : function(me){
+			return;
+		},
+		loadDownFn : function(me){
+			var action;
+			var minOrder;
+			if($(".action").attr('id')=='newsOrder'){
+				action = 1;
+				minOrder = minNewOrder;
+			}else if ($(".action").attr('id')=='allOrder') {
+				action = 0;
+				minOrder = minAllOrder;
+			}
+			$.ajax({
+			    type: "POST",
+			    url: "{:url('Order/nextOrders')}",
+			    dataType: 'json',
+			    data:{
+			        'minOrder':minOrder,
+			        'action' :action,
+			    },
+			    success: function (res) {
+					if(res.code==1){
+						if(!$.isEmptyObject(res.msg)){
+							var addorder = '';
+							$.each(res.msg.order,function(n,vo) {
+								if(vo.id>maxorder||maxorder==null||maxorder==''||maxorder==undefined){
+									maxorder = vo.id;
+								}
+								if(vo.id<minOrder||minOrder==null||minOrder==''||minOrder==undefined){
+									if(action == 0){
+										minAllOrder = vo.id;
+									}else if(action == 1){
+										minNewOrder = vo.id;
+									}
+								}
+								addorder += '<div class="order-li">';
+								addorder += '<div class="order-li-header" >';
+								addorder += '<div class="order-member">'+vo.contactMemberName+'{:lang(\'枱\')}'+'</div>';
+								addorder += '<div class="order-time">'+vo.createTime+'</div>';
+								addorder += '</div>';
+								addorder += '<div class="order-li-body printer-table staff-order" >';
+								$.each(vo._goods,function(i,food) {
+									addorder += '<div class="order-food printer-tr">';
+									// addorder += '<div class="order-food-name">'+food.goodsName+'</div>';
+									if(food.goodsType>3){
+										addorder += '<div class="order-food-name printer-td">┗━'+food.goodsName+'</div>';
+									}else{
+										addorder += '<div class="order-food-name printer-td">'+food.goodsName+'</div>';
+									}
+									addorder += '<div class="order-food-price printer-td"></div>';
+									addorder += '<div class="order-food-number printer-td">'+food.num+'</div>';
+									addorder += '</div>';
+								});
+								addorder += '</div>';
+								addorder += '<div class="order-li-footer" >';
+								// addorder += '<div class="order-price">總價：<span>HKD$&nbsp;'+vo.moneyPaid+'</span></div>';
+								if(vo.orderStatus==2){
+                                    var pay_name = "";
+                                    if(vo.payStatus==0&&vo.payType==7){
+                                        var pay_name = "({:lang('現金')})";
+                                    }
+									if(action==1){
+										addorder += '<div class="order-long-btn" onclick="getOrder(\''+vo.orderSN+'\')" id="new'+vo.orderSN+'"><span>{:lang(\'打單\')}'+pay_name+'</span></div>';
+									}else{
+										addorder += '<div class="order-long-btn" onclick="getOrder(\''+vo.orderSN+'\')" id="order'+vo.orderSN+'"><span>{:lang(\'打單\')}'+pay_name+'</span></div>';
+									}
+								}else if(vo.orderStatus==1){
+									addorder += '<div class="order-long-btn-no"><span>{:lang(\'未支付\')}</span></div>';
+								}else{
+									addorder += '<div class="order-long-btn-no"><span>{:lang(\'已打單\')}</span></div>';
+								}
+								addorder += '</div>';
+								addorder += '</div>';
+							});
+							if(action == 0){
+								$("#all-list").append(addorder);
+							}else if(action == 1){
+								$("#news-list").append(addorder);
+							}
+							setTimeout(function(){
+								me.resetload();
+							},500);
+						}else{
+							setTimeout(function(){
+								me.lock();
+								me.noData(true);
+								me.resetload();
+							},500);
+						}
+					}else{
+						me.lock();
+						me.noData();
+						me.resetload();
+						/*
+						swal({
+		                    'title': '潮食点餐系统',
+		                    'text':res.msg,
+		                    'confirmButtonColor':'#AAA',
+		                });
+						*/
+					}
+
+				}
+			});
+		}
+	});
+	dropload.lock('up');
+</script>
+</body>
+</html>

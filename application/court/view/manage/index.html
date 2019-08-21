@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>管理</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="container">
+	<div class="main bg-contact-order">
+		<!-- 头部图片 -->
+		<img src="STATIC_PATH/assets/court/images/index-head.png" class="header">
+		<div class="header-div">
+			<div class="header-icon"><img src="{:session('court_user.head')}"></div>
+			<div class="header-text">
+				<div class="header-name">{:session('court_user.courtName')}</div>
+				<div class="header-contanct">{:session('court_user.nick')}</div>
+			</div>
+		</div>
+		<div class="manage-list">
+			<div class="li-self-radius">
+				<div class="li-div" onclick="window.location.href='{:url('manage/court')}'">
+					<div class="li-name"><img src="STATIC_PATH/assets/court/images/erweima1.png" />美食廣場信息</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/court/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+			</div>
+			<div class="li-self-radius">
+				<div class="li-div" onclick="window.location.href='{:url('manage/repass')}'">
+					<div class="li-name"><img src="STATIC_PATH/assets/court/images/xiugaimima.png" />修改密碼</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/court/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+				<div class="li-div" onclick="window.location.href='{:url('manage/reset')}'">
+					<div class="li-name"><img src="STATIC_PATH/assets/court/images/xiugaizl.png" />修改資料</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/court/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+				<div class="li-div" onclick="window.location.href='{:url('manage/getKey')}'">
+					<div class="li-name"><img src="STATIC_PATH/assets/court/images/xiugaimima.png" />接口密鑰</div>
+					<div class="li-arrow"><img src="STATIC_PATH/assets/court/images/arrow-next.png" style="height: 4vw;"></div>
+				</div>
+			</div>
+			<div class="li-loginout">退出</div>
+		</div>
+	</div>
+	{include file="common:footer"}
+</div>
+<script type="text/javascript">
+	$('.li-loginout').click(function () {
+		$.ajax({
+        	type: "POST",
+        	url : "{:url('manage/loginout')}",
+        	data: {},
+        	async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/court/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/court/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+				swal({
+					'text':'页面错误',
+					'confirmButtonText': '确认',
+					'confirmButtonColor':'#ea831e',
+					'imageUrl': 'STATIC_PATH/assets/court/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+	});
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">数据库列表</h4>
+
+	<div class="listview list-container">
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover">
+								<tr>
+									<th>表名</th>
+									<th>数据量</th>
+									<th>数据大小</th>
+									<th>创建时间</th>
+									<th>最后更时间</th>
+									<th>表注释</th>
+									<th>操作</th>
+								</tr>
+								{volist name="databaseRows" id="list"}
+								<tr>
+									<td>{$list.name}</td>
+									<td>{$list.rows}</td>
+									<td>{$list.data_length}</td>
+									<td>{$list.create_time}</td>
+									<td>{$list.update_time}</td>
+									<td>{$list.comment}</td>
+									<td>
+										<a class="btn btn-xs btn-default ajax-get" data-msg="确定优化这个表吗？" href="{:url('databases/optimize',['table'=>$list['name']])}">优化表</a>
+										<a class="btn btn-xs btn-default ajax-get" data-msg="确定修复这个表吗？" href="{:url('databases/repair',['table'=>$list['name']])}">修复表</a>
+										<a class="btn btn-xs btn-default ajax-get" data-msg="确定备份这个表吗？" href="{:url('databases/backup',['table'=>$list['name']])}">备份表</a>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer notPage">
+						<div class="row">
+							<div class="col-md-2">
+								<a class="btn btn-default " href="{:url('databases/backdata')}">备份本地数据库</a>
+							</div>
+							<div class="col-md-6">
+								<form action="{:url('back/databases/leaddata')}" enctype="multipart/form-data" method="post">
+									<div class="fileupload fileupload-new pull-left " data-provides="fileupload">
+										<span class="btn btn-file btn-sm btn-alt">
+                            <span class="fileupload-new ">选择sql文件</span>
+										<span class="fileupload-exists">重新选择</span>
+										<input type="file" name="file" />
+										</span>
+										<span class="fileupload-preview"></span>
+										<a href="#" class="close close-pic fileupload-exists" data-dismiss="fileupload">
+											<i class="fa fa-times"></i>
+										</a>
+									</div>
+									<input class="btn btn-default" type="submit" value="导入数据文件">
+								</form>
+
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</section>

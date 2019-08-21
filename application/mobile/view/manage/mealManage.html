@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('應用菜品')}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/addmeal.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/manage/addmealManage.html';"></i>
+        <div class="title">{:lang('應用菜品')}</div>
+    </div>
+    <div class="content-main">
+        <div class="meal-ul">
+            {if($good_data)}
+            {volist name="good_data" id="vo" key="k"}
+            <div class="meal-li-item">
+                <input type="checkbox" name="gid[]" id="{$vo.id}" class="checkbox" />
+                <label for="{$vo.id}">
+                    <div class="img">
+                        {if($vo.thumbnailUrl)}
+                            <img src="{$vo.thumbnailUrl}" alt="" />
+                        {else}
+                            <img src="STATIC_PATH/assets/img/lazyloadImg.png" alt="" />
+                        {/if}
+                    </div>
+                    <div class="meal-info">
+                        <div class="name">
+                            <span class="text">{$vo.name}</span>
+                        </div>
+                        <div class="remark">{$vo.mark}</div>
+                        <div class="price">HK$<em> {$vo.salePrice}</em><span class="set">{:lang('已上架')}</span></div>
+                    </div>
+                </label>
+                <span class="right" onclick="window.location.href='{:url(\'manage/mealcategory\',[\'gid\'=>$vo.id,\'aid\'=>$aid])}'">{:lang('跟餐餐品')}<i class="fab-right"></i></span>
+            </div>
+            {/volist}
+            {/if}
+        </div>
+        <div class="btn-fix">
+            <input type="checkbox" id="all" class="check" /> <span class="text">{:lang('全選')} /  <span class="del" onclick="btnDel()">{:lang('刪除')}</span></span>
+            <div class="button-normal cancel add" onclick="showmodal()">{:lang('添加更多菜品')}</div>
+        </div>
+    </div>
+    <div class="modal fade modal-wrapper" id="foodModal" tabindex="-1" role="dialog"
+         aria-labelledby="configModalLabel" aria-hidden="true">
+        <form method="post" id="addfood">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="title">{:lang('添加更多菜品')}</div>
+                <div class="search">
+                    <i class="fab-search"></i>
+                    <input type="text" class="input-searach" placeholder="{:lang('輸入菜品名稱')}">
+                </div>
+                <div class="meal-ul food-list">
+
+                </div>
+            </div><!-- /.modal-content -->
+            <div class="footer btn-fix">
+                <input type="checkbox" id="allfood" class="check">
+                <span class="text">{:lang('全選')}</span>
+                <input type="hidden" id="aid" name="aid" value="{$aid}" />
+                <div class="button-normal confirm add btn-add">{:lang('確認')}</div>
+            </div>
+        </div><!-- /.modal -->
+        </form>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+
+    //添加更多菜品
+    function showmodal() {
+        var id = $('#aid').val();
+        $.ajax({
+            type:'POST',
+            url:'{:url("manage/getMealGood")}',
+            data:{'id':id},
+            async:true,
+            success: function (res) {
+                var foodHtml = '';
+                if(res.length>0){
+                    $('#foodModal').modal('show');
+                    $('.input-searach').val("");
+                    $.each(res, function (n,vo) {
+                        foodHtml += '<div class="meal-li-item">'
+                            + '<input type="checkbox" class="food" name="gid[]" value="'+vo.id+'" id="'+vo.id+'" />'
+                            + '<label for="'+vo.id+'"><div class="img">';
+                        if(vo.thumbnailUrl){
+                            foodHtml += '<img src="'+vo.thumbnailUrl+'" alt="" />';
+                        }else{
+                            foodHtml += '<img src="STATIC_PATH/assets/img/lazyloadImg.png" alt="" />';
+                        }
+                        foodHtml += '</div><div class="meal-info">'
+                            + '<div class="name"><span class="text">'+vo.name+'</span></div>'
+                            + '<div class="remark">'+vo.remark+'</div>'
+                            + '<div class="price">HK$<em>'+vo.salePrice+'</em></div>'
+                            + '</div></label></div>';
+                    });
+                    $('.food-list').html("").append(foodHtml);
+                }
+            },
+            error:function (msg) {
+                console.log(msg.errorMessage);
+            }
+        })
+    }
+
+    //刪除菜品
+    function btnDel() {
+        var gid = [];
+        var arr = $('input[type="checkbox"][class="checkbox"]:checked');
+        $.each(arr,function (index,item) {
+            gid.push(item.id);
+        });
+        var aid = $('#aid').val();
+        $.ajax({
+            type:'POST',
+            url:'{:url("manage/delMealGood")}',
+            data:{'aid':aid,'gid':gid},
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function (res) {
+                closeloading();
+                if (res.code) {
+                    swal({
+                        'text':res.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-add.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = "{:url('manage/mealmanage',['id'=>$aid])}";
+                    });
+                } else {
+                    swal({
+                        'text':res.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function (msg) {
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    }
+
+    //菜品搜索
+    $('.input-searach').bind('keydown',function (e) {
+        if(e.keyCode==13){
+            e.preventDefault();
+            var keyword = $('.input-searach').val();
+            $.ajax({
+                type:'POST',
+                url:'{:url("manage/getMealGood")}',
+                data:{'keyword':keyword},
+                async:true,
+                success:function (res) {
+                    var arrHtml = '';
+                    if(res.length>0){
+                        $.each(res, function (n,vo) {
+                            arrHtml += '<div class="meal-li-item">'
+                                + '<input type="checkbox" class="food" name="gid[]" value="'+vo.id+'" id="'+vo.id+'" />'
+                                + '<label for="'+vo.id+'"><div class="img">';
+                            if(vo.thumbnailUrl){
+                                arrHtml += '<img src="'+vo.thumbnailUrl+'" alt="" />';
+                            }else{
+                                arrHtml += '<img src="STATIC_PATH/assets/img/lazyloadImg.png" alt="" />';
+                            }
+                            arrHtml += '</div><div class="meal-info">'
+                                + '<div class="name"><span class="text">'+vo.name+'</span></div>'
+                                + '<div class="remark">'+vo.remark+'</div>'
+                                + '<div class="price">HK$<em>'+vo.salePrice+'</em></div>'
+                                + '</div></label></div>';
+                        });
+                        $('.food-list').html("").append(arrHtml);
+                    }else {
+                        arrHtml = '<div class="alert-fail">{:lang(\'暫無相關菜品\')}</div>';
+                        $('.food-list').append(arrHtml);
+                        $('.alert-fail').show().delay(1500).fadeOut();
+                    }
+                },
+                error:function (msg) {
+                    console.log(msg.errorMessage);
+                }
+            });
+        }
+    });
+
+
+    //添加应用菜品
+    $(document).on('click', '.btn-add', function (e) {
+        e.returnValue=true;
+        $.ajax({
+            type: "POST",
+            url : '{:url("manage/addMealGood")}',
+            data: $('#addfood').serialize(),
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function(data) {
+                closeloading();
+                if (data.code) {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = "{:url('manage/mealmanage',['id'=>$aid])}";
+                    });
+                } else {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function(request) {
+                closeloading();
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        })
+    });
+
+    var checkbox = $('input[type="checkbox"][class="checkbox"]');
+    $('input[type="checkbox"][id="all"]').on('click', function () {
+        var flag = $(this).is(':checked');
+        if(flag){
+            checkbox.prop('checked',true);
+        }else{
+            checkbox.prop('checked',false);
+        }
+    });
+
+    $(document).on('click', 'input[type="checkbox"][id="allfood"]', function () {
+        var flag = $('input[type="checkbox"][id="allfood"]').is(':checked');
+        if(flag){
+            $('input[type="checkbox"][class="food"]').prop('checked',true);
+        }else{
+            $('input[type="checkbox"][class="food"]').prop('checked',false);
+        }
+    });
+
+    checkbox.on('click',function () {
+        var len = $('input[type="checkbox"][class="checkbox"]:checked').length;
+        if(len<checkbox.length){
+            $('input[type="checkbox"][id="all"]').prop('checked',false);
+        }else{
+            $('input[type="checkbox"][id="all"]').prop('checked',true);
+        }
+    });
+
+    $(document).on('click', 'input[type="checkbox"][class="food"]', function () {
+        var len = $('input[type="checkbox"][class="food"]:checked').length;
+        var food = $('input[type="checkbox"][class="food"]');
+        if(len<food.length){
+            $('input[type="checkbox"][id="allfood"]').prop('checked',false);
+        }else{
+            $('input[type="checkbox"][id="allfood"]').prop('checked',true);
+        }
+    });
+
+
+</script>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>修改資料</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/intial.css">
+  <link rel="stylesheet" href="STATIC_PATH/assets/market/css/mobileSelect.css">
+  <link rel="stylesheet" href="STATIC_PATH/assets/market/css/sweetalert2.min.css">
+  <link rel="stylesheet" href="STATIC_PATH/assets/market/css/reset.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/hammer.min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/lrz.all.bundle.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/iscroll-zoom-min.js" ></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/camera.js/PhotoClip.js" ></script>
+  <script type="text/javascript" src="STATIC_PATH/assets/market/js/mobileSelect.min.js"></script>
+<script type="text/javascript" src="STATIC_PATH/assets/market/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="title-div">
+	<img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="javascript:history.back(-1);"/>
+	<div class="title">
+		修改資料
+	</div>
+</div>
+<div class="container">
+	<div class="main">
+		<form  action="{:url('reset')}" method="post" id="reset">
+            <div class="food-input-li">
+                <div class="food-cate-label">昵称：</div><input name="nick" type="text" value="{$user.nick}">
+            </div>
+            <div class="food-input-li">
+                <div class="food-cate-label">郵箱：</div><input name="mail" type="text" value="{$user.email}">
+            </div>
+            <div class="food-input-li img-div">
+				<div class="food-cate-label f-l">頭像(上傳)</div>
+				<div class="food-cate-img f-r" id="upload-img">
+					<img src="{$user.head}" class="food-img">
+					<input type="hidden" name="pic_path" id="pic_path" value="{$user.head}">
+				</div>
+				<div class="upload-img f-r">建議分辨率68*68</div>
+			</div>
+            <div class="member-cate-add-btn member-btn">確&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;認</div>
+        </form>
+   
+	</div>
+</div>
+<div class="clipbg clipbg-img displaynone">
+    <div id="clipArea1"></div>
+    <div class="loading loading-img displaynone">正在载入图片...</div>
+    <div class="footer">
+    <dl>
+        <dd>打开相册<input type="file" id="img" accept="image/*" ></dd>
+        <dd id="clipBtn-img">完成裁剪</dd>
+    </dl>
+    <div class="back back-img">取消</div>
+    </div>
+</div>
+<script type="text/javascript">
+    var submitInfo = true;
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+	$('.member-cate-add-btn').click(function () {
+        if(submitInfo){
+            $.ajax({
+              
+              type: "POST",
+              url : '{:url('reset')}',
+              data: $('#reset').serialize(),
+              async: true,
+                success: function(data) {
+                    if (data.code) {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '确认',
+							'confirmButtonColor':'#ea831e',
+							'imageUrl': 'STATIC_PATH/assets/market/images/wancheng.png',
+							'imageSize': '16x16',
+							'customClass': 'success'
+						}).then(function(isConfirm) {
+                            location.href = data.url;
+                        });
+                    } else {
+                        swal({
+							'text':data.msg,
+							'confirmButtonText': '确认',
+							'confirmButtonColor':'#ea831e',
+							'imageUrl': 'STATIC_PATH/assets/market/images/shanchu.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+					swal({
+						'text':'页面错误',
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/market/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+        }else{
+            swal({
+                'confirmButtonText': '确认',
+                'text':'图片上传中,请稍后',
+                'confirmButtonColor':'#ea831e',
+            });
+        }
+    });
+    $("#upload-img").click(function(){
+        $(".clipbg-img").fadeIn()
+    })
+
+    var clipAreaImg = new  PhotoClip("#clipArea1", {
+        size: [120, 120],//裁剪框大小
+        outputSize:[0,0],//打开图片大小，[0,0]表示原图大小
+        file: "#img",
+        ok: "#clipBtn-img",
+        loadStart: function() {
+        //图片开始加载的回调函数。this 指向当前 PhotoClip 的实例对象，并将正在加载的 file 对象作为参数传入。（如果是使用非 file 的方式加载图片，则该参数为图片的 url）
+            var size = document.getElementById("img").files[0].size;
+            if(size> {:config('UploadSize.logo')}){
+                swal({
+                    'confirmButtonText': '确认',
+                    'text':'logo图片大小不能超过{:config('UploadSize.logo')/1024/1024}M！',
+                    'confirmButtonColor':'#ea831e',
+                });
+                return false;
+            }
+            $(".loading-img").removeClass("displaynone");
+
+        },
+        loadComplete: function() {
+        //图片加载完成的回调函数。this 指向当前 PhotoClip 的实例对象，并将图片的 <img> 对象作为参数传入。
+            $(".loading-img").addClass("displaynone");
+
+        },
+        done: function(dataURL) { 
+        //裁剪完成的回调函数。this 指向当前 PhotoClip 的实例对象，会将裁剪出的图像数据DataURL作为参数传入。        
+            $(".clipbg-img").fadeOut();
+            $(".food-img").attr("src",dataURL);
+            $("#pic_path").val(dataURL);
+        }
+    });
+
+    $(".back-img").click(function(){
+        $(".clipbg-img").fadeOut()
+    })
+</script>
+</body>
+
+</html>

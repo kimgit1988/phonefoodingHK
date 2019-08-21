@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Meta, title, CSS, favicons, etc. -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-title" content="yes" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta content="telephone=no" name="format-detection" />
+	<meta name="full-screen" content="yes" />
+	<meta name="x5-fullscreen" content="true" /> 
+	<title>{:config('web_title')}</title>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+	<link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+	<link href="STATIC_PATH/assets/wxweb/css/list.css" rel="stylesheet">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+
+
+	<script>
+		$(function(){
+			var X = 0;
+			var moveEndX = 0;
+			var startX = 0;
+			var Y = 0;
+			var moveEndY = 0;
+			var startY = 0;
+			$("#myCarousel").on("touchstart", function(e) {
+				// 判断默认行为是否可以被禁用
+				if (e.cancelable) {
+					// 判断默认行为是否已经被禁用
+					if (!e.defaultPrevented) {
+						e.preventDefault();
+					}
+				}
+				startX = e.originalEvent.changedTouches[0].pageX,
+						startY = e.originalEvent.changedTouches[0].pageY;
+			});
+			$("#myCarousel").on("touchend", function(e) {
+				// 判断默认行为是否可以被禁用
+				if (e.cancelable) {
+					// 判断默认行为是否已经被禁用
+					if (!e.defaultPrevented) {
+						e.preventDefault();
+					}
+				}
+				moveEndX = e.originalEvent.changedTouches[0].pageX,
+						moveEndY = e.originalEvent.changedTouches[0].pageY,
+						X = moveEndX - startX,
+						Y = moveEndY - startY;
+				//左滑
+				if ( X > 20 ) {
+					$("#carousel-left").click();
+				}
+				//右滑
+				else if ( X < -20 ) {
+					$("#carousel-right").click();
+				}
+				/*
+                //下滑
+                else if ( Y > 0) {
+                    alert('下滑');
+                }
+                //上滑
+                else if ( Y < 0 ) {
+                    alert('上滑');
+                }
+                */
+				else{
+					var id = $(".carousel-inner>.active").attr('data-val');
+					$.ajax({
+						type: "POST",
+						url: "{:url('index/clickbanner')}",
+						dataType: 'json',
+						data:{
+							'id':id,
+						},
+						success: function (res) {
+							if(res.code==1){
+								window.location.href = res.msg;
+							}
+						}
+					});
+				}
+			});
+			$('#myCarousel').carousel({interval:5000});
+		});
+
+
+	</script>
+</head>
+<body style="line-height:0">
+<div id="food-list" class="food-list">
+	<div class="row head-div">
+		<img style ="margin: auto 0.1rem;" class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="saveCart()"/>
+		<div class="title">
+			<span>{$contact.name}</span>
+			<span>&nbsp;{$member.name}{:lang('豐富點智能點餐系統')}</span>
+		</div>
+
+		<i class="fab-order" onclick="getHistory()"></i>
+	</div>
+</div>
+
+<div class="container-div">
+	<div class="content">
+		<div>
+			<div class="banner">
+				<div id="myCarousel" class="carousel slide" >
+					<!-- 轮播（Carousel）指标 -->
+					<ol class="carousel-indicators">
+						{if(!empty($ad))}
+						{volist name="ad" id="vo"}
+						<li data-target="#myCarousel" data-slide-to="0" {if $key==0}class="active"{/if}></li>
+						{/volist}
+						{else}
+						<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+						<li data-target="#myCarousel" data-slide-to="1"></li>
+						<li data-target="#myCarousel" data-slide-to="2"></li>
+						{/if}
+					</ol>
+
+					<!-- 轮播（Carousel）项目 -->
+					<div class="carousel-inner">
+						{if(!empty($ad))}
+						{volist name="ad" id="vo"}
+						<div class="item {if $key==0}active{/if}" data-val="{$vo.id}">
+							<img src="{$vo.path}" alt="{$vo.name}" class="img-responsive">
+						</div>
+						{/volist}
+						{else}
+						<div class="item active">
+							<img src="STATIC_PATH/assets/wxweb/images/banner1.jpg" alt="First slide" class="img-responsive">
+						</div>
+						<div class="item">
+							<img src="STATIC_PATH/assets/wxweb/images/banner2.jpg" alt="Second slide" class="img-responsive">
+						</div>
+						<div class="item">
+							<img src="STATIC_PATH/assets/wxweb/images/banner3.jpg" alt="Three slide" class="img-responsive">
+						</div>
+						{/if}
+					</div>
+				</div>
+			</div>
+
+			<!-- 轮播（Carousel）导航 -->
+			<a class="carousel-control left hide" id="carousel-left" href="#myCarousel"
+			   data-slide="prev"> <span _ngcontent-c3="" aria-hidden="true"></span></a>
+			<a class="carousel-control right hide"  id="carousel-right" href="#myCarousel"
+			   data-slide="next"></a>
+		</div>
+	</div>
+</div>
+
+<!-- 廣告標題 -->
+<div style="width: 100%;margin-top: 100px;text-align: center;font-size: 0.4em;">
+	<div style="font-weight: bold">{:lang('澳門深情咖啡茶餐廳')}</div>
+</div>
+
+<!-- 台號-->
+<div style="width: 100%;margin-top: 41px;text-align: center;font-size: 0.4em;">
+	<div style="font-weight: bold;color:orange">2號檯</div>
+</div>
+
+<!-- 點餐 -->
+<div class="col-xs-12" style="width: 100%;margin-top: 31px;text-align: center;font-size: 0.4em;">
+	<div class="col-xs-1"></div>
+	<div class="col-xs-10" style="color:white;text-align:center;background-color: #52B293;height:50px;line-height: 50px;border-radius: 5px;">
+		{:lang('開始點餐')}
+	</div>
+	<div class="col-xs-1"></div>
+</div>
+
+
+
+
+
+<script type="text/javascript">
+	function getHistory() {
+		window.location.href = "{:url('index/allOrder')}";
+	}
+</script>
+</body>
+</html>

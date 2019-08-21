@@ -1,0 +1,143 @@
+{include file="common:header"}
+<body>
+<div class="index-wrapper">
+    <div class="container">
+        <div class="item-title">請輸入您的餐牌號</div>
+        <div class="dining-table">
+            <span class="btnSelect" id="0">請選擇</span>
+            <div class="ulDiv">
+                <ul>
+                    {volist name="contact_member" id="co" key="c"}
+                    <li class="item" id="{$co.number}">{$co.name}</li>
+                    {/volist}
+                </ul>
+            </div>
+        </div>
+        <button class="submit" id="btnSubmit">確定</button>
+    </div>
+</div>
+
+<style type="text/css">
+    option::-ms-expand{ display: none; }
+    option{
+        -moz-appearance:none; /* Firefox */
+        -webkit-appearance:none; /* Safari 和 Chrome */
+        appearance:none;
+        font-size:60px;
+        padding: 0;
+        margin:0;
+        float:left;
+        border: none;
+        outline: none;
+    }
+    .index-wrapper {
+        width: 100vw;
+        height: 100vh;
+        margin: 0 auto;
+        background: url("/static/assets/padweb/images/bg.jpg") no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .index-wrapper .container {
+        width: 100%;
+        height: 100%;
+        padding-top: 18%;
+        background-color: rgba(100, 164, 169, .7);
+    }
+
+    .item-title {
+        font-size: 60px;
+        color: #ffffff;
+        text-align: center;
+        margin: 150px 10% 142px;
+        width: 80%;
+    }
+
+
+    .submit {
+        border: none;
+        width: 40%;
+        line-height: 100px;
+        font-size: 30px;
+        color: #fff;
+        background-color: #FA875D;
+        border-radius: 8px;
+        margin: 0 30%;
+    }
+    .dining-table {
+        width: 60%;
+        margin: 20% auto;
+        position: relative;
+        font-size: 60px;
+    }
+
+    .dining-table .btnSelect {
+        width: 100%;
+        display: inline-block;
+       text-align: center;
+        background-color: #fff;
+        line-height: 100px;
+        border-radius: 8px;
+    }
+
+    .dining-table .btnSelect:after{
+        content: "";
+        width: 50px;
+        height: 20px;
+        background: url("/static/assets/mobile/images/xiala.png") no-repeat center;
+        position: absolute;
+        right: 4%;
+        top: 40px;
+        pointer-events: none;
+    }
+    .dining-table .ulDiv {
+        display: none;
+        width: 100%;
+        border: 1px solid #EEEEEE;
+        border-radius: 1px;
+        background: #FFF;
+        position: absolute;
+        z-index: 100;
+
+    }
+    .ulDiv ul{
+        max-height: 800px;
+        overflow: scroll;
+    }
+
+    .dining-table .ulDiv.ulShow {
+        display: block;
+    }
+
+    .dining-table .ulDiv ul li {
+       text-align: center;
+        cursor: pointer;
+        line-height: 100px;
+    }
+</style>
+<script type="text/javascript">
+
+    var mName = "",
+        mNumber = 0;
+    // 下拉选择框
+    $('.dining-table .btnSelect').on('click', function () {
+        $(this).siblings('.ulDiv').toggleClass('ulShow');
+    });
+   $(".dining-table .ulDiv ul").delegate("li","click",function () {
+       mName = $(this).text();
+       mNumber = $(this).attr('id');
+       $('.btnSelect').text(mName);
+       $('.btnSelect').attr('id',mNumber);
+       $('.ulDiv').removeClass('ulShow');
+   });
+
+
+    //餐桌选择
+    $("#btnSubmit").on("click", function () {
+        if(mNumber!==0){
+            window.location.href = 'paychoose.html?contactNo='+mNumber;
+        }
+    });
+</script>
+</body>
+</html>

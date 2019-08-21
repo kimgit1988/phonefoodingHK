@@ -1,0 +1,224 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>
+	<h4 class="page-title b-0">支付渠道添加</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Mechanism/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header> -->
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Paymethod/add')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="add">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">银行账号</label>
+										<div class="col-sm-5">
+											<select id="banknumber" class="form-control select2" name="banknumber">  
+											    <option value="">请选择</option>
+												{volist name="bn" id="vo"}
+												<option value="{$vo.id}">{$vo.bank_number}({$vo.owner})</option>
+												{/volist} 
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">渠道編號</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="code" id="code" placeholder="渠道編號">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">渠道名稱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="name" placeholder="渠道名稱">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">文件名稱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="file" id="file" placeholder="文件名稱(全字母,首字母大寫,其他小寫)">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">收款費率</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="rate" id="rate" placeholder="收款費率" style="display: inline-block; width: 90%;">%
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">结算周期</label>
+										<div class="col-sm-5">
+											T+<input type="text" class="form-control" name="cycle" id="cycle" placeholder="结算周期" style="display: inline-block; width: 90%;">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">结算时间</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="settlementTime" id="settlementTime" placeholder="结算时间">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">最低提现金额</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="minMoney" id="minMoney" placeholder="最低提现金额">
+										</div>
+									</div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="inputstatus"> 是否线上支付 </label>
+                                        <div class="col-sm-5" style="margin-top: 7px;">
+                                            <label><input type="radio" name="online" id="online1" value="1" checked="checked"/>是</label>
+                                            <label><input type="radio" name="online" id="online0" value="0" />不是</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+										<label for="" class="col-sm-3 control-label">图标</label>
+										<div class="col-sm-9">
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<div class="fileupload-new thumbnail big form-control"></div>
+												<div class="fileupload-preview form-control fileupload-exists thumbnail big">
+													<img src="">
+												</div>
+												<span class="btn btn-file btn-alt btn-sm">
+												<span class="fileupload-new">Select image</span>
+												<span class="fileupload-exists">Change</span>
+												<input type="file" name="image" id="image" onchange="fileChange(this,1)";/>
+												</span>
+												<a href="#" class="btn-sm btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="status" id="status1" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="status" id="status0" value="0" />停用</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.select2{
+		background: rgba(0, 0, 0, 0.05);
+	    border: 1px solid rgba(255, 255, 255, 0.3);
+	    text-shadow: none;
+	    color: #000;
+	    box-shadow: none;
+	    font-family: open-sans-regular;
+	}
+	.select2-results{
+		color:#000;
+	}
+	.select2-search__field{
+		color:#000;
+	}
+	.note-toolbar-wrapper,.note-toolbar{
+		background-color: #666 !important;
+	}
+</style>
+<script src="{$Think.config.Houtai}js/laydate.js"></script>
+<script type="text/javascript">  
+	function fileChange(target, filetypeid) {
+	    var filepath = target.value;
+	    if (filepath == "") {
+	        return false;
+	    }
+
+	    var fileSize = 0;
+	    var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+	    if (isIE && !target.files) {
+	        var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+	        var file = fileSystem.GetFile(filepath);
+	        fileSize = file.Size;
+	    } else {
+	        fileSize = target.files[0].size;
+	    }
+	    if (fileSize > 10*1024*1024) {
+	        target.value = '';
+	        alert('图片大小不能大于10M！');
+	        return false;
+	    }
+	}
+    //页面加载完成后初始化select2控件  
+    $(function () {
+    	$("#banknumber").select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该账号";
+		        }
+		    }
+		});
+		$(".submit").click(function(){
+	        var options = {
+	            "beforeSubmit" : checkForm,
+	            "success" : resultForm,
+	            "resetForm" : false,
+	            "dataType" : "json"
+	        };
+	        $("#add").ajaxSubmit(options);
+	    });
+	 
+	    function checkForm(formData, form, options) {
+	    }
+	 
+	    function resultForm(data, status) {
+	        //表单完成
+	        if(data.code){
+		        alert(data.msg);
+		        window.history.go(-1);
+	        }else{
+		        alert(data.msg);
+	        }
+	    }
+	});
+	//执行一个laydate实例
+	laydate.render({
+	  elem: '#settlementTime', //指定元素
+	  type:'time',
+	  format: 'HH:mm', //可任意组合
+	});
+</script>

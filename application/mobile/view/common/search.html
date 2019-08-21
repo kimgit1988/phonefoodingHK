@@ -1,0 +1,108 @@
+<div class="search-warpper">
+    <i class="fab-left" onclick="window.location.href='{:url(\'owner/index\')}'"></i>
+    <div class="search-div">
+        <i class="fab-search"></i>
+        <input type="text" class="order-input" placeholder="{:lang('搜索訂單號碼')}" onfocus="searchOrder()">
+    </div>
+    <i class="fab-table" onclick="window.location.href='{:url(\'manage/tablemanage\')}'"></i>
+    <i class="fab-order" onclick="window.location.href='{:url(\'order/index\')}'"></i>
+</div>
+<div class="search-list-box">
+    <div class="search">
+        <i class="fab-left" onclick="back()"></i>
+        <div class="search-div">
+            <i class="fab-search"></i>
+            <input type="text" id="search-input" class="order-input" placeholder="{:lang('搜索訂單號碼')}">
+        </div>
+    </div>
+    <div class="order-wrapper">
+        <div class="order-list-ul"></div>
+        <div class="no-content">
+            <i class="fab-search"></i>
+            <div>{:lang('請輸入搜索內容')}</div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function searchOrder() {
+        $('.search-list-box').css('left','0');
+        $('#search-input').focus();
+        $('.no-content').show();
+    }
+
+    $('#search-input').bind('keydown',function (e) {
+        if(e.keyCode==13){
+            var orderSN = $('#search-input').val();
+            selectOrder(orderSN);
+        }
+    });
+
+    function back() {
+        $('#search-input').val("");
+        $('.order-list-ul').html("");
+        $('.search-list-box').css('left','100%');
+    }
+
+    function selectOrder(orderSN){
+        $.ajax({
+            type: "POST",
+            url:"{:url('order/getOrderinfo')}",
+            dataType:"json",
+            data:{
+                'orderSN':orderSN
+            },
+            async:true,
+            success: function (res) {
+                var listHtml="";
+                if(res.code){
+                    var order = res.data;
+                    listHtml += '<div class="order-li clearfix"><div class="order-li-header"><div class="order-member">';
+                    listHtml += '<span>'+order.order_info.contactMemberName+'{:lang(\'枱\')}</span><div class="order-code">3688</div><div class="order-sn">('+order.order_info.orderSN+')</div>';
+                    if(order.order_info.addStatus) {
+                        listHtml += '<div class="order-status">{:lang(\'加單待确认\')}</div>';
+                    }else if(order.order_info.orderStatus==4){
+                        listHtml += '<div class="order-status">{:lang(\'已完成\')}</div>';
+                    }else if(order.order_info.orderStatus==0){
+                        listHtml += '<div class="order-status">{:lang(\'已取消\')}</div>';
+                    }
+                    listHtml += '</div></div><div class="order-li-body printer-table">';
+                    $.each(order.goods_info,function (index, goods) {
+                        listHtml += '<div class="order-food printer-tr"><div class="order-food-name printer-td">'+goods.goodsName+'</div>';
+                        listHtml += '<div class="order-food-number printer-td">'+goods.num+'</div><div class="order-food-price printer-td">'+goods.goodsPrice+'</div></div>';
+                    });
+                    listHtml += '</div><div class="order-li-footer"><div class="order-price"><div class="order-time">'+order.order_info.createTime+'</div>';
+                    listHtml += '<div class="order-total">{:lang(\'總額\')}：<span style="color:#FF5901;">HKD$&nbsp;<span class="order-total-price">'+order.order_info.moneyPaid+'</span></span></div>';
+                    listHtml += '</div><div class="btn-box">';
+
+                    if(order.order_info.orderStatus==2 || (order.order_info.orderStatus==3 && order.order_info.addStatus==1)){
+                        listHtml += '<div class="order-btn print" onclick="getOrder(\''+order.order_info.orderSN+'\')" >{:lang(\'接單打印\')}</div>';
+                    }else if(order.order_info.orderStatus==3 && order.order_info.addStatus==0){
+                        listHtml += '<div class="order-btn printt" onclick="printAgain(\''+order.order_info.payStatus+'\')">{:lang(\'重新打印\')}</div>';
+                    }
+                    if(order.order_info.orderStatus==3 && order.order_info.payStatus==0 && order.order_info.addStatus==0){
+                        listHtml += '<div class="order-btn pay" onclick="confirmPay(\''+order.order_info.orderSN+'\')">{:lang(\'確認收款\')}</div>';
+                        listHtml += '<div class="order-btn cancel" onclick="orderCancel(\''+order.order_info.orderSN+'\')">{:lang(\'取消訂單\')}</div>';
+                    }
+                    listHtml += '</div></div>';
+
+                    $('.order-list-ul').html("").append(listHtml);
+                    $('.no-content').hide();
+                }else{
+                    swal({
+                        'text':'{:lang(\'無此訂單\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/no-order.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    })
+                }
+            },
+            error: function (msg) {
+                console.log("{:lang('操作錯誤')}！",msg.error);
+            }
+        })
+    }
+</script>

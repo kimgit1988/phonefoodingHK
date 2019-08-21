@@ -1,0 +1,79 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">单页面列表</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('page/add')}" title="添加单页" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>ID</th>
+									<th>标题</th>
+									<th>排序</th>
+									<th>更新时间</th>
+									<th>操作</th>
+								</tr>
+								{volist name="pageRows" id="pageRow"}
+								<tr>
+									<td>{$pageRow->id}</td>
+									<td class="text-left">{$pageRow->title}</td>
+									<td>{$pageRow->sort}</td>
+									<td>{$pageRow->update_time}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/page/edit',['id'=>$pageRow['id']])}">编辑</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/page/destroy',['id'=>$pageRow['id']])}">删除</a>
+									</td>
+								</tr>
+								{volist name="pageRow->parent" id="page"}
+								<tr>
+									<td>{$page->id}</td>
+									<td class="text-left">┗━{$page->title}</td>
+									<td>{$page->sort}</td>
+									<td>{$page->update_time}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/page/edit',['id'=>$page['id']])}">编辑</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/page/destroy',['id'=>$page['id']])}">删除</a>
+									</td>
+								</tr>
+								{volist name="page->parent" id="p"}
+								<tr>
+									<td>{$p->id}</td>
+									<td class="text-left">&nbsp;&nbsp;┗━━━{$p->title}</td>
+									<td>{$p->sort}</td>
+									<td>{$p->update_time}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/page/edit',['id'=>$p['id']])}">编辑</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/page/destroy',['id'=>$p['id']])}">删除</a>
+									</td>
+								</tr>
+								{/volist} {/volist} {/volist}
+							</table>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</section>

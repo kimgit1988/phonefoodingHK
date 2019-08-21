@@ -1,0 +1,127 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">菜品分类</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Trade/add')}" title="添加分类" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('trade/index')}">
+			<select class="search-select select2" id="contact" name="contact">
+				<option value="" selected="selected">请选择餐廳</option>
+				{volist name="contact" id="vo"}
+				<option value="{$vo.number}" {if(!empty($param.contact)&&$param.contact==$vo.number)}selected="selected"{/if}>{$vo.name}({$vo.number})</option>
+				{/volist}
+			</select>
+			<button class="search-btn btn-primary">搜索</button>
+				<a class="search-btn btn-primary" href="{:url('trade/importtrade')}">导入分类</a>
+			</form>
+		</header>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>分类名</th>
+									<th>排序</th>
+									<th>分类等级</th>
+									<th>餐廳名稱</th>
+									<th>操作</th>
+								</tr>
+								{volist name="lists" id="lists"}
+								<tr>
+									<td>{$lists->id}</td>
+									<td class="text-left">{$lists->name}</td>
+									<td>{$lists->ordnum}</td>
+									<td>{$lists->level}</td>
+									<td>{$lists->cname}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Trade/edit',['id'=>$lists['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('Trade/destroy',['id'=>$lists['id']])}')">删除</div>
+									</td>
+								</tr>
+								{volist name="$lists->parents" id="Rows"}
+								<tr>
+									<td>{$Rows->id}</td>
+									<td class="text-left">┗━{$Rows->name}</td>
+									<td>{$Rows->ordnum}</td>
+									<td>{$Rows->level}</td>
+									<td>{$lists->cname}</td>
+
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Trade/edit',['id'=>$Rows['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('Trade/destroy',['id'=>$Rows['id']])}')">删除</div>
+
+									</td>
+								</tr>
+								{volist name="$Rows->parents" id="Row"}
+								<tr>
+									<td>{$Row->id}</td>
+									<td class="text-left">&nbsp;&nbsp;┗━━━{$Row->name}</td>
+									<td>{$Row->ordnum}</td>
+									<td>{$Row->level}</td>
+									<td>{$lists->cname}</td>
+
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Trade/edit',['id'=>$Row['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('Trade/destroy',['id'=>$Row['id']])}')">删除</div>
+
+									</td>
+								</tr>
+								{/volist} {/volist} {/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

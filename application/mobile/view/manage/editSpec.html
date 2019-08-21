@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('菜式選項修改')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="container edit-spec">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='{:url(\'manage/Spec\')}';"></i>
+        <div class="title">{:lang('菜式選項修改')}</div>
+    </div>
+	<div class="content-div">
+		<form  action="{:url('editSpec')}" method="post" id="edit" onkeydown="if(event.keyCode==13)return false;">
+			<input type="hidden" name="id" value="{$spec.id}">
+    		<div class="member-cate-li spec-add">
+    			<div class="member-cate-add-name">{:lang('選項-繁体')}</div><input name="name" type="text" value="{$spec.spec_name}">
+    		</div>
+            <div class="member-cate-li spec-add">
+                <div class="member-cate-add-name">{:lang('選項-英文')}</div><input name="name_en" type="text" value="{$spec.spec_name_en}">
+            </div>
+            <div class="member-cate-li spec-add">
+                <div class="member-cate-add-name">{:lang('選項-其他')}</div><input name="name_other" type="text" value="{$spec.spec_name_other}">
+            </div>
+            {if($spec.spec_pid!=0)}
+            <div class="member-cate-li spec-add">
+        		<div class="member-cate-add-name">{:lang('選項組別')}</div><div class="select" id="spec"></div>
+            <input type="hidden" name="specId" id="specId">
+            <input type="hidden" name="specName" id="specName">
+        	</div>
+            <div class="select-valid" style="display: none;">
+                <div class="member-cate-li member-spec-li">
+                    <div class="member-cate-add-name">{:lang('最小選擇數')}</div><input name="min" type="text">
+                </div>
+                <div class="member-cate-li member-spec-li">
+                    <div class="member-cate-add-name">{:lang('最大選擇數')}</div><input name="max" type="text">
+                </div>
+            </div>
+            <div class="peice-li">
+                <div class="member-cate-li member-spec-li">
+                    <div class="member-cate-add-name">{:lang('價格')}</div><input name="price" type="text" class="select-input" value="{$spec.spec_price}">
+                </div>
+                <div class="food-input-li  b-n food-select">
+                    <!--<div class="food-cate-label">規格數量</div>-->
+                    <div class="food-radio-div">
+                        <input name="is_repeat" type="checkbox" value="1"  id="label-reep" {if($spec.is_repeat==1)} checked="checked" {/if}>
+                        <label for="label-reep" class="radio-label">{:lang('可重選')}</label>
+
+                        <input name="is_default" type="checkbox" value="2" id="label-deft" {if($spec.is_default==1)} checked="checked" {/if} >
+                        <label for="label-deft" class="radio-label">{:lang('默認')}</label>
+                    </div>
+                </div>
+            </div>
+            {else}
+            <input type="hidden" name="specId" id="specId" value="{$spec.spec_pid}">
+            <div class="select-valid">
+                <div class="member-cate-li  spec-add">
+                    <div class="member-cate-add-name">{:lang('最小選擇數')}</div><input name="min" type="text" value="{$spec.minselect}">
+                </div>
+                <div class="member-cate-li  spec-add">
+                    <div class="member-cate-add-name">{:lang('最大選擇數')}</div><input name="max" type="text" value="{$spec.maxselect}">
+                </div>
+            </div>
+            {/if}
+        	<div class="food-input-li  b-n">
+                <div class="food-cate-label">{:lang('狀態')}</div>
+                <div class="food-radio-div">
+                    <input name="status" type="radio" value="1" id="label-yes" {if($spec.spec_disable==1)}checked="checked"{/if}>
+                    <label for="label-yes" class="radio-label">{:lang('啟用')}</label>
+                    <input name="status" type="radio" value="2" id="label-disable" {if($spec.spec_disable==2)}checked="checked"{/if}>
+                    <label for="label-disable" class="radio-label">{:lang('禁選')}</label>
+                    <input name="status" type="radio" value="0" id="label-no" {if($spec.spec_disable==0)}checked="checked"{/if}>
+                    <label for="label-no" class="radio-label">{:lang('禁用')}</label>
+                </div>
+            </div>
+    		<div class="member-cate-add-btn">{:lang('確認添加')}</div>
+        </form>
+	</div>
+</div>
+	
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+	$('.member-cate-add-btn').click(function () {
+        $.ajax({
+            type: "POST",
+            url : "{:url('editSpec')}",
+            data: $('#edit').serialize(),
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function(data) {
+                closeloading();
+                if (data.code) {
+                    swal({
+            		    'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+            		    'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+            		}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+                closeloading();
+                swal({
+					'text':'{:lang(\'頁面錯誤\')}',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+	//父级规格名字存取
+    {if($spec.spec_pid!=0)}
+    function initSpec(key){
+    	if(option[key].value){
+        	$("#spec").text(option[key]['value']);
+	        $("#specId").val(option[key]['id']);
+	        $("#specName").val(option[key]['value']);
+    	}
+    }
+    //判断是否是新建父级规格
+    function setSpec(){
+        var selectOption = mobileSelect1.getValue();
+        if(selectOption[0]['id']==0){
+            $(".select-valid").show();
+        }else{
+            $(".select-valid").hide();
+        }
+
+        if(selectOption[0]['id']!=0){
+            $(".peice-li").show();
+        }else{
+            $(".peice-li").hide();
+        }
+        $("#specId").val(selectOption[0]['id']);
+        $("#specName").val(selectOption[0]['value']);
+    }
+    // 設置分類選項數組
+    var option = [];
+    var positionKey = 0;
+    option.push({id:0,value:'{:lang(\'選項組別\')}'});
+    {volist name="list" id="vo" key="i"}
+    // 設置分類選項
+    option.push({id:{$vo.id},value:'{$vo.spec_name}'});
+	var asd='{$spec.spec_pid}';
+    {if($vo.id==$spec.spec_pid)}
+    // 設置默認值
+    positionKey = {$i};
+    {/if}
+    {/volist}
+    var mobileSelect1 = new MobileSelect({
+        trigger: '#spec', 
+        title: '{:lang(\'選項\')}',
+        wheels: [
+            {data:option,},
+        ],
+        callback:setSpec,
+        position:[positionKey] //初始化定位
+    });
+    initSpec(positionKey);
+        {/if}
+    // 结束
+</script>
+</body>
+</html>

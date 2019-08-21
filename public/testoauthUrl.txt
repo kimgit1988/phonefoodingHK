@@ -1,0 +1,1 @@
+"https:\/\/openapi.qfpay.com\/tool\/v1\/get_weixin_oauth_code?app_code=A6A49A66B4CB4F0589CFDFE94EA95032&redirect_uri=http%3A%2F%2Ftest.qfpay.com%2Fget_code7&mchid=R1zQrTdJnn&sign=c8824938da3a212d690f9452084f06a6"

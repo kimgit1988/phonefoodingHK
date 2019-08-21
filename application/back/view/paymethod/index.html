@@ -1,0 +1,102 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">支付渠道列表</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Paymethod/add')}" title="添加渠道" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+		</header>
+		<!-- <script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script>  -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>渠道編號</th>
+									<th>渠道名稱</th>
+									<th>文件名稱</th>
+									<th>收款費率</th>
+									<th>结算周期</th>
+									<th>结算时间</th>
+									<th>最低提现额度</th>
+									<th>线上支付</th>
+									<th>狀態</th>
+									<th>創建時間</th>
+									<th>修改時間</th>
+									<th>操作</th>
+								</tr>
+								{volist name="method" id="vo"}
+								<tr>
+									<td class="text-left">{$vo.id}</td>
+									<td>{$vo.code}</td>
+									<td>{$vo.name}</td>
+									<td>{$vo.fileName}</td>
+									<td>{$vo.rate}%</td>
+									<td>T+{$vo.cycle}</td>
+									<td>{$vo.settlementTime}</td>
+									<td>{if($vo.minLimit!=='')}{$vo.minLimit}元{/if}</td>
+									<td>{if($vo.online)}是{else}否{/if}</td>
+									{if($vo.disable==1)}
+									<td>啟用</td>
+									{elseif($vo.disable==0)}
+									<td>禁用</td>
+									{else}
+									<td>錯誤狀態</td>
+									{/if}
+									<td>{:date('Y-m-d H:i:s',$vo.ctime)}</td>
+									<td>{:date('Y-m-d H:i:s',$vo.utime)}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Paymethod/edit',['id'=>$vo['id']])}">编辑</a>
+										<a class="btn btn-xs btn-default" href="{:url('Paymethod/del',['id'=>$vo['id']])}">删除</a>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

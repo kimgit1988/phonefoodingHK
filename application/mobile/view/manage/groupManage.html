@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('分組管理')}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/manage.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <div class="container-div">
+        <div class="head-div">
+            <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/manage/foodmanage.html';"></i>
+            <div class="title">{:lang('分組信息')}</div><div class="head-right">{:lang('刪除')}</div>
+        </div>
+        <div class="contact-main">
+            <div class="owner-list t--2">
+                <div class="owner-item">
+                    <span class="owner-text">{:lang('分組名稱')}</span><input type="text" class="groupname" placeholder="{:lang('飲料')}"/>
+                </div>
+                <div class="owner-item b-2">
+                    <span class="owner-text">{:lang('分組內選擇數量')}</span><input type="text" class="groupcount" placeholder="1"/>
+                </div>
+                <div class="item-tr-6">
+                    <div class="item-text">
+                        <span class="item-text">{:lang('設置為必選分組')}</span>
+                        <div class="item-text-s mr-0">{:lang('顧客必須選擇這個分組下的項目')}</div>
+                    </div>
+                    <div class="check-box">
+                        <input type="checkbox" name="sale" id="group" checked="">
+                        <label for="group">
+                        <span class="check-div">
+                            <span class="inner"></span>
+                        </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="button">
+                    <div class="button-normal confirm">{:lang('保存')}</div>
+                </div>
+            </div>
+        </div>
+        {include file="common:footer"}
+    </div>
+</body>
+</html>

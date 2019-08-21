@@ -1,0 +1,33 @@
+<!-- 底部导航栏 -->
+<div class="bottomnav">
+<ul class="navul">
+{if(count($menu)==4)}
+	{volist name="menu" id="vo"}
+		{if $vo.click==1}<li onclick="location.href='{$vo.url}'" class="navli navli-4"><img src="{$vo.icon_click}"><p style="color:#ea831e">{$vo.name}</p></li>
+		{else /}<li onclick="location.href='{$vo.url}'" class="navli navli-4"><img src="{$vo.icon}"><p>{$vo.name}</p></li>{/if}
+ 	{/volist}
+{elseif(count($menu)==3)}
+	{volist name="menu" id="vo" key="key"}
+		{if($key!=2)}
+			{if $vo.click==1}<li onclick="location.href='{$vo.url}'" class="navli navli-3"><img src="{$vo.icon_click}"><p style="color:#ea831e">{$vo.name}</p></li>
+			{else /}<li onclick="location.href='{$vo.url}'" class="navli navli-3"><img src="{$vo.icon}"><p>{$vo.name}</p></li>{/if}
+		{else}
+			{if $vo.click==1}<li onclick="location.href='{$vo.url}'" class="navli navli-border navli-3"><img src="{$vo.icon_click}"><p style="color:#ea831e">{$vo.name}</p></li>
+			{else /}<li onclick="location.href='{$vo.url}'" class="navli navli-border navli-3"><img src="{$vo.icon}"><p>{$vo.name}</p></li>{/if}
+		{/if}
+	{/volist}
+{/if}
+</ul>
+</div>
+<script>
+	var windheight = $(window).height();  /*未唤起键盘时当前窗口高度*/
+			
+	$(window).resize(function(){
+	   var docheight = $(window).height();  /*唤起键盘时当前窗口高度*/        
+	   if(docheight < windheight){            /*当唤起键盘高度小于未唤起键盘高度时执行*/
+		  $(".bottomnav").css("position","static");
+	   }else{
+		  $(".bottomnav").css("position","fixed");
+	   }           
+	});
+</script>

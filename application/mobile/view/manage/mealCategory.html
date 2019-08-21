@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('跟餐分類')}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/addmeal.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:history.back(-1);"></i>
+        <div class="title">{:lang('跟餐分類')}</div><div class="head-right" onclick="window.location.href='{:url(\'manage/addmeal\')}'">{:lang('添加跟餐')}</div>
+    </div>
+    <div class="content-main">
+        {if($addon_data)}
+        <form method="post" id="addmealfood">
+            {volist name="addon_data" id="vo" key="k"}
+                <div class="item-tr-6 b-3">
+                    <input type="checkbox" id="{$vo.id}" class="checkbox" value="{$vo.id}" name="aid[]" {if($vo.has_addon)}checked {/if}>
+                    <label for="{$vo.id}"><span class="text">{$vo.name}</span></label>
+                </div>
+            {/volist}
+            <input type="hidden" name="gid" value="{$gid}">
+        </form>
+        {/if}
+        <div class="btn-fix">
+            <div class="button-normal confirm">{:lang('確認')}</div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('.confirm').click(function () {
+        $.ajax({
+            type: "POST",
+            url : '{:url("setMealGood")}',
+            data: $('#addmealfood').serialize(),
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function(data) {
+                closeloading();
+                if (data.code) {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = "{:url('manage/mealmanage',['id'=>$aid])}";
+                    });
+                } else {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function(request) {
+                closeloading();
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

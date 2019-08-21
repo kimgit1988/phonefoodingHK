@@ -1,0 +1,282 @@
+
+body {
+    position: relative;
+    background-color: #f5f5f5;
+    padding-top: 0;
+}
+.menu{
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height: auto;
+	z-index: 99;
+    background: #fff;
+	border-top: 2px solid #ae0400;
+}
+.head-div{
+	position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    color: #333;
+    margin-left: 0;
+    margin-right: 0;
+	font-size: 16px;
+    background-color: #fff;
+    border-bottom: 1px solid #e6e6e6;
+}
+.foot-div{
+	position: fixed;
+    bottom: 0;
+    width: 100%;
+    color: #fff;
+    z-index: 10;
+    padding: 12.5px;
+    margin-left: 0;
+    margin-right: 0;
+	font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+    background-color: #e5b922;
+}
+.food-detail-close{
+	width: 10px;
+    margin: 15px;
+    float: left;
+}
+.food-detail-title{
+    float: left;
+    width: 75%;
+    height: 18px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    line-height: 18px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.scroll-main{
+	margin-top: 50px;
+	width: 100vw;
+    height: calc(100vh - 95px);
+    overflow-y: scroll;
+}
+.container-div{
+	width: 100%;
+	height: auto;
+	position:relative;
+	text-align:center;
+}
+.reply-div{
+	position:relative;
+	width: 100vw;
+	height: auto;
+	margin-bottom: 20px;
+	overflow: hidden;
+}
+.reply-user{
+	text-align: right;
+}
+.reply-admin{
+	text-align: left;
+}
+.reply-info{
+	position:relative;
+	width: 100vw;
+	line-height: 25px;
+	text-align: center;
+}
+.reply-img{
+	position:relative;
+	width: 15vw;
+	padding: 1vw;
+}
+.reply-img img{
+	width: 100%;
+}
+.reply-content{
+	position: relative;
+    max-width: 70vw;
+	padding: 1vw;
+}
+.reply-name{
+	width: 100%;
+	margin-bottom: 1vw;
+}
+.reply-con{
+	padding: 3vw;
+	background-color: #fff;
+	line-height: 20px;
+    border-radius: 10px;
+}
+.reply-admin>.reply-img,
+.reply-admin>.reply-content{
+	float: left;
+}
+.reply-user>.reply-img,
+.reply-user>.reply-content{
+	float: right;
+}
+.m-b-2{
+	margin-bottom: 2vw;
+}
+.send-row{
+	width: 100%;
+	height: auto;
+	margin-top: 2vw;
+	padding-left: 5vw;
+	padding-right: 5vw;
+	float: left;
+	background-color: #fff;
+}
+.send-div{
+	position: relative;
+	width: 100%;
+	line-height: 25px;
+	padding-left: 5vw;
+	padding-right: 5vw;
+	background-color: #fff;
+}
+.send-div-t{
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	line-height: 25px;
+	padding-left: 5vw;
+	padding-right: 5vw;
+	background-color: #fff;
+	text-align: left;
+}
+.send-label{
+	position: relative;
+	display: inline-block;
+	height: 25px;
+	font-size: 4vw;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    vertical-align: middle;
+    margin-top: 6px;
+    text-align: left;
+	float: left;
+}
+.send-div-t .send-label{
+	width: 100%;
+}
+.send-row .name{
+	text-align: left;
+	font-size: 5vw;
+	font-weight: 700;
+    margin: 3vw 0;
+}
+.send-row .send-div,
+.send-row .send-div-t{
+	padding-left: 0;
+	padding-right: 0;
+	float:left;
+}
+.content-div{
+	position: relative;
+	float: left;
+	width: 90vw;
+	vertical-align: middle;
+    margin-top: 6px;
+    text-align: left;
+}
+.form-input{
+	width: 70%;
+	border-radius: 5px;
+	border: 1px solid #666;;
+    vertical-align: middle;
+    margin-top: 5px;
+    line-height: 8vw;
+    padding:0;
+	float: right;
+	color: #a0a0a0;
+}
+input.form-input{
+	height: 8vw;
+	border: 0;
+	text-align: right;
+}
+input.problem{
+	width: 100%;
+	border: 0;
+	background-color: #f5f5f5;
+	padding-left: 4vw;
+	text-align: left;
+}
+textarea.form-input{
+	height: 50px;
+}
+input:focus{
+	outline: none;
+}
+.b-b-1{
+	border-bottom: 1px solid #e4e4e4;
+}
+
+.message-div{
+	width: 90vw;
+	background-color: #fff;
+	padding: 2vw 5vw;
+	border-radius: 2vw;
+	float:left;
+	margin: 2vw 5vw;
+}
+.message-title{
+	text-align: left;
+	font-size: 5vw;
+	float:left;
+	font-weight: 700;
+	margin-bottom: 1.5vw;
+}
+.message-user{
+	float:left;
+	width: 100%
+}
+.message-user-left{
+	width: 40%;
+	float:left;
+}
+.message-user-right{
+	width: 60%;
+	float:left;
+}
+.message-user span{
+	margin-right: 2vw;
+	float: left;
+}
+.message-content{
+	text-align: left;
+	font-size: 12px;
+	float:left;
+}
+#sex{
+	height: 13vw;
+    border: 0;
+    text-align: right;
+}
+.message-user-info{
+	width: 100%;
+	float: left;
+}
+.input-height{
+	height: 15vw;
+	line-height: 15vw;
+}
+.input-height .send-label{
+	margin: 0;
+	padding: 0;
+	height: 15vw;
+	line-height: 15vw;
+}
+.input-height .form-input{
+	margin: 0;
+	padding: 0;
+	margin-top: 1vw;
+	height: 13vw;
+	line-height: 13vw;
+}

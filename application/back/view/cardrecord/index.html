@@ -1,0 +1,190 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">卡券领取列表</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('Cardrecord/index')}">
+			<select class="search-select select2" id="card" name="card">
+				<option value="">请选择卡券</option>
+				{volist name="cardlist" id="vo"}
+					<option value="{$vo.id}" {if(isset($param.card)&&$param.card==$vo.id)}selected="selected"{/if}>{$vo.name}({$vo.cardSN})</option>
+				{/volist}
+			</select>
+			<select class="search-select select2" id="cardType" name="cardType">
+				<option value="">请选择卡券类型</option>
+				<option value="1" {if(isset($param.cardType)&&$param.cardType==='1')}selected="selected"{/if}>折扣券</option>
+				<option value="2" {if(isset($param.cardType)&&$param.cardType==='2')}selected="selected"{/if}>满减券</option>
+				<option value="3" {if(isset($param.cardType)&&$param.cardType==='3')}selected="selected"{/if}>指定商品优惠券</option>
+			</select>
+			<select class="search-select select2" id="useType" name="useType">
+				<option value="">请选择使用商户类型</option>
+				<option value="1" {if(isset($param.useType)&&$param.useType==='1')}selected="selected"{/if}>全平台通用</option>
+				<option value="2" {if(isset($param.useType)&&$param.useType==='2')}selected="selected"{/if}>指定商户</option>
+			</select>
+			<div style="display: none;width: 15%;" id="selectContact">
+				<select class="search-select select2" id="contactNumber" name="contactNumber">
+					<option value="">请选择使用商户</option>
+					{volist name="contact" id="vo"}
+					<option value="{$vo.number}" {if(isset($param.contactNumber)&&$param.contactNumber==$vo.number)}selected="selected"{/if}>{$vo.name}({$vo.number})</option>
+					{/volist}
+				</select>
+			</div>
+			<select class="search-select select2" id="status" name="status">
+				<option value=""selected="selected">请选择状态</option>
+				<option value="1" {if(isset($param.status)&&$param.status==='1')}selected="selected"{/if}>未使用</option>
+				<option value="2" {if(isset($param.status)&&$param.status==='2')}selected="selected"{/if}>已使用</option>
+				<option value="0" {if(isset($param.status)&&$param.status==='0')}selected="selected"{/if}>不可用</option>
+			</select>
+			<!-- <div class="search-label">分類</div> --><input type="text" name="search" class="search-input" placeholder="卡券名/卡券编号" value="{if(!empty($param.search))}{$param.search}{/if}">
+			<button class="search-btn btn-primary">搜索</button>
+			</form>
+		</header>
+		<script type="text/javascript">
+			function changeContactNumber(){
+				var useType = $("#useType").val();
+				if(useType==2){
+					$("#selectContact").css('display','inline-block');
+				}else{
+					$("#selectContact").css('display','none');
+				}
+			}
+		    //页面加载完成后初始化select2控件  
+		    $(function () {
+		    	changeContactNumber();
+		    	$("#cardType").select2({
+			    	width:'15%',
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				}); 
+				$("#card").select2({
+			    	width:'15%',
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				}); 
+				$("#useType").select2({
+			    	width:'15%',
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				});
+				$("#contactNumber").select2({
+			    	width:'100%',
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				});
+				$("#status").select2({
+			    	width:'15%',
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				});
+				$("#useType").change(function(){
+					changeContactNumber();
+				});    
+			}); 
+		</script> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>优惠券编号</th>
+									<th>卡券名</th>
+									<th>卡券类型</th>
+									<th>可用商户</th>
+									<th>有效期</th>
+									<th>领取时间</th>
+									<th>使用时间</th>
+									<th>使用订单号</th>
+									<th>状态</th>
+									<!-- <th>操作</th> -->
+								</tr>
+								{volist name="card" id="vo"}
+								<tr>
+									<td class="text-left">{$vo.id}</td>
+									<td>{$vo.cardCode}</td>
+									<td>{$vo.cName}</td>
+									<td>{if($vo.cCardType==1)}折扣券{elseif($vo.cCardType==2)}满减券{elseif($vo.cCardType==3)}指定商品优惠券{/if}</td>
+									<td>{if($vo.cUseType==1)}全平台{else}{$vo.cContactName}{/if}</td>
+									<td>
+									{if($vo.useTimeType==1)}
+										{:date('Y-m-d H:i:s',$vo.useStartTime)}-{:date('Y-m-d H:i:s',$vo.useEndTime)}
+									{else}无限期{/if}</td>
+									<td>{:date('Y-m-d H:i:s',$vo.ctime)}</td>
+									<td>{if($vo.status==2)}{:date('Y-m-d H:i:s',$vo.utime)}{else}未使用{/if}</td>
+									<td>{$vo.orderSN}</td>
+									<td>{if($vo.status==1)}未使用{if($vo.useTimeType==1&&$vo.useEndTime<time())}(已過期){/if}{elseif($vo.status==2)}已使用{else}不可用{/if}</td>
+									<!-- <td>
+										<a class="btn btn-xs btn-default" href="{:url('Cardinfo/edit',['id'=>$vo['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Cardinfo/destroy',['id'=>$vo['id']])}');">删除</div>
+									</td> -->
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	function href_ajax(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	                location.href = data.url;
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+</script>

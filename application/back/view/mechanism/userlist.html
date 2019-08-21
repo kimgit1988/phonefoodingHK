@@ -1,0 +1,64 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">{$mechanism.name}列表</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/Mechanism/useradd',['mechanism'=>$mechanism.id])}" title="添加成員" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header>
+		<div class="panel-body">
+			<div class="table-responsive">
+				<table class="table  table-bordered table-hover">
+					<tr>
+						<th>ID</th>
+						<th>用戶名</th>
+						<th>暱稱</th>
+						<th>佣金比例</th>
+						<th>餐廳數量</th>
+						<th>状态</th>
+						<th>操作</th>
+					</tr>
+					{volist name="users" id="vo"}
+					<tr>
+						<td>{$vo.zid}</td>
+						<td>
+							{$vo.name}
+						</td>
+						<td>
+							{$vo.nick}
+						</td>
+						<td>
+							{$vo.commission}%
+						</td>
+						<td>
+							{:countContact($vo.zid,2)}
+						</td>
+						<td>
+							{if($vo.status==1)}啟用{elseif($vo.status==0)}禁用{else}錯誤狀態{/if}
+						</td>
+						<td>
+							<a class="btn btn-xs btn-default" href="{:url('back/mechanism/useredit',['zid'=>$vo['zid'],'mechanism'=>$mechanism['id']])}">编辑</a>
+							<a class="btn btn-xs btn-default delete" href="{:url('back/mechanism/userdel',['zid'=>$vo['zid'],'mechanism'=>$mechanism['id']])}">删除</a>
+						</td>
+					</tr>
+					{/volist}
+				</table>
+			</div>
+		</div>
+		<div class="panel-footer text-center">
+			{$pages}
+		</div>
+	</div>
+</section>

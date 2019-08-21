@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API</title>
+    <script src="/static/assets/wxweb/js/jquery.min.js"></script>
+    <style type="text/css">
+        ul{
+            padding:0;
+            margin:0;
+        }
+        .wrapper {
+            display: flex;
+            margin: 0 auto;
+            padding-top:60px;
+            font-size: 14px;
+            max-width: 1200px;
+            color: #333333;
+        }
+
+        .wrapper .left-wrapper {
+            display: inline-block;
+            width: 20%;
+            margin-right:30px;
+        }
+
+        .wrapper .left-wrapper .left-item {
+            display: block;
+            padding: 10px 0;
+            margin-bottom: 5px;
+            text-align: center;
+            list-style: none;
+            background-color: #efefef;
+            cursor: pointer;
+        }
+
+        .wrapper .right-wrapper {
+            display: inline-block;
+            flex:1;
+            vertical-align: top;
+        }
+
+        .title-content .input-url {
+            width: 60%;
+            padding: 0 10px;
+            height: 36px;
+            line-height: 36px;
+            border: 1px solid #efefef;
+            border-radius: 4px;
+        }
+
+        .title-content .btn-submit {
+            padding: 0 30px;
+            margin-left: 20px;
+            height: 40px;
+            line-height: 40px;
+            background-color: rgba(82, 177, 148, 1);
+            color: #ffffff;
+            border-style: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .title-content .table-content {
+            width: 100%;
+            padding: 5px;
+            margin-top: 20px;
+            border: 1px solid #efefef;
+        }
+
+        .title-content .table-content input {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            border: 1px solid #efefef;
+            border-radius: 4px;
+        }
+
+        .table-content tr:first-child {
+            background-color: #efefef;
+        }
+
+        .table-content td {
+            line-height: 3;
+        }
+
+        .list-content, .list-content .data-content{
+            margin-top:20px;
+        }
+
+        .list-content .title{
+            font-weight: bold;
+            font-size:18px;
+            color:#000000;
+        }
+
+        .list-content p{
+            word-break: break-all;
+        }
+
+    </style>
+    <script type="text/javascript">
+        var arr = [];
+        function getUrlData(num) {
+            var url = location.protocol+'//'+location.hostname+'/index.php';
+            switch (num) {
+                case 1:
+                    url += '/api/index/addToken';
+                    arr = ["number", "secretKey"];
+                    break;
+                case 2:
+                    url += '/api/index/getcourtcontact';
+                    arr = ["number", "token"];
+                    break;
+                case 3:
+                    url += '/api/index/getfoodlist';
+                    arr = ["number", "token"];
+                    break;
+                case 4:
+                    url += '/api/index/postorder';
+                    arr = ["token","contactNo","openId","nickName","_food"];
+                    break;
+                case 5:
+                    url += '/api/index/getuserorder';
+                    arr = ["number", "token", "openId"];
+                    break;
+            }
+            $('.input-url').val(url);
+            var arrKey = $('.key');
+            arrKey.innerHTML = "";
+            var table = $('.table-content');
+            table.remove();
+            if(arr.length>0){
+                var trHtml = '<table class="table-content"><tr><td>KEY</td><td>VALUE</td></tr>';
+                for (var i = 0; i < arr.length; i++) {
+                    trHtml += '<tr><td class="key" style="width: 180px;">' + arr[i] + '</td><td><input type="text" class="input-text"></td></tr>';
+                }
+                trHtml += ' </table>';
+                $('.title-content').append(trHtml);
+            }
+            $('.list-content').empty();
+        }
+
+        $(function () {
+            $('.btn-submit').on('click', function () {
+                var url = $('.input-url').val();
+                var arrValue = [];
+                var param = {};
+                $('input[class="input-text"]').each(function () {
+                    arrValue.push($(this).val());
+                });
+                for(var i=0;i<arr.length;i++){
+                    param[arr[i]] = arrValue[i];
+                }
+
+                $.ajax({
+                    url:url,
+                    data:param,
+                    type:"POST",
+                    success: function (data) {
+                        dataList(data);
+                    },
+                    error: function (er) {
+                        alert(er.errorMsg);
+                    }
+                });
+
+                function HTMLDecode(text) {
+                    var temp = document.createElement("div");
+                    temp.innerHTML = text;
+                    var output = temp.innerText || temp.textContent;
+                    temp = null;
+                    return output;
+                }
+
+                function dataList(data) {
+                    var Html = '<div class="param-content"><div class="title">String parse</div><p>'+JSON.stringify(param)+'</p></div>' +
+                        '<div class="data-content"><div class="title">Result</div><p>'+HTMLDecode(JSON.stringify(data))+'</p></div>';
+                    $('.list-content').empty().append(Html);
+                }
+            });
+        });
+
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="left-wrapper">
+        <ul>
+            <li class="left-item" onclick="getUrlData(1)">获取token值</li>
+            <li class="left-item" onclick="getUrlData(2)">获取美食广场商家</li>
+            <li class="left-item" onclick="getUrlData(3)">获取商家菜单</li>
+            <li class="left-item" onclick="getUrlData(4)">用户下单</li>
+            <li class="left-item" onclick="getUrlData(5)">用户查询订单</li>
+        </ul>
+    </div>
+    <div class="right-wrapper">
+        <div class="title-content">
+            <input type="text" class="input-url" id="input-url"/>
+            <button class="btn-submit">提交</button>
+        </div>
+        <div class="list-content">
+            <div class="param-content"></div>
+            <div class="data-content"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

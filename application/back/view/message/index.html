@@ -1,0 +1,107 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">消息管理</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('Message/index')}">
+				<select class="search-select select2" id="status" name="status">
+					<option value="" selected="selected">请选择狀態</option>
+					<option value="1" {if(!empty($param.status)&&$param.status==1)}selected="selected"{/if}>未回復</option>
+					<option value="2" {if(!empty($param.status)&&$param.status==2)}selected="selected"{/if}>已回復</option>
+				</select>
+				<select class="search-select select2" id="contact" name="contact">
+					<option value="" selected="selected">请选择餐廳</option>
+					{volist name="contact" id="vo"}
+					<option value="{$vo.number}" {if(!empty($param.contact)&&$param.contact==$vo.number)}selected="selected"{/if}>{$vo.name}({$vo.number})</option>
+					{/volist}
+				</select>
+				<input type="text" name="search" class="search-input" placeholder="姓名/電話/郵箱" value="{if(!empty($param.search))}{$param.search}{/if}">
+				<button class="search-btn btn-primary">搜索</button>
+			</form>
+		</header>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#status").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该狀態";
+				        }
+				    }
+				});
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该餐廳";
+				        }
+				    }
+				});
+			});
+		</script> 
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>ID</th>
+									<th>標題</th>
+									<th>餐廳編號</th>
+									<th>餐廳名稱</th>
+									<th>聯繫人</th>
+									<th>聯繫性別</th>
+									<th>聯繫電話</th>
+									<th>聯繫郵箱</th>
+									<th>回復狀態</th>
+									<th>操作</th>
+								</tr>
+								{volist name="message" id="vo"}
+								<tr>
+									<td>{$vo.id}</td>
+									<td>{$vo.message_title}</td>
+									<td>{$vo.message_contact_number}</td>
+									<td>{$vo.name}</td>
+									<td>{$vo.message_name}</td>
+									<td>
+										{if(!empty($vo.message_sex)&&$vo.message_sex==1)}先生
+										{elseif(!empty($vo.message_sex)&&$vo.message_sex==2)}女士
+										{else}未填寫
+										{/if}
+									</td>
+									<td>{$vo.message_phone}</td>
+									<td>{$vo.message_email}</td>
+									<td>{if($vo.message_status==1)}未回復{elseif($vo.message_status==2)}已回復{else}未知狀態{/if}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Message/replylist',['id'=>$vo.id])}">查看</a>
+									</td>
+								</tr>
+								{/volist}
+								
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

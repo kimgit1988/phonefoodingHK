@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Meta, title, CSS, favicons, etc. -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-title" content="yes" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta content="telephone=no" name="format-detection" />
+	<meta name="full-screen" content="yes" />
+	<meta name="x5-fullscreen" content="true" /> 
+	<title>{:config('web_title')}</title>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+	<link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+	<link href="STATIC_PATH/assets/wxweb/css/list.css" rel="stylesheet">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+	<script type="text/javascript">
+        var selMid = 0;
+        var scrollDiv = 'food';
+        function toDiv(obj, id){
+            $(".meal").addClass('hidden');
+            $("#food").removeClass('hidden');
+            $("#setorder").removeClass('mealBtn');
+            $("#setorderMeal").removeClass('mealBtn');
+            $("#setorderMeal").addClass('hidden');
+            $("#setorder").text('提交訂單');
+            // if(scrollDiv == 'food'){
+                $('li.active').removeClass('active');
+                $(obj).parent('li').addClass('active');
+            // }
+            var target_top = $('#' + id).position().top + $(".food").scrollTop();
+            $(".food").scrollTop(target_top);
+            // $('li').removeClass('active');
+            scrollDiv = 'food';
+            changeSetOrder('food');
+        }
+        function toMealDiv(obj, id, mid){
+            $("#food").addClass('hidden');
+            $(".meal").addClass('hidden');
+            $("#" + id).removeClass('hidden');
+            $("#setorder").addClass('mealBtn');
+            $("#setorderMeal").addClass('mealBtn');
+            $("#setorder").text('提交');
+            $("#setorderMeal").removeClass('hidden');
+            $('li.active').removeClass('active');
+            $(obj).parent('li').addClass('active');
+            selMid = mid;
+            scrollDiv = 'meal';
+            changeSetOrder('meal');
+        }
+
+	</script>
+	<!--<script>
+        function hideAddressBar_ios(){
+            if(document.documentElement.scrollHeight <= document.documentElement.clientHeight) {
+                bodyTag = document.getElementsByTagName('body')[0];
+                bodyTag.style.height = document.documentElement.clientWidth / screen.width * screen.height + 'px';
+            }
+            setTimeout(function(){
+                window.scrollTo(0, 1);
+            }, 100);
+        };
+        function hideAddressBar_android(){
+            var n = navigator.userAgent;
+            if(n.match(/UCBrowser/i)){
+                //uc浏览器
+                hideAddressBar_ios();
+                return false;
+            }
+            var self = document.getElementsByTagName('body')[0];
+            if (self.requestFullscreen) {
+                self.requestFullscreen();
+            } else if (self.mozRequestFullScreen) {
+                self.mozRequestFullScreen();
+            } else if (self.webkitRequestFullScreen) {
+                self.webkitRequestFullScreen();
+            }
+        };
+        window.addEventListener("load",function(){
+            navigator.userAgent.match(/Android/i) ? hideAddressBar_android() : hideAddressBar_ios();
+        });
+
+	</script>-->
+</head>
+<body>
+<div id="food-list" class="food-list">
+	<div class="row head-div">
+			<!--<img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="saveCart()"/>-->
+			<div class="title">
+				<span>{$contact.name}</span>
+				<span>{$member.name}{:lang('枱')}</span>
+			</div>
+            <div class="language-div">
+				<div class="language-sel" value="1"><span class="language-text">{:get_lang_name(cookie('think_var'))}</span><i class="fab-down"></i></div>
+				<ul class="language-ul">
+					<li class="language-li" value="1" onclick="changelang('zh-tw')">繁體中文</li>
+					<li class="language-li" value="2" onclick="changelang('en-us')">English</li>
+					<li class="language-li" value="3" onclick="changelang('other')">{:lang('其它')}</li>
+				</ul>
+			</div>
+			<i class="fab-order" onclick="getHistory()"></i>
+			<div class="hidden" id="member-type">{$type}</div>
+		</div>
+	<div class="container-div">
+		{if(!empty($list))}
+		<div class="row content">
+			<div class="left">
+				<nav id="foodScrollspy">
+					<ul class="nav nav-pills flex-column">
+						{volist name="list" id="vo" key="k"}
+						{if(!empty($vo._food))}
+						<li class="nav-item active" id="menu{$vo.categoryId}">
+							{if $k==1}
+							<a class="nav-link" href="#category{$vo.categoryId}" onclick="toDiv(this, 'category{$vo.categoryId}');return false;">
+								<div class="nav-name"><i class="fab-remmcond"></i>{$vo.categoryName}<span class="category-count{$vo.categoryId}"></span></div>
+							</a>
+							{else}
+							<a class="nav-link" href="#category{$vo.categoryId}" onclick="toDiv(this, 'category{$vo.categoryId}');return false;">
+								<div class="nav-name">{$vo.categoryName}<span class="category-count{$vo.categoryId}">0</span></div></a>
+							{/if}
+						</li>
+						{/if}
+						{/volist}
+					</ul>
+				</nav>
+				<nav id="mealScrollspy">
+					<ul class="nav nav-pills flex-column">
+						{volist name="mealMenu" id="mo"}
+						{if(!empty($mo._meal) && !empty($mo.categoryName))}
+							<li class="nav-item" onclick="toggle(this);return false;">
+								<a href="#">
+									<div class="nav-li-name"><i class="fab-meal"></i>{$mo.categoryName}<i class="fab-down"></i></div>
+								</a>
+							</li>
+						{/if}
+						{if(array_key_exists('_meal',$mo) && count($mo._meal)>0)}
+						<ul class="item-ul">
+							{volist name="$mo['_meal']" id="m"}
+							<li class="item-li" id="cmenu{$m.id}">
+								<span class="img{$m.id}" style="display: none">{$m.thumbnailUrl}</span>
+								<a class="nav-link" href="#cmeal{$m.id}" onclick="toMealDiv(this, 'cmeal{$m.id}', '{$m.id}');return false">
+									<span class="nav-name">{$m.name}<i class="category-count{$m.id}"></i></span>
+								</a>
+							</li>
+							{/volist}
+						</ul>
+						{/if}
+						{/volist}
+					</ul>
+				</nav>
+			</div>
+			<div class="right food scroll" id="food" data-spy="scroll" data-target="#foodScrollspy">
+				{volist name="list" id="vo"}
+				{if(!empty($vo._food))}
+				<div id="category{$vo.categoryId}" class="right-li">
+					<div class="li-item li-tit">
+						{$vo.categoryName}
+					</div>
+					{volist name="vo._food" id="v" key="k"}
+                    {php}
+                        if(empty($v['imgUrl'])||is_numeric($v['imgUrl']))
+                        {
+                            $rndKey = array_rand($default_images);
+                            $v['imgUrl'] = $default_images[$rndKey];
+                        }
+                    {/php}
+						<div class="li-item" id="food{$v.id}">
+						<!--<div class="selNum" onclick="showSelMealFood('{$v.id}','')"></div>-->
+							<div class="li-img" onclick="showdetail('{$v.id}','food')">
+								<img class="lazy" dataimg="{$v.imgUrl}" src="STATIC_PATH/assets/wxweb/images/lazyloadImg.png" />
+							</div>
+							<div class="li-text">
+								<p class="tit" onclick="showdetail('{$v.id}','food')">{$v.name}</p>
+								<p class="content">{$v.remark}&nbsp;</p>
+								<p class="price">HK$<em>{$v.salePrice}</em></p>
+							</div>
+						{if($v['payType']==1)}
+						{if(empty($v['_spec']))}
+							<div class="num">
+							<div class="cart-reduce" onclick="reducecar('{$v.id}', 'food', '{$vo.categoryId}')"><i class="fab-reduce-b"></i></div>
+							<span class="num-text numberfood_{$v.id}">0</span>
+							<div class="cart-add" onclick="addcar('{$v.id}', 'food', '{$vo.categoryId}')"><i class="fab-add-b"></i></div>
+						</div>
+						{else}
+							<div class="num specifications" onclick="selectSpec('{$v.id}', 'food', '{$vo.categoryId}')">{:lang('選項')}</div>
+						{/if}
+						{else}
+						{if(empty($v['_spec']))}
+							<div class="num specifications" onclick="setWeight('{$v.id}', 'food')">稱&nbsp;&nbsp;&nbsp;&nbsp;重</div>
+						{else}
+							<div class="num specifications" onclick="selectSpec('{$v.id}', 'food', '{$vo.categoryId}')">{:lang('選項')}</div>
+						{/if}
+						{/if}
+					</div>
+					{/volist}
+				</div>
+				{/if}
+				{/volist}
+				<div id="empty" class="right-li">
+					<div id="empty-item" style="height: 150px;"></div>
+				</div>
+			</div>
+			{volist name="meal" id="mo"}
+			<div class="right meal scroll hidden" id="cmeal{$mo.id}">
+				{if(!empty($mo['_category']))}
+				<div class="li-item-head">
+					<span class="li-item-name">{$mo['name']}</span><span class="li-item-price">HK$<em>{$mo['price']}</em></span>
+				</div>
+				{volist name="mo._category" id="c"}
+				<div id="meal{$c.id}" class="right-li">
+					<div class="li-item li-tit">
+						{$c.name} <span class="maxNumber">{:lang('可選數量')}:<span id="maxNumber_{$c.mid}_{$c.id}" class="n" style="color: #53B393;">{$c.categoryMaxNumber}</span></span>
+					</div>
+					{if(!empty($c['_food']))}
+					{volist name="c._food" id="f" key="k"}
+					<div class="li-item" id="mealFood{$f.id}">
+						<div class="li-img" onclick="showdetail('{$f.id}','meal')">
+							<img class="lazy" dataimg="{$f.thumbnailUrl}" src="STATIC_PATH/assets/wxweb/images/lazyloadImg.png" />
+						</div>
+						<div class="li-text">
+							<p class="tit" onclick="showdetail('{$f.id}','meal')">{$f.name}</p>
+							<p class="content">{$f.remark}&nbsp;</p>
+							<!--<p class="price">HK$<em>{$f.salePrice}</em></p>-->
+						</div>
+						{if($f['payType']==1)}
+						{if(empty($f['_spec']))}
+						<div class="num">
+							<div class="cart-reduce" onclick="reducecar('{$f.id}', 'meal')"><i class="fab-reduce-b"></i></div>
+							<!--<button class="reduce" onclick="reducecar('{$f.id}', 'meal')"><img src="STATIC_PATH/assets/wxweb/images/jian.png"/></button>-->
+							<span class="num-text" id="numbermeal_{$f.mid}_{$f.id}">0</span>
+							<!--<button class="add" onclick="addcar('{$f.id}', 'meal')"><img src="STATIC_PATH/assets/wxweb/images/jia1.png"/></button>-->
+							<div class="cart-add" onclick="addcar('{$f.id}', 'meal')"><i class="fab-add-b"></i></div>
+						</div>
+						{else}
+						<div class="num specifications" onclick="selectSpec('{$f.id}', 'meal')">{:lang('選項')}</div>
+						{/if}
+						{else}
+						{if(empty($f['_spec']))}
+						<div class="num specifications" onclick="setWeight('{$f.id}', 'meal')">稱&nbsp;&nbsp;&nbsp;&nbsp;重</div>
+						{else}
+						<div class="num specifications" onclick="setWeight('{$f.id}', 'meal')">{:lang('選項')}</div>
+						{/if}
+						{/if}
+					</div>
+					{/volist}
+					{/if}
+				</div>
+				{/volist}
+				{/if}
+			</div>
+			{/volist}
+		</div>
+		{else}
+		<div class="not">
+			<div class="alert">
+				<p>{:lang('還未開始營業，敬請期待。')}</p>
+			</div>
+		</div>
+		{/if}
+	</div>
+	<div class="container-div zIndex-12">
+		<div class="row car-div">
+			<div class="car-img">
+				<div class="car">
+					<img id="car" src="STATIC_PATH/assets/wxweb/images/shopcart.png" />
+					<div class="car-num"></div>
+				</div>
+				<div class="price">
+					<span class="unit">HK$&nbsp;</span><span id="total" class="total">0.00</span>
+				</div>
+			</div>
+			<div class="button-none hidden" id="setorderMeal">
+                {:lang('加入')}
+			</div>
+			<div class="button-none btn-submit" id="setorder">
+				{:lang('提交訂單')}
+			</div>
+		</div>
+	</div>
+	<div id="shield" class="">
+	</div>
+	<div id="carDiv" class="container-car  zIndex-11">
+		<div class="row car-head">
+			<label class="tit">{:lang('訂單')}</label>
+			<label id="removeAll" class="button"><img class="icon-remove" src="STATIC_PATH/assets/wxweb/images/remove.png" alt="">{:lang('清空')}</label>
+		</div>
+		<div id="carList" class="row car-content">
+		</div>
+	</div>
+	<div class="horn"></div>
+
+	<div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="configModalLabel" aria-hidden="true">
+		<div class="modal-dialog save">
+			<div class="modal-content">
+				<div class="modal-body" >
+					<div class="title">{:lang('提示')}</div>
+					<div class="content">{:lang('是否保存訂單的商品')}</div>
+				</div>
+				<div class="modal-footer">
+					<div class="cancel" data-dismiss="modal" id="cancel">{:lang('刪除')}</div>
+					<div id="ok" class="ok">{:lang('保存')}</div>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+</div>
+
+<div class="modal fade" id="SpecificationsModal" tabindex="-1" role="dialog" aria-labelledby="SpecificationsModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-head" id="specTit">
+			</div>
+			<div class="modal-body" id="specContent">
+
+			</div>
+			<div class="modal-footer" id="specFooter">
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-------规格数量选择框--------->
+<div class="modal fade" id="SpecificationsCountModal" tabindex="-1" role="dialog" aria-labelledby="SpecificationsModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-head" >
+				<div id="specCTit"></div>
+				<button type="button" class="close btnSpecClose" data-dismiss="modal" aria-hidden="true">&times;</button>
+			</div>
+			<div class="modal-body" id="specContentC">
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="WeightModal" tabindex="-1" role="dialog" aria-labelledby="WeightModal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-head" id="weightTit">
+			</div>
+			<div class="modal-body" id="weightContent">
+
+			</div>
+			<div class="modal-footer">
+				<input type="hidden" id="weightGoodId"/>
+				<input type="hidden" id="weightType"/>
+				<input type="hidden" id="weightCateId"/>
+				<div class="pice">HK$ <span id="weightTotal"></span></div>
+				<div class="addCar" onclick="weightAddCar()">{:lang('加入訂單')}</div>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
+
+<div class="modal fade"  id="FoodDetailModal" tabindex="-1" role="dialog" aria-labelledby="FoodDetailModal" aria-hidden="true">
+	<div class="modal-dialog detail">
+		<div class="modal-content">
+			<!--<div class="modal-head" id="foodTit">
+				<button type="button" class="btn btn-default btn-close" data-dismiss="modal">X<i class="icon-close"></i></button>
+			</div>-->
+			<div class="modal-body" id="foodContent">
+				<div class="food-img"><img src="" alt=""></div>
+			</div>
+			<div class="modal-footer" id="foodFooter">
+
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
+<!-------菜品詳情选择框--------->
+<div class="modal fade" id="FoodDetailCountModal" tabindex="-1" role="dialog" aria-labelledby="FoodDetailModal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-head" >
+				<div id="foodCTit"></div>
+				<button type="button" class="close btnSpecClose" data-dismiss="modal" aria-hidden="true">&times;</button>
+			</div>
+			<div class="modal-body" id="foodContentC">
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade mealCar" id="selMealFoodModal" tabindex="-1" role="dialog" aria-labelledby="selMealFoodModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body car-content" id="selMealFoods">
+
+			</div>
+			<div class="modal-footer">
+				<div data-dismiss="modal" class="ok" style="width: 50%;">{:lang('確認')}</div>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+<div class="modal tip fade" id="tipModal" tabindex="-1" role="dialog" aria-labelledby="tipModalLabel" aria-hidden="true">
+	<div class="modal-dialog save">
+		<div class="modal-content">
+			<div class="modal-body" id="tip-content">
+
+			</div>
+			<div class="modal-footer">
+				<div id="tip-close" class="ok" onclick="tipClose();">{:lang('重新點餐')}</div>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
+
+<!-------就餐人數選擇--------->
+<div class="modal fade" id="personCountModal" tabindex="-1" role="dialog" aria-labelledby="personModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-head" >
+				<div id="personCTit">{:lang('選擇就餐人數')}</div>
+			</div>
+			<div class="modal-body" id="personContentC">
+				<ul class="person-list">
+					{for start='1' end='21' name='i'}
+					<li class="person-item">
+						<label for="num{$i}">
+							<input type="radio" name="num" id="num{$i}" value="{$i}">
+							<span class="num">{$i}</span>
+						</label>
+					</li>
+					{/for}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+    function changelang(lang){
+        $.ajax({
+            type: "POST",
+            url : "{:url('index/changeLang')}",
+            data: {lang:lang},
+            async: true,
+            success: function(data) {
+                location.reload();
+            }
+        });
+    }
+    var mealBtn = false; //套餐加入购物车按钮状态，默认为false 灰色
+    var mcIdNotMeet = 0;//套餐不满足要求的第一个分类id
+    var food = {
+        list:{
+    {volist name="food" id="vo"}
+    '{$vo.id}':{
+        id: '{$vo.id}',
+            orderIndex: '',
+            name: "{:addslashes($vo.name)}",
+            image: '{$vo.imgUrl}',
+            price: '{$vo.salePrice}',
+            originalPrice: '{$vo.salePrice}',//原价
+            unit:'{$vo.payUnit}',
+            type:'{$vo.payType}',
+            // sort:'1',
+            category: '{$vo.categoryId}',
+            catename: '{$vo.categoryName}',
+			detail: '{:addslashes(str_replace("\\r\\n","",$vo.detail))}',
+            _spec: JSON.parse('{:json_encode($vo._spec)}'),
+            _addon: '{:json_encode($vo._addon)}',
+            specIds: '',
+            specCounts: 0,
+            specNames: '',
+            weight: ''
+    },
+    {/volist}
+    }
+    };
+
+    function mealCar(){
+        this.order = {}
+        this.saveOrder = function(){
+            var self =this;
+        }
+        this.addCar = function(index){
+            var self =this;
+            var row = {};
+            if(index.indexOf('_') == -1){
+                var mi = mealinfo.list[index];
+                row = food.list[mi.gid];
+                row.cid = mi.cid;
+                row.mid = mi.mid;
+                row.index = index;
+                var specIds = row.specIds;
+                if(row.type == 2){
+                    index = index + '_' + row.weight;
+                }
+                if(specIds.length > 0){
+                    row.orderIndex = index = index + '_' + row.specCounts;
+                }else{
+                    row.orderIndex = index + '';
+                }
+            }
+            if(self.order != null && self.order.hasOwnProperty(index)){
+                self.order[index].counter ++;
+            }else{
+                var obj = $.extend(true,{},row);
+                self.order[index] = obj;
+                self.order[index].counter = 1;
+            }
+            self.saveOrder();
+        }
+        this.removeCar = function(index){
+            var self =this;
+            var num = 0;
+            if(self.order.hasOwnProperty(index)){
+                self.order[index].counter --;
+                num = self.order[index].counter;
+                if( self.order[index].counter<=0){
+                    delete  self.order[index];
+                }
+
+            }
+            self.saveOrder();
+            return num;
+        }
+        this.clearCar = function(){
+            var self =this;
+            self.order =[];
+            self.saveOrder();
+        }
+        this.countPrice = function(){
+            var self = this;
+            var price = 0;
+            for(var i in self.order){
+                price += Number(self.order[i].price)*self.order[i].counter;
+            }
+            return price.toFixed(2);
+        }
+        this.count = function(){
+            var self =this;
+            var count=0;
+            for(var i in self.order){
+                if(!$.isEmptyObject(self.order[i])){
+                    count+=self.order[i].counter;
+                }
+
+            }
+            return count;
+        }
+        this.checkCar = function(){
+            var self =this;
+
+            for(var i in self.order){
+                if(!$.isEmptyObject(self.order[i])){
+                    return true;
+                }
+
+            }
+            return false;
+        }
+        this.getNum = function(index){
+            var self =this;
+            var obj = self.order[index];
+            var num = 0;
+            if(obj != undefined && obj != null && obj != ''){
+                num = obj.counter;
+            }
+            return num;
+        }
+    };
+    var mealList = {
+        list:{
+    {volist name="meal" id="ml"}
+    '{$ml.id}':{
+        id: '{$ml.id}',
+            name: '{:addslashes($ml.name)}',
+            price: '{$ml.price}',
+			thumbnailUrl: '{$ml.thumbnailUrl}',
+            category: {
+            {volist name="ml._category" id="mc"}
+            '{$mc.id}': {
+                id: '{$mc.id}',
+                    mid: '{$mc.mid}',
+                    name: '{:addslashes($mc.name)}',
+                    categoryMaxNumber: '{$mc.categoryMaxNumber}',
+                    goodsMaxNumber: '{$mc.goodsMaxNumber}'
+            },
+            {/volist}
+            },
+            type: 3,
+                foods: '',
+                specIds: '',
+                specNames: '',
+                car: new mealCar()
+        },
+        {/volist}
+        }
+    };
+    var mealcategory = {
+        list:{
+    {volist name="mealcategory" id="mco"}
+    '{$mco.id}':{
+        id: '{$mco.id}',
+            mid: '{$mco.mid}',
+            name: '{:addslashes($mco.name)}',
+            categoryMaxNumber: '{$mco.categoryMaxNumber}',
+            goodsMaxNumber: '{$mco.goodsMaxNumber}'
+    },
+    {/volist}
+    }
+    };
+
+    var mealinfo = {
+        list:{
+    {volist name="mealinfo" id="mio"}
+    '{$mio.id}':{
+        id: '{$mio.id}',
+            gid: '{$mio.gid}',
+            mid: '{$mio.mid}',
+            cid: '{$mio.cid}',
+            name: '{:addslashes($mio.name)}',
+    },
+    {/volist}
+    },
+    };
+
+    var car = {
+        order :{},
+        menu: {},
+        Spec: {},
+        saveOrder:function(){
+            var self =this;
+        },
+        addCar:function(index){
+            var self =this;
+            var row = {};
+
+            if(index.indexOf('_') == -1){
+                row = food.list[index];
+                var specIds = row.specIds;
+                if(row.payType == 2){
+                    // index = index + '_' + row.weight;
+                }
+                if(specIds.length > 0){
+                    row.orderIndex = index = 'food_' + index + '_' + row.specCounts;
+                }else{
+                    row.orderIndex = index = 'food_' + index +'';
+                }
+            }
+
+            if(self.order.hasOwnProperty(index)){
+                if(row.type==2){
+                    self.order[index].weight += row.weight;
+                    var str = self.order[index].specNames;
+                    if(row.specNames.indexOf(row.unit)){
+                        self.order[index].specNames = str.replace(str.substring(row.specNames.indexOf('[')+1,str.indexOf(row.unit)),self.order[index].weight);
+                        self.order[index].price = (parseFloat(self.order[index].price) + (row.weight * row.originalPrice)).toFixed(2);
+                    }
+                }else{
+                    self.order[index].counter ++;
+                }
+            }else{
+                self.order[index] = $.extend(true,{},row);
+                self.order[index].counter = 1;
+            }
+
+            self.saveOrder();
+        },
+        addMealCar:function(){
+            var self = this;
+            var row = mealList.list[selMid];
+            var list = row.car.order;
+            var addIndex = '';
+            var addName = '';
+            var addCount ='';
+            var addScount = '';
+            var n = 0;
+
+			// var sCount = car.getSChildNum(index,child.id);
+            $.each(list, function(i, obj){
+                if(n > 0){
+                    addIndex += ';';
+                    addName += ';';
+                    addCount += ';';
+                }
+                addIndex += obj.orderIndex;
+                addName += obj.name + obj.specNames;
+                addScount += obj.specCounts;
+
+                if(obj.counter > 1){
+                    addIndex += '*' + obj.counter;
+                    addName += '*' + obj.counter;
+                }
+                n++;
+            });
+            row.foods = list;
+            row.specIds = addIndex;
+			row.specCounts = addScount;
+            row.specNames = addName ;
+            row.orderIndex = index = 'meal_' + row.id + '_' + addIndex;
+            if(self.order.hasOwnProperty(index)){
+                self.order[index].counter ++;
+            }else{
+                self.order[index] = $.extend(true,{},row);
+                self.order[index].counter = 1;
+            }
+            mealList.list[selMid].car.order = {};
+            $('#meal' + selMid).find(".selNum").remove();
+            changeBtn(index, 'addMealCar', selMid);
+            changeSetOrder('meal');
+            self.saveOrder();
+        },
+        removeCar:function(index,cid){
+            var self =this;
+            var num = 0;
+            if(self.order.hasOwnProperty(index)){
+                self.order[index].counter --;
+                num = self.order[index].counter;
+                if( self.order[index].counter<=0){
+                    delete  self.order[index];
+                }
+            }
+            if(self.menu['menu'+cid]){
+                self.menu['menu'+cid]--;
+                if( self.menu['menu'+cid]<=0){
+                    delete  self.menu['menu'+cid];
+                }
+            }
+
+            self.saveOrder();
+			return num;
+        },
+        clearCar:function(){
+            var self =this;
+            self.order =[];
+            self.menu=[];
+            self.saveOrder();
+        },
+        countPrice:function(){
+            var self = this;
+            var price = 0;
+            for(var i in self.order){
+                price += Number(self.order[i].price)*self.order[i].counter;
+            }
+            return price.toFixed(2);
+        },
+        count:function(){
+            var self =this;
+            var count=0;
+            for(var i in self.order){
+                if(!$.isEmptyObject(self.order[i])){
+                    count+=self.order[i].counter;
+                }
+            }
+            return count;
+        },
+        checkCar:function(){
+            var self =this;
+
+            for(var i in self.order){
+                if(!$.isEmptyObject(self.order[i])){
+                    return true;
+                }
+
+            }
+            return false;
+        },
+        getNum:function(index){
+            var self =this;
+            var obj = self.order[index];
+            var num = 0;
+            if(obj != undefined && obj != null && obj != ''){
+                num = obj.counter;
+            }
+            return num;
+        },
+        addCate:function(index){
+            this.menu['menu'+index] ? this.menu['menu'+index]++ : this.menu['menu'+index]=1;
+            this.saveOrder();
+        },
+        cateNum:function (index) {
+            var self = this;
+            var cnum = 0;
+            var cate = self.menu['menu'+index];
+            if(cate != undefined && cate !=null && cate!=''){
+                cnum = cate;
+            }
+            return cnum;
+        },
+        removeSpecChild: function (index, childId) {
+            var self = this;
+            var schild = car.Spec['spec_child_'+index+'_'+childId];
+            if(schild){
+                car.Spec['spec_child_'+index+'_'+childId]--;
+                if(schild<=0){
+                    delete schild;
+                }
+            }
+            self.saveOrder();
+        },
+        addSpecChild: function (index, childId) {
+            var self = this;
+            car.Spec['spec_child_'+index+'_'+childId] ? car.Spec['spec_child_'+index+'_'+childId]++ : car.Spec['spec_child_'+index+'_'+childId]=1;
+            self.saveOrder();
+        },
+        delSpecChild: function(index, childId) {
+            var self = this;
+            delete  car.Spec['spec_child_'+index+'_'+childId];
+            self.saveOrder();
+        },
+        getSChildNum: function (index, childId) {
+            var snum = 0;
+            var child = car.Spec['spec_child_'+index+'_'+childId];
+            if(child != undefined && child != null && child != ''){
+                snum = child;
+            }
+            return snum;
+        }
+    };
+
+    function changeBtn(index, type, mid){
+        if(mid == undefined || mid == null || mid == ''){
+            mid = selMid;
+        }
+        if(type == undefined || type == null || type == ''){
+            type = '';
+        }
+        //修改购物车显示数量
+        var id = "";
+        var num = 0;
+        if(type == 'meal'){
+            var oIndex = '';
+            if(index.indexOf('meal_') == -1){
+                oIndex = 'meal_' + mid + '_' + index;
+            }else{
+                oIndex = index;
+            }
+            id = "#number" + oIndex;
+            num = mealList.list[mid].car.getNum(index);
+
+        }else{
+            var count = car.count();
+            if(count == 0){
+                $('.car-num').hide();
+            }else {
+                $('.car-num').text(count);
+                if ($('.car-num').css('display') == 'none') {
+                    $('.car-num').show();
+                }
+            }
+            //修改合计
+            $('#total').text(car.countPrice());
+
+            //修改减号按钮
+            var oIndex = '';
+            if(index.indexOf('food_') == -1 && index.indexOf('meal_') == -1){
+                oIndex = 'food_' + index;
+            }else{
+                oIndex = index;
+            }
+            num = car.getNum(oIndex);
+            id = ".number" + oIndex;
+        }
+        if(type.indexOf('MealCar') == -1){
+            var numObj = $(id);
+            numObj.text(num);
+            if(num > 0){
+                numObj.prev('.cart-reduce').css({
+                    opacity: 1,
+                    transform: 'translate3d(0,0,0) rotate(0)',
+                });
+                numObj.prev('.num-text').css('display','inline-block');
+                numObj.css('display','inline-block');
+            }else if(num == 0){
+                numObj.prev('.cart-reduce').css({
+                    opacity: 0,
+                    transform: 'translate3d(46px,0,0) rotate(180deg)',
+                });
+                numObj.prev('.num-text').css('display','none');
+                numObj.css('display','none');
+            }
+        }else{
+            var btn = $('span[id^="numbermeal_' + mid + '"]');
+            btn.text('0');
+            // btn.prev('.reduce').find('img').attr('src', 'STATIC_PATH/assets/wxweb/images/jian.png');
+        }
+
+    }
+    function checkMealInfo(id){
+        var cid = mealinfo.list[id].cid;
+        return checkMealCategory(cid, 'btn',id);
+    }
+    function checkMealCategory(cid, type, id){
+        var mc = mealcategory.list[cid];
+        var categoryNum = 0;
+        var goodsNum = 0;
+        $.each(mealList.list[mc.mid].car.order,function(i, obj){
+            if(cid == obj.cid){
+                if(obj.counter > 1){
+                    categoryNum += obj.counter;
+                }else{
+                    categoryNum++;
+                }
+            }
+            if(id == obj.index){
+				if(obj.counter > 1){
+					goodsNum += obj.counter;
+				}else{
+					goodsNum++;
+				}
+            }
+
+        });
+        $('#maxNumber_' + mc.mid + '_' + mc.id).text(mc.categoryMaxNumber - categoryNum);
+		if(categoryNum == mc.categoryMaxNumber){
+			if(type == 'btn'){
+				var html = '';
+				html += '<div class="title">{:lang(\'提交失敗\')}</div><div class="text"></div>';
+				html += '<div class="content" style="text-align: left;">' + mc.name + '{:lang(\'菜式可選數\')}:<span style="color: #ae0400;">' + mc.categoryMaxNumber + '</span></div>'
+				tipOpen(html);
+			}
+			return 2;
+		}else if(goodsNum == mc.goodsMaxNumber){
+			if(type == 'btn'){
+				var html = '';
+				html += '<div class="title">{:lang(\'提交失敗\')}</div><div class="text"></div>';
+				html += '<div class="content" style="text-align: left;">' + mc.name + '{:lang(\'單個菜式最多可選數\')}:<span style="color: #ae0400;">' + mc.goodsMaxNumber + '</span></div>'
+				tipOpen(html);
+			}
+			return 2;
+        }else if(categoryNum < mc.categoryMaxNumber){
+			return 1;
+        }else{
+            return 0;
+        }
+    }
+    function checkMeal(mid){
+        var is = true;
+        var objId = -1;
+        $.each(mealcategory.list,function(i, obj){
+            if(mid == obj.mid){
+                if(checkMealCategory(obj.id) != 2){
+                    objId = obj.id;
+                    is = false;
+                }
+            }
+        });
+        mcIdNotMeet = objId;
+        return is;
+    }
+    function addcar(index, type, cid){
+        // 判断是否有跟餐
+
+        if(type == 'meal'){
+            if(checkMealInfo(index) == 1){
+                var c = mealList.list[selMid].car;
+                c.addCar(index);
+            }
+        }else{
+            car.addCate(cid);
+            car.addCar(index);
+            // car.addSpecChild(index,)
+            changeMenuNum(cid);
+        }
+        changeBtn(index, type);
+        changeSetOrder(type);
+    }
+
+    function reduceSpecNum(index,specId,childId,stype) {
+        car.removeSpecChild(index,childId);
+        changeSpeBtn(index,specId,childId, stype);
+        //调用计算总价方法
+        selectChild(index,stype);
+    }
+
+    function delSpec(index,specId,childId,stype){
+        car.delSpecChild(index,childId,stype);
+        changeSpeBtn(index,specId,childId, stype);
+        //调用计算总价方法
+        selectChild(index,stype);
+    }
+
+
+    function addSpecNum(index,specId, childId, stype) {
+        var nameId  = '';
+        stype==1 ?  nameId='child' : nameId='food';
+        var count = $('.'+nameId+'_num_'+index+'_'+childId).html();
+        car.addSpecChild(index, childId);
+        changeSpeBtn(index,specId,childId, stype);
+
+        //调用计算总价方法
+        selectChild(index,stype);
+
+        //判断最少选择项
+        checkInput(index,stype);
+    }
+
+    function changeSpeBtn(index, specId,childId, stype) {
+        var nameId  ='';
+        stype==1 ?  nameId='child' : nameId='food';
+        var	count = car.getSChildNum(index, childId);
+        var num = $('.'+nameId+'_num_'+index+'_'+childId);
+        var Obj = $('.childnum_'+childId);
+
+        if(count===0){count=""}
+        // 修改规格数量
+        Obj.text(count);
+        num.text(count);
+
+        if(count>0){
+            $('#'+nameId+index+'_'+childId).prop('checked',true);
+            Obj.show();
+            num.show();
+        }else{
+            $('#'+nameId+index+'_'+childId).prop('checked',false);
+            Obj.hide();
+            num.hide();
+        }
+        if(specId){
+            var name = '#'+nameId+'Content'+specId,
+                arrL = $(name).find('input[type="checkbox"][name=s' +nameId+ specId + ']:checked').length,
+                min = food.list[index]._spec[specId].min;
+            max = food.list[index]._spec[specId].max;
+        }
+        if((arrL===min && count===1 && min && arrL) || (arrL<max && count==="" && min && arrL)){
+            Obj.prev('.cart-reduce').css({
+                opacity: 0,
+                transform: 'translate3d(36px,0,0) rotate(0)',
+            });
+        }else {
+            Obj.prev('.cart-reduce').css({
+                opacity: 1,
+                transform: 'translate3d(0,0,0) rotate(0)',
+            });
+        }
+
+    }
+
+    function changeMenuNum(cid,type) {
+        var cnum = car.cateNum(cid);
+        var menu = type == 'meal' ? 'cmenu' : 'menu';
+        if(cnum <= 0){
+            $('#'+menu+cid).find('.category-count'+cid).hide().text("0");
+        }else{
+            $('#'+menu+cid).find('.category-count'+cid).show().text(cnum);
+        }
+    }
+
+    function reducecar(index, type, cid){
+        if(type == 'meal'){
+            mealList.list[selMid].car.removeCar(index);
+        }else{
+            if(index.indexOf('food_') == -1){
+                index = 'food_' + index;
+            }
+            car.removeCar(index,cid);
+        }
+        changeMenuNum(cid);
+        changeBtn(index, type);
+        changeSetOrder(type);
+    }
+
+    function carHtml(){
+        var cars = car.order;
+        var html = '';
+        $.each(cars, function(i, obj){
+            var btnHtml = '';
+            var listHtml = '';
+            var str = '';
+            if(obj.type == 3){
+                var list = obj.foods;
+                var category = obj.category;
+                $.each(category, function(i, c){
+                    var n = 0;
+                    listHtml += '<div class="item">'
+                        + '<div class="item-l">' + c.name + ':</div><div class="item-r">';
+                    $.each(list, function(i, l){
+                        if(l.cid == c.id){
+                            var numStr = '';
+                            var icon = '';
+                            if(l.counter > 1){
+                                numStr = '*' + l.counter;
+                            }
+                            if(n > 0){
+                                icon = ',';
+                            }
+                            listHtml += icon + '<span class="r-li">' + l.name + l.specNames + numStr + '</span>';
+                            n++;
+                        }
+                    });
+                    listHtml += '</div></div>';
+                });
+                str = '<div class="car-li"><div class="car-li-tit">'
+                    + '<div class="tit">' + obj.name
+                    + '<div class="car-li-list">' + listHtml + '</div></div>'
+                    + '<div class="price">HK$&nbsp;' + Number(obj.price).toFixed(2) + '</div>'
+                    + '<div class="num">'
+                    + '<div class="cart-reduce" style="opacity: 1; transform: translate3d(0px, 0px, 0px) rotate(0deg);" onclick="redcar(\'' + obj.orderIndex + '\', this,\'' + obj.id + '\', \'redMealCar\',\''+'\')"><i class="fab-reduce-b"></i></div>'
+                    + '<span class="num-text" >' + obj.counter + '</span>'
+                    + '<div class="cart-add" onclick="pluscar(\'' + obj.orderIndex + '\', this,\'' + obj.id + '\', \'addMealCar\',\''+'\')"><i class="fab-add-b"></i></div>'
+                    + '</div></div>'
+                    + '</div>';
+            }else{
+                var numStr = '';
+                if(obj.type == 2){
+                    btnHtml += '<div class="del-weight" onclick="redcar(\'' + obj.orderIndex + '\', this, \'' + obj.category + '\', \'food\', \''+obj.id+'\')">删除</div>';
+                    if(obj.counter > 1){
+                        numStr = '*' + obj.counter;
+                    }
+                }else{
+                    btnHtml = '<div class="cart-reduce" style="opacity: 1; transform: translate3d(0px, 0px, 0px) rotate(0deg);" onclick="redcar(\'' + obj.orderIndex + '\', this, \'' + obj.category + '\',\''+'\','+obj.id+')"><i class="fab-reduce-b"></i></div>'
+                        + '<span class="num-text" >' + obj.counter + '</span>'
+                        + '<div class="cart-add" onclick="pluscar(\'' + obj.orderIndex + '\', this, \'' + obj.category + '\',\''+'\','+obj.id+')"><i class="fab-add-b"></i></div>';
+                }
+
+                var spesArr = obj.specNames=='[]' ? "" : obj.specNames;
+                str = '<div class="car-li">'
+                    + '<div class="tit">' + obj.name + spesArr + numStr +  '</div>'
+                    + '<div class="price">HK$&nbsp;' + Number(obj.price).toFixed(2) + '</div>'
+                    + '<div class="num">'
+                    + btnHtml
+                    + '</div></div>';
+            }
+
+            html += str;
+        });
+        $('#carList').html(html);
+    }
+
+    //购物车菜单删除
+    function redcar(index, obj, mid, type,id){
+        car.removeCar(index,mid);
+        changeBtn(index, type);
+        var num = car.getNum(index);
+        if(num == 0){
+            $('#carList').html('');
+            carHtml();
+            car.Spec={};
+        }else{
+            $(obj).next().text(num);
+        }
+        changeMenuNum(mid,type);
+        type == 'meal' ? name ='mealFood' : name ='food';
+        var tnum = $('#'+ name + id).find('.selNum').text();
+        if((id !== '' && food.list[id]._spec && food.list[id]._spec.length !== 0) || (id !== '' && food.list[id].weight>0)){
+			 //更改菜品总数量
+            tnum--;
+			addFoodSpecHtml(id, tnum, type);
+        }
+        changeSetOrder(type);
+        if(car.count() == 0){
+            $("#carDiv").slideUp();
+            $("#shield").removeClass('shield-div');
+            $(".right").removeClass('nomove');
+            return false;
+        }
+    }
+
+    // 菜单规格菜单添加
+    function pluscar(index, obj, mid,type,id){
+        car.addCar(index);
+        car.addCate(mid);
+        changeBtn(index, type);
+        var num = car.getNum(index);
+        var tnum = $('#food'+ id).find('.selNum').text();
+        $(obj).prev().text(num);
+        changeMenuNum(mid);
+        if(id !== '' && food.list[id]._spec && food.list[id]._spec.length !== 0){
+			//更改菜品总数量
+			tnum++;
+			addFoodSpecHtml(id, tnum, type);
+        }
+        changeSetOrder();
+    }
+
+    /** 初始化规格选中每项的第1个值 和 选中改变规格重新计算 **/
+    function selectChild(index,type){
+        var name = "";
+        var nameId = "";
+        type==1 ? name='spec' : name='food';
+        type==1 ? nameId='child' : nameId='food';
+        var row = food.list[index];
+        var arr = $('#'+name+'Content').find('input[type="checkbox"]:checked');
+        var price = parseFloat(row.originalPrice,2);
+        var specIds = '';
+        var specNames = '';
+        var specCounts = '';
+        $.each(arr, function(i, obj){
+            var child = JSON.parse(obj.value);
+            var num = $('.'+nameId+'_num_'+index+'_'+child.id).html();
+            num ? price += parseFloat(child.price * num,2) : price += parseFloat(child.price,2);
+            if(i != 0){
+                specIds += ',';
+                specNames += ',';
+                specCounts += ',';
+            }
+            var sCount = car.getSChildNum(index,child.id);
+            specCounts += child.id+'_'+sCount;
+            specIds += child.id;
+            if(sCount>1){
+                specNames += child.name +'*'+sCount;
+            }else{
+                specNames += child.name;
+            }
+
+        });
+        var ids = specIds.split(',');
+        ids = ids.sort(function(a,b) {
+            return a - b;      //升序，如降序，把“a - b”该成“b - a”
+        });
+        specIds = ids.join(',');
+        price = parseFloat(price).toFixed(2);    //四舍五入取2位小数转成字符串格式
+        food.list[index].price = price;
+        food.list[index].specIds = specIds;
+        food.list[index].specNames = specNames != "" ? '[' + specNames + ']' : "";
+        food.list[index].specCounts = specCounts;
+        $('#'+name+'Total').text(price);
+    }
+
+    /** 单击规格选项选中事件 index菜id,specId规格id,childId规格子选项id,min最小选几个,max最多选几个 ,stype弹出类型**/
+    function onclickChild(index, specId, childId, min, max, stype){
+        //判断选择是否满足最小和最大条件
+        // var arrd = $("#foodContent"+ specId).find('input[type="checkbox"][name=detail' + specId + ']:checked');
+        var nameId ="";
+        stype==1 ?  nameId='child' : nameId='food';
+        var name = '#'+nameId+'Content'+specId;
+        var arr = $(name).find('input[type="checkbox"][name=s' +nameId+ specId + ']:checked');
+        var number = arr.length;   //选中个数
+
+        // 判断规格数量是否可多选
+        var childNode = food.list[index]._spec[specId]._child[childId];
+        if(childNode.is_repeat===1 && number<=max){
+            var contentHtml = '';
+            var input = $('input[id='+nameId+index+"_"+childId+']');
+            input.prop('checked',(!input.prop('checked')));
+            var childCount = $('.'+nameId+'_num_'+index+'_'+childId).text();
+            var disnum = childCount>0 ? 'd-inline-block' : '';
+            var disreduce = (number<min && childCount==="1") || (number<=max && childCount==="") ? '' : 'dis-reduce';
+            // 规格分类名称
+            contentHtml += '<div>'+childNode.name+'({:lang(\'份量\')})</div><div class="num">';
+            contentHtml += '<div class="cart-reduce '+disreduce+'" onclick="reduceSpecNum('+index+','+specId+','+childId+','+stype+')"><i class="fab-reduce-b"></i></div>'
+                + '<span class="num-text '+disnum+'  childnum_'+childId+'">'+childCount+'</span>'
+                + '<div class="cart-add" onclick="addSpecNum('+index+','+specId+','+childId+','+stype+')"><i class="fab-add-b"></i></div></div>';
+
+            if(stype===1){
+                $('#specContentC').html(contentHtml);
+                $('#SpecificationsCountModal').modal({
+                    keyboard: false,
+                    backdrop: 'static'
+                });
+            }else{
+                $('#foodContentC').html(contentHtml);
+                $('#FoodDetailCountModal').modal({
+                    keyboard: false,
+                    backdrop: 'static'
+                });
+            }
+
+        }
+
+        if(number < min){
+            //选中项少于最小值时,不能取消已经选中的项
+            $(name).find('input[type="checkbox"][id='+ nameId + index + '_'+ childId+ ']').prop("checked",true);
+            if(childNode.is_repeat != 1){   //判断是否可复选
+                // $("#childContent"+ specId).find('input[type="checkbox"][id=child' + childId + ']').prop("checked",true);
+                // 弹窗提示信息,1.5秒自动消失
+                $('.alert-fail').remove();
+                $('<div>').appendTo('body').addClass('alert alert-fail').html('{:lang(\'至少選擇\')}'+ min +'{:lang(\'項\')}').show().delay(1500).fadeOut();
+                return false;
+            }
+        }
+        if(number > max){
+            //判断处理单选与多选的情况
+            if(max == 1) {
+                //处理最小值和最大值都是1时为单选
+                //第1步:把所有勾选都去掉（如果不可复选）
+                $(name).find('input[type="checkbox"]').prop("checked", false);
+                var allChild = food.list[index]._spec[specId]._child;
+                for(var cid in allChild){
+                    if(allChild[cid].is_repeat===1){
+                        delSpec(index,specId,cid,stype);
+                    }
+                }
+                if(childNode.is_repeat == 1){
+                    addSpecNum(index,specId,childId,stype);
+                }else {
+                    //第2步:选中本次选中项
+                    $(name).find('input[type="checkbox"][id=' + nameId + index + '_' + childId + ']').prop("checked", true);
+                }
+                // $(name).find('span[class^="child_num_"]').html("").css('display','none');
+                // $("#childContent"+ specId).   find('input[type="checkbox"]').prop("checked",false);
+
+                // $("#childContent"+ specId).find('input[type="checkbox"][id=child' + childId + ']').prop("checked",true);
+            }else{
+                //处理最大值大于1时为多选情况
+                $(name).find('input[type="checkbox"][id='+nameId + index + '_' + childId +']').prop("checked",false);
+                // $("#childContent"+ specId).find('input[type="checkbox"][id=child' + childId + ']').prop("checked",false);
+                //弹窗提示信息,1.5秒自动消失
+                $('<div>').appendTo('body').addClass('alert alert-fail').html('{:lang(\'最多選\')}'+ max +'{:lang(\'項\')}').show().delay(1500).fadeOut();
+                return false;
+            }
+        }
+
+        //调用计算总价方法
+        selectChild(index,stype);
+
+        //判断最少选择项
+		checkInput(index,stype);
+    };
+
+    function checkInput(index,stype) {
+    	var nameId = '';
+		stype===1 ? nameId ='child' : nameId = 'food';
+		var sList = food.list[index]._spec;
+		var flag = true;
+		$.each(sList,function (key,value) {
+			var arr = $('#'+nameId+'Content'+key).find('input[type="checkbox"]:checked');
+			if(arr.length<sList[key].min){
+				flag = false;
+			}
+		});
+		if(flag){
+			$('.addCar').removeClass('disable').css('pointer-events','auto');
+		}
+
+	}
+
+    function setWeight(index, type){
+        var id = index;
+        if(type == 'meal'){
+            if(checkMealInfo(index) == 1){
+                index = mealinfo.list[index].gid;
+            }else{
+                return false;
+            }
+        }
+        var row = food.list[index];
+        var specArr = row._spec;
+        $('#weightContent').html('');
+        var weightHtml = '<div class="li input">'
+            + '<div class="tit ">' + row.originalPrice + '/'+ row.unit + '</div>'
+            + '<div class="select">'
+            + '	<div class="radio-div">'
+            + '		<input id="weightNumber" type="number" oninput="weightCount(' + index + ')" onkeypress="if(!this.value.match(/^[\\+\\-]?\\d*?\\.?\\d{0,2}?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\\+\\-]?\\d+(?:\\.\\d+)?)?$/))this.o_value=this.value" onkeyup="if(!this.value.match(/^[\\+\\-]?\\d*?\\.?\\d{0,2}?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\\+\\-]?\\d+(?:\\.\\d+)?)?$/))this.o_value=this.value" onblur="if(!this.value.match(/^(?:[\\+\\-]?\\d+(?:\\.\\d+)?|\\.\\d{0,2}?)?$/))this.value=this.o_value;else{if(this.value.match(/^\\.\\d+$/))this.value=0+this.value;if(this.value.match(/^\\.$/))this.value=0;this.o_value=this.value}">'
+            + '		<label class="unit" for="child">'+ row.unit + '</label>'
+            + '	</div>'
+            + '</div></div>';
+        $.each(specArr, function(i, spec){
+            var childArr = spec._child;
+            var n = 0
+            weightHtml += '<div class="li">'
+                + '<div class="tit">' + spec.name + '</div>'
+                + '<div class="select">';
+            $.each(childArr, function(j, child){
+                var checked = '';
+                if(n == 0){
+                    checked = 'checked';
+                    n++;
+                }
+                weightHtml += '	<div class="radio-div">'
+                    + "		<input id='childs" + j + "' onchange='weightCount(" + index + ")' type='radio' " + checked + " name='spec" + i + "' value='" + JSON.stringify(child) + "'>"
+                    + '		<label for="childs' + j + '">' + child.name + '(+'+child.price+')</label>'
+                    + '	</div>';
+            });
+            weightHtml += '</div></div>';
+        });
+        weightHtml += '</div>';
+        // weightHtml += '</div><div class="remark">備注<textarea class="input-remark"></textarea></div>';
+        $('#weightTotal').text(row.originalPrice);
+        $('#weightTit').text(row.name);
+        $('#weightGoodId').val(id);
+        $('#weightType').val(type);
+        $('#weightCateId').val(row.category);
+        $('#weightContent').html(weightHtml);
+        $('#WeightModal').modal('show');
+    }
+
+    function weightCount(index){
+        var row = food.list[index];
+        var arr = $('#weightContent').find('input[type="radio"]:checked');
+        var price = parseFloat(row.originalPrice,2);
+        var specIds = '';
+        var specNames = '';
+        var number = row.weight = parseFloat($("#weightNumber").val(),2);
+        if(number>0){
+            price = parseFloat(price*number).toFixed(2);
+        }
+
+        if(isNaN(price)){
+            price = 0;
+        }
+        $.each(arr, function(i, obj){
+            var child = JSON.parse(obj.value);
+            price = parseFloat(parseFloat(price,2) + parseFloat(child.price,2)).toFixed(2);
+            if(i !=0 ){
+                specIds += ',';
+                specNames += ',';
+            }
+            specIds += child.id;
+            specNames += child.name;
+        });
+        var ids = specIds.split(',');
+        ids = ids.sort(function(a,b) {
+            return a - b; //升序，如降序，把“a - b”该成“b - a”
+        });
+        var id = ids.join(',');
+        food.list[index].price = price;
+        food.list[index].specIds = specIds;
+        var name = '[' + row.weight + row.unit + ']';
+        if(specNames.length > 0){
+            name += '[' + specNames + ']';
+        }
+        food.list[index].specNames = name;
+        $('#weightTotal').text(price);
+    }
+    function weightAddCar(){
+        var number = parseFloat($("#weightNumber").val(),2);
+        var index = $('#weightGoodId').val();
+        var type = $('#weightType').val();
+        var cid = $('#weightCateId').val();
+        if(number>0){
+            addcar(index, type,cid);
+            if(type == 'meal'){
+                addFoodSpec(index,type);
+            }
+            // 显示规格菜单数量
+            addFoodSpec(index,type);
+            $('#WeightModal').modal('hide');
+        }else{
+            tipOpen('{:lang(\'請輸入重量\')}');
+        }
+    }
+
+    function selectSpec(index ,type, mid) {
+        $('#specContent').html('');
+        var id = index;
+        if (type == 'meal') {
+            if (checkMealInfo(index) == 1) {
+                index = mealinfo.list[index].gid;
+            } else {
+                return false;
+            }
+        }
+        car.Spec = {};
+        var row = food.list[index];
+        var specArr = row._spec;
+        var addArr = row._addon;
+        var flag = true;
+        $spAr = Object.keys(specArr);
+        var nsp = $spAr.sort(function (a, b) {
+            return specArr[a]['spec_order'] - specArr[b]['spec_order'];
+        });
+
+        var specHtml = '<div class="item_ul"><div class="item-name">{:lang(\'規格\')}</div>';
+        $.each(nsp, function (key, value) {
+            var spec = specArr[value];
+            var min = spec.min;   //至少选几项
+            var max = spec.max;   //最多选几项
+            if (min == '') {
+                min = 0;     //如果未设置最小值默认为0
+            }
+            if (max == '') {
+                max = 1;    //如果未设置最大值默认为1
+            }
+            var remind = '({:lang(\'必選\')})';
+            if (min == 0) {
+                remind = ' ({:lang(\'最多選\')}' + max + '{:lang(\'項\')})';
+            } else {
+                remind = ' ({:lang(\'至少選\')}' + min + '{:lang(\'項\')},{:lang(\'最多選\')}' + max + '{:lang(\'項\')})';
+            }
+            specHtml += '<div class="li">'
+                + '<div class="tit">' + spec.name + '<span>' + remind + '</span></div>'
+                + '<div class="select" id="childContent' + spec.id + '">';
+
+            var childArr = spec._child;
+            var n = 0, r = 0;
+            $.each(childArr, function (j, child) {
+                var checked = '',
+                    dis = '';
+                var childNum = car.getSChildNum(index, j);
+                var num = $('.child_num_' + index + '_' + j).text();
+                if (child.is_default === 1) {
+                    checked = 'checked';
+                    dis = 'd-inline-block';
+                    childNum = 1;
+                    r++;
+                    car.Spec['spec_child_' + index + '_' + j] = childNum;
+                }
+
+                n++;
+                specHtml += '<div class="radio-div">'
+                    + "	<input id='child" + index + "_" + j + "' onchange='onclickChild(" + index + "," + spec.id + "," + j + "," + min + "," + max + ",1)' type='checkbox' " + checked + " name='schild" + spec.id + "' value='" + JSON.stringify(child) + "'>"
+                    + '	<label for="child' + index + '_' + j + '">' + child.name + '(+' + child.price + ')';
+                if (child.is_default === 1 && child.is_repeat === 1) {
+                    specHtml += '<span class="child_num_' + index + "_" + j + " " + dis + '">1</span>';
+                } else {
+                    specHtml += '<span class="child_num_' + index + "_" + j + '"></span>';
+                }
+
+                specHtml += '</label></div>';
+            });
+
+            r < min ? flag = false : "";
+            specHtml += '</div></div>';
+
+        });
+        // specHtml += '</div><div class="remark">備注<textarea class="input-remark"></textarea></div>';
+
+        // 跟餐模块
+		if(addArr){
+            specHtml += '<div class="item-name t-3">{:lang(\'選擇跟餐\')}</div>';
+            var itemArr = addArr._foodsgroup;
+            $.each(itemArr, function (i,item) {
+                var str = '',rstr=0;
+                item.is_require ? str='{:lang(\'必選\')}' : str='{:lang(\'非必選\')}';
+                item.group_max_number>0 ? (rstr = ',{:lang(\'任選\')}'+item.group_max_number+'{:lang(\'項\')}') : rstr ="";
+                specHtml += '<div class="li add"><div class="tit theme-color">'+item.name+'（'+str+rstr+'）</div>';
+                    $.each(item._foods, function (j,food) {
+                        specHtml += '<div class="add-group"><span class="name">'+food.name+'</span>';
+                            specHtml += '</div><div class="select" id="">';
+                                if(food._spec){
+                                   $.each(food._spec, function (m,spec) {
+                                       $.each(spec._child, function (k,child) {
+                                           specHtml += '<div class="radio-div">'
+                                               + "<input id='"+child.id+"' onchange='onclickChild()' type='checkbox' name='' value=''>"
+                                               + '<label for="'+child.id+'">'+child.name+'(+'+child.price+')'
+                                               + '<span class="child_num_"></span>';
+                                           if(food.is_repeat==1){
+                                               specHtml += '<div class="num"><div class="cart-reduce"'
+                                                   + '<i class="fab-reduce-b"></i></div>'
+                                                   + '<span class="num-text "></span><div class="cart-add" ><i class="fab-add-b"></i></div></div>';
+                                           }
+
+                                           specHtml += '</label></div>';
+                                       });
+                                   });
+
+                                }
+                                specHtml += '</div>';
+                            });
+                specHtml += '</div>';
+            });
+		}
+
+
+
+
+      /*  specHtml += '<div class="add-group"><span class="name">Watsons Water</span>'
+            + '<div class="num"><div class="cart-reduce"'
+            + '<i class="fab-reduce-b"></i></div>'
+            + '<span class="num-text "></span><div class="cart-add" ><i class="fab-add-b"></i></div></div></div>';
+
+        specHtml += '<div class="add-group"><span class="name">珍珠奶茶</span>'
+            + '<div class="num"><div class="cart-reduce"'
+            + '<i class="fab-reduce-b"></i></div>'
+            + '<span class="num-text "></span><div class="cart-add" ><i class="fab-add-b"></i></div></div></div>';
+        specHtml += '</div>';*/
+
+
+
+        var footHtml = '<input type="hidden" id="rowId"/><input type="hidden" id="rowType"/><input type="hidden" id="cateId"><input type="hidden" id="childId"><div class="pice">HK$ <span id="specTotal"></span></div>';
+		footHtml += '<div class="addCar" onclick="specCar()">{:lang(\'加入訂單\')}</div>';
+
+		$('#specContent').html(specHtml);
+		$('#specFooter').html(footHtml);
+        $('#specTit').text(row.name);
+        $('#rowId').val(id);
+        $('#cateId').val(mid);
+        $('#rowType').val(type);
+		flag ? "" : $('.addCar').addClass('disable').css('pointer-events','none');
+        selectChild(index,1);
+        $('#SpecificationsModal').modal('show');
+
+    }
+
+    // 选规格-加入购物车
+    function specCar(){
+        var index = $('#rowId').val();
+        var type = $('#rowType').val();
+        var cid = $('#cateId').val();
+        addcar(index, type, cid);
+        // 显示规格菜单数量
+        addFoodSpec(index,type);
+        $('#SpecificationsModal').modal('hide');
+    }
+
+    // 菜品详情-加入购物车事件
+    function foodCar(index,type,cid){
+    	var mid = '';
+        addcar(index, type);
+        if(type == 'meal'){
+			mid  = mealinfo.list[index].gid;
+        }else{
+        	mid = index;
+            car.addCate(cid);
+            changeMenuNum(cid,type);
+        }
+		if(food.list[mid]._spec.length!=0){
+			// 显示规格菜单数量
+			addFoodSpec(index,type);
+		}
+
+        $('#FoodDetailModal').modal('hide');
+    }
+
+    $('#foodScrollspy').on('activate.bs.scrollspy', function(e) {
+        var li = $('#foodScrollspy').find('li.active');
+        //dv.scrollTop = a.offsetTop - dv.offsetTop;
+        var liTop = $(li)[0].offsetTop;
+        var ulTop = $(".left")[0].offsetTop;
+        if (liTop < $(".left").scrollTop() || liTop > ($(".left").scrollTop() + $(".left").height() - 100)) {
+            var top = (liTop - ulTop) / 1.5;
+            $(".left").animate({scrollTop:top + "px"},5);
+        }
+    });
+
+    function getSelFood(index,type) {
+		var list = [];
+		var Foods = car.order;
+		var num = 0;
+		$.each(Foods,function (i, item) {
+			if(index == item.id){
+				list.push(item);
+				if(item.counter > 1){
+					num += item.counter;
+				}else{
+					num++;
+				}
+			}
+		});
+
+		if(type == 'num'){
+			return num;
+		}else{
+			return list;
+		}
+	}
+    function getSelMealFoodS(index, type){
+        var list = [];
+        var mealFoods = mealList.list[selMid].car.order;
+        var num = 0;
+        $.each(mealFoods,function(i, obj){
+            if(index == obj.index){
+                list.push(obj);
+                if(obj.counter > 1){
+                    num += obj.counter;
+                }else{
+                    num++;
+                }
+            }
+        });
+
+        if(type == 'num'){
+            return num;
+        }else{
+            return list;
+        }
+    }
+
+    function addFoodSpecHtml(index, num, type){
+            var name = "";
+            type == 'meal' ? name ='mealFood' : name ='food';
+            var parent = $('#'+ name + index);
+            var html = '<div class="selNum" onclick="showSelMealFood(' + index + ',\'' + type + '\')">' + num + '</div>';
+            parent.find(".selNum").remove();
+            if(num > 0){
+                parent.prepend(html);
+            }
+    }
+
+    function addFoodSpec(index,type){
+        var num  = "";
+		if(type=='meal'){
+			num = getSelMealFoodS(index, 'num');
+		}else{
+			num = getSelFood(index,'num');
+		}
+        addFoodSpecHtml(index, num ,type);
+    }
+
+    function showSelMealFood(index,type){
+		updateSelMealFoods(index,type);
+		$('#selMealFoodModal').modal('show');
+    }
+
+    function updateSelMealFoods(index,type){
+		var html = '';
+		var list;
+    	if(type == 'meal'){
+			list = getSelMealFoodS(index, 'list');
+    	}else{
+			list = getSelFood(index, 'list');
+    	}
+
+        $.each(list, function(i, obj){
+            var btnHtml = '';
+            var listHtml = '';
+            var str = '';
+            var numStr = '';
+            if(obj.type == 2){
+                btnHtml += '<div class="del-weight" onclick="redcar(\'' + obj.orderIndex + '\',this, \'' + obj.category + '\',  \'food\',\''+obj.id+'\')">{:lang(\'删除\')}</div>';
+                if(obj.counter > 1){
+                    numStr = '*' + obj.counter;
+                }
+            }else{
+				if(type == 'meal'){
+					btnHtml = '<div class="cart-reduce" style="opacity: 1; transform: translate3d(0px, 0px, 0px) rotate(0deg);" onclick="redMealCar(\'' + obj.index + '\', \'' + obj.orderIndex + '\', this)"><i class="fab-reduce-b"></i></div>'
+							+ '<span class="num-text">' + obj.counter + '</span>'
+							+ '<div class="cart-add" onclick="plusMealCar(\'' + obj.index + '\', \'' + obj.orderIndex + '\', this)"><i class="fab-add-b"></i></div>';
+				}else{
+					btnHtml = '<div class="cart-reduce" style="opacity: 1; transform: translate3d(0px, 0px, 0px) rotate(0deg);" onclick="redFoodCar(\'' + obj.orderIndex + '\', this, \'' + obj.category + '\', \'food\', \''+obj.id+'\')"><i class="fab-reduce-b"></i></div>'
+							+ '<span class="num-text">' + obj.counter + '</span>'
+							+ '<div class="cart-add" onclick="pluscar(\'' + obj.orderIndex + '\', this, \'' + obj.category + '\', \'food\', \''+obj.id+'\')"><i class="fab-add-b"></i></div>';
+				}
+
+            }
+            str = '<div class="car-li">'
+                + '<div class="tit">' + obj.name + obj.specNames + numStr + '</div>'
+                + '<div class="price">HK$&nbsp;' + Number(obj.price).toFixed(2) + '</div>'
+                + '<div class="num">'
+                + btnHtml
+                + '</div></div>';
+            html += str;
+        });
+        $('#selMealFoods').html(html);
+
+    }
+
+    // 规格菜单删除
+	function redFoodCar(index, obj, mid, type, id) {
+    	var fnum = car.removeCar(index,mid);  //菜品单个规格数量
+		var cnum = getSelFood(id, 'num');   //菜品总数量
+		if(cnum == 0){
+			$('#selMealFoodModal').modal('hide');
+		}else{
+			if(fnum == 0){
+                updateSelMealFoods(id,type);
+			}else{
+				$(obj).next().text(fnum);
+			}
+		}
+
+        changeMenuNum(mid);
+        changeBtn(id, type);
+        addFoodSpecHtml(id, cnum, type);
+        changeSetOrder();
+
+	}
+
+    // 套餐规格菜单删除
+    function redMealCar(index, orderIndex, obj){
+        var num = mealList.list[selMid].car.removeCar(orderIndex);
+        var snum = getSelMealFoodS(index, 'num');
+        if(snum == 0){
+            $('#selMealFoodModal').modal('hide');
+        }else{
+            if(num == 0){
+				list = getSelMealFoodS(index, 'list');
+				updateSelMealFoods(index,'meal');
+            }else{
+                $(obj).next().text(num);
+            }
+        }
+        addFoodSpecHtml(index, snum, 'meal');
+        changeSetOrder('meal');
+    }
+
+    function plusMealCar(index, orderIndex, obj){
+        if(checkMealInfo(index) == 1){
+            mealList.list[selMid].car.addCar(orderIndex);
+            var num = mealList.list[selMid].car.getNum(orderIndex);
+            $(obj).prev().text(num);
+            changeSetOrder('meal');
+            addFoodSpecHtml(index, num, 'meal');
+        }
+    }
+
+    function showdetail(index, type){
+        $('#foodContent').html('');
+        $('#foodFooter').html('');
+        car.Spec={};
+        var detailHtml = '',
+            footerHtml = '',
+            indexStr = '\''+index+'\'';
+		var	flag = true;
+
+        if(type == 'meal'){
+            index = mealinfo.list[index].gid;
+        }
+        var foodDetail = food.list[index];
+        var rowArr = foodDetail._spec;
+        $spAr = Object.keys(rowArr);
+        var nsp = $spAr.sort(function(a,b){
+            return rowArr[a]['spec_order']-rowArr[b]['spec_order'];
+        });
+        detailHtml += '<div class="food-img"><img src="'+foodDetail.image+'" alt=""></div><div class="food-content">';
+        if(type=='weight'){
+            detailHtml += '<div class="li input">'
+                + '<div class="tit ">' + rowArr.originalPrice + '/'+ rowArr.unit + '</div>'
+                + '<div class="select">'
+                + '	<div class="radio-div">'
+                + '		<input id="weightNumber" type="number" oninput="weightCount(' + index + ')" onkeypress="if(!this.value.match(/^[\\+\\-]?\\d*?\\.?\\d{0,2}?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\\+\\-]?\\d+(?:\\.\\d+)?)?$/))this.o_value=this.value" onkeyup="if(!this.value.match(/^[\\+\\-]?\\d*?\\.?\\d{0,2}?$/))this.value=this.t_value;else this.t_value=this.value;if(this.value.match(/^(?:[\\+\\-]?\\d+(?:\\.\\d+)?)?$/))this.o_value=this.value" onblur="if(!this.value.match(/^(?:[\\+\\-]?\\d+(?:\\.\\d+)?|\\.\\d{0,2}?)?$/))this.value=this.o_value;else{if(this.value.match(/^\\.\\d+$/))this.value=0+this.value;if(this.value.match(/^\\.$/))this.value=0;this.o_value=this.value}">'
+                + '		<label class="unit" for="child">'+ rowArr.unit + '</label>'
+                + '	</div>'
+                + '</div></div>';
+        }
+
+        if(rowArr){
+            $.each(nsp, function(key, value){
+                var food = rowArr[value];
+                var min = food.min;  //至少选几项
+                var max = food.max;  //最多选几项
+
+                if(min == ''){
+                    min = 0;   //如果未设置最小值默认为0
+                }
+                if(max == ''){
+                    max = 1;   //如果未设置最大值默认为1
+                }
+                var remind = '';
+                if(min == 0){
+                    remind = ' ({:lang(\'最多選\')}'+ max +'{:lang(\'項\')})';
+                }else{
+                    remind = ' ({:lang(\'至少選\')}'+ min +'{:lang(\'項\')},{:lang(\'最多選\')}'+ max +'{:lang(\'項\')})';
+                }
+                detailHtml += '<div class="li">'
+                    + '<div class="tit">' + food.name + '<span>'+ remind +'</span></div>'
+                    + '<div class="select" id="foodContent' + food.id + '">';
+                var childArr = food._child;
+                var n = 0,r=0;
+                $.each(childArr, function(j, child){
+                    var checked = '',
+                        dis = '';
+                    var childCount = car.getSChildNum(index,j);
+                    if(child.is_default===1) {
+                        checked = 'checked';
+                        dis = 'd-inline-block';
+                        childCount = 1;
+                        r++;
+                        car.Spec['spec_child_'+index+'_'+j] = childCount;
+                    }
+
+                    n++;
+
+                    detailHtml += ' <div class="radio-div">'
+                        + "<input id='food" + index + "_"+j+"' onchange='onclickChild(" + index + "," + food.id + "," + j + "," + min + "," + max + ",2)' type='checkbox' " + checked + " name='sfood" + food.id + "' value='" + JSON.stringify(child) + "'>"
+                        + '	<label for="food' + index + '_'+j+'">' + child.name + '(+'+child.price+')';
+                    if(child.is_default===1 && child.is_repeat===1){
+                        detailHtml += '<span class="food_num_'+index+"_"+j+ " "+dis+'">'+1+'</span>';
+                    }else{
+                        detailHtml += '<span class="food_num_'+index+"_"+j+'"></span>';
+                    }
+                    detailHtml += '	</label></div>';
+                });
+				r < min ? flag = false : "";
+                detailHtml += '</div></div>';
+            });
+
+        }
+
+        typeStr = '\''+ type+'\'';
+        categoryStr = '\''+foodDetail.category+'\'';
+        // detailHtml += '<div class="remark">備注<textarea class="input-remark"></textarea></div>';
+        var detailTxt =	foodDetail.detail ? foodDetail.detail : '{:lang(\'暫無信息\')}';
+        detailHtml += '<div class="desc">{:lang(\'商品描述\')} <div class="desc-text">'+detailTxt+'</div></div>';
+
+        footerHtml += '<input type="hidden" id="foodGoodId"/><input type="hidden" id="foodType"/>'
+            + '<div class="pice">HK$ <span id="foodTotal"></span></div>';
+
+
+        if(type == 'meal'){
+            footerHtml += '</div><div class="addCar" onclick="foodCar('+indexStr+', '+ typeStr +')">{:lang(\'加入訂單\')}</div>';
+        }else{
+            footerHtml += '</div><div class="addCar" onclick="foodCar('+indexStr+', '+typeStr+', '+categoryStr+')">{:lang(\'加入訂單\')}</div>';
+        }
+
+        $('#foodContent').html(detailHtml);
+        $('#foodFooter').html(footerHtml);
+        $('#rowType').val(type);
+
+        flag ? "" : $('.addCar').addClass('disable').css('pointer-events','none');
+        selectChild(index,2);
+        $('#FoodDetailModal').modal('show');
+
+        // detailHtml += '<div></div>>';
+        // openloading("STATIC_PATH/assets/img/loading-2.gif");
+        /*$.ajax({
+            type: "POST",
+            url : '{:url('showdetail')}',
+            data: {number:number},
+            async: true,
+            success: function(data) {
+                setTimeout('closeloading()',100);
+                $(".food-detail-name").text(data.msg.name);
+                $(".food-detail-text").html(data.msg.detail);
+                $("#food-detail").show();
+                $("#food-list").hide();
+            },
+            error: function(request) {
+                setTimeout('closeloading()',100);
+            }
+        });*/
+    }
+
+    function saveCart() {
+        if(car.count() != 0){
+            $('#configModal').modal('show');
+        }else{
+            openloading("STATIC_PATH/assets/img/loading-2.gif");
+            $.ajax({
+                type: "POST",
+                url : "{:url('clearOrder')}",
+                data: {},
+                async: true,
+                success: function(data) {
+                    setTimeout('closeloading()',100);
+                    window.location.href = data.url;
+                },
+                error: function(request) {
+                    setTimeout('closeloading()',100);
+                }
+            });
+        }
+    };
+    $("#ok").click(function(){
+        $('#configModal').modal('hide');
+        var order = JSON.stringify(car.order);
+        var menu = JSON.stringify(car.menu);
+        openloading("STATIC_PATH/assets/img/loading-2.gif");
+        $.ajax({
+            type: "POST",
+            url : "{:url('saveOrder')}",
+            data: {order:order,menu:menu},
+            async: true,
+            success: function(data) {
+                setTimeout('closeloading()',100);
+                window.location.href = data.url;
+            },
+            error: function(request) {
+                setTimeout('closeloading()',100);
+            }
+        });
+    });
+    $("#cancel").click(function(){
+        $('#configModal').modal('hide');
+        openloading("STATIC_PATH/assets/img/loading-2.gif");
+        $.ajax({
+            type: "POST",
+            url : "{:url('clearOrder')}",
+            data: {},
+            async: true,
+            success: function(data) {
+                setTimeout('closeloading()',100);
+                window.location.href = data.url;
+            },
+            error: function(request) {
+                setTimeout('closeloading()',100);
+            }
+        });
+    });
+
+    $('body').on('click','#setorder',function () {
+        if(car.count() != 0){
+            var personcount = "{:session('personCount')}";
+            var is_cover_charge = "{:session('contact_info.is_cover_charge')}";
+            var addstatus = "{$addstatus}";
+            if(is_cover_charge==1&&personcount.length==0&&addstatus==0){
+                $('#personCountModal').modal('show');
+            }else{
+                orderConfirm();
+            }
+    	}
+    });
+
+    // 選擇就餐人數
+	$('.person-item').on('click',function () {
+        var selNum = $(this).find('input[type=radio]').val();
+            $.ajax({
+                type: "POST",
+                url : "{:url('index/personCount')}",
+                data:{
+                    'selnum':selNum,
+                },
+                async: true,
+                success: function(data){
+                    if(data.code){
+                        orderConfirm();
+                    }
+                },
+                error: function(msg){
+                    console.log(msg.errorMsg);
+                }
+            });
+    });
+
+	// 提交訂單
+	function orderConfirm(){
+        $('#configModal').modal('hide');
+        $('#personCountModal').modal('hide');
+        var uType = $('#member-type').text();
+        var contact = '{$contact.number}';
+        var member = uType==1 ? '{$member.number}' : '';
+        sessionStorage.setItem('car-count',car.count());
+        var order = JSON.stringify(car.order);
+        openloading("STATIC_PATH/assets/img/loading-2.gif");
+        $.ajax({
+            type: "POST",
+            url : "{:url('foodList')}",
+            data: uType==1 ? {contact:contact,member:member,order:order,menu:JSON.stringify(car.menu)} : {contact:contact,order:order,menu:JSON.stringify(car.menu)},
+            async: true,
+            success: function(data){
+                setTimeout('closeloading()',100);
+                if (data.code) {
+                    window.location.href = data.url;
+                }
+            },
+            error: function(errormsg){
+                alert(errormsg);
+            }
+        });
+    }
+
+    $('#setorderMeal').click(function(){
+        if(mealBtn){
+            var m_id = '#cmeal'+selMid;
+            $(m_id).find('.cart-reduce').css({
+                opacity: 0,
+                transform: 'translate3d(46px,0,0) rotate(180deg)',
+            });
+            $(m_id).find('.num-text').css('display','none');
+            $(m_id).find('.selNum').text('0').hide();
+            car.addMealCar();
+            car.addCate(selMid);
+            changeMenuNum(selMid,'meal');
+        }else{
+            var message = '';
+            message += '<div class="title">{:lang(\'提交失敗\')}</div><div class="text">{:lang(\'套餐內含有多個菜式，不支持單點請在套餐內\')}</div>';
+            if(mcIdNotMeet == 0){
+                message += '{:lang(\'请选择菜品\')}';
+            }else{
+                var mc = mealcategory.list[mcIdNotMeet];
+                message += '<div class="content" style="text-align: left;">{:lang(\'已選\')}'+ mc.name +'{:lang(\'菜式不足\')}：<span style="color: #FF5901;">' + mc.categoryMaxNumber + '</span>{:lang(\'個\')}</div>';
+            }
+            tipOpen(message);
+        }
+    });
+    function tipOpen(text){
+        $('#tip-content').html(text);
+        $('#tipModal').modal('show');
+    }
+
+    function tipClose(){
+        $('#tip-content').text('');
+        $('#tipModal').modal('hide');
+    }
+
+    function showCar(){
+        if($("#carDiv").css("display")=='none'){
+            carHtml();
+            $("#carDiv").slideDown();
+            $("#shield").addClass('shield-div');
+            $('.right').addClass('nomove');
+            // $('body').css('position','fixed');
+            scrollTop = document.scrollingElement.scrollTop;
+            document.body.style.top = -scrollTop + 'px';
+        }else{
+            $("#carDiv").slideUp();
+            $("#shield").removeClass('shield-div');
+            $('.right').removeClass('nomove');
+            // $('body').css('position','relative');
+            document.scrollingElement.scrollTop = scrollTop;
+        }
+    }
+    $(".car-img").click(function(e){
+        // e.preventDefault();
+        if(car.count() == 0){
+            $("#carDiv").slideUp();
+            $("#shield").removeClass('shield-div');
+            return false;
+        }
+        $('#carList').html('');
+        showCar();
+    });
+    $('#shield').bind("touchend", function (e) {
+        showCar();
+        e.preventDefault();
+    });
+    $('#carList').bind("touchmove", function (e) {
+        $('#carList').html($('#carList').html());
+    });
+    $('.car-div').bind("touchmove", function (e) {
+        e.preventDefault();
+    });
+    $('#removeAll').click(function(){
+        car.order = {};
+        car.menu={};
+        car.Spec={};
+        $.each(mealList.list, function(i, obj){
+            obj.car.order = {};
+        });
+        $("#carDiv").slideUp();
+        $("#shield").removeClass('shield-div');
+        $('.right').removeClass('nomove');
+        // $('.reduce').find('img').attr('src', 'STATIC_PATH/assets/wxweb/images/jian.png');
+        $('.num-text').text('0');
+        $('.cart-reduce').css({
+            opacity: 0,
+            transform: 'translate3d(46px,0,0) rotate(180deg)'
+        });
+
+		$('.selNum').text("").css('display','none');
+        $('.car-num, .num-text').css('display','none');
+        $('.car-num').text('0');
+        $('[class^="category-count"]').text("").hide();
+        $('#total').text('0.00');
+        changeSetOrder();
+
+    });
+
+    function changeSetOrder(type){
+        var id = $("#setorder");
+        var mid = $("#setorderMeal");
+        var is = false;
+        var obj = car;
+        if(obj.count() > 0){
+            is = true;
+        }
+        if(type == 'meal'){
+            var mis = false;
+            mis = checkMeal(selMid);
+            if(mis){
+                mid.removeClass('button-none');
+                mid.addClass('button');
+                mealBtn = true;
+            }else{
+                mid.removeClass('button');
+                mid.addClass('button-none');
+                mealBtn = false;
+            }
+        }
+
+        if(is){
+            id.removeClass('button-none');
+            id.addClass('button');
+        }else{
+            id.removeClass('button');
+            id.addClass('button-none');
+        }
+    }
+
+
+    {if(!empty($order))}
+    // 加载session中的购物车
+    $(function(){
+        car.order = {$order.order};
+        car.menu = {$order.menu};
+        $.each(car.order, function(i, obj){
+            if(obj.type < 3){
+                changeBtn(obj.id);
+                if(food.list[obj.id]._spec && food.list[obj.id]._spec.length !== 0){
+                    var type = obj.type === '1' ? 'food' : 'meal';
+                    var num;
+                    if(type=='meal'){
+                        num = getSelMealFoodS(obj.id, 'num');
+                    }else{
+                        num = getSelFood(obj.id,'num');
+                    }
+                    addFoodSpecHtml(obj.id, num, type);
+                }
+            }
+
+        });
+
+        $.each(car.menu, function (j, item) {
+            $('#'+j).find('span[class^="category-count"]').text(item).show();
+        });
+        changeBtn('');
+        changeSetOrder();
+    });
+    {/if}
+
+        function toggle(e) {
+            $(e).next('.item-ul').toggle();
+        }
+
+        $(function () {
+            var hash = location.hash;
+            if (hash) {
+                $(".car-img").trigger('click')
+            }
+
+        })
+
+		function getHistory() {
+            window.location.href = "{:url('index/allOrder')}";
+        }
+
+</script>
+<script type="text/javascript">
+    var lazyload = {
+        init : function(opt){
+            var that = this,
+                op = {
+                    anim: true,
+                    extend_height:0,
+                    selectorName:"img",
+                    realSrcAtr:"dataimg"
+                };
+            // 合并对象，已有的{anim:true}+用户自定义对象。也就是op = op + opt
+            $.extend(op,opt);
+            // 调用lazyload.img.init(op)函数
+            that.img.init(op);
+        },
+
+        img : {
+            init : function(n){
+                var that = this,
+                    selectorName = n.selectorName,
+                    realSrcAtr = n.realSrcAtr,
+                    anim = n.anim;
+
+                // 要加载的图片是不是在指定窗口内
+                function inViewport( el ) {
+                    // 当前窗口的顶部
+                    var top = window.pageYOffset,
+                        // 当前窗口的底部
+                        btm = window.pageYOffset + window.innerHeight,
+                        // 元素所在整体页面内的y轴位置
+                        elTop = $(el).offset().top;
+                    // 判断元素，是否在当前窗口，或者当前窗口延伸400像素内
+                    return elTop >= top && elTop - n.extend_height <= btm - 100;
+                }
+
+                // 滚动事件里判断，加载图片
+                $(".right").on('scroll', function() {
+                    $(selectorName).each(function(index,node) {
+                        var $this = $(this);
+                        if(!$this.attr(realSrcAtr) || !inViewport(this)){
+                            return;
+                        }
+                        act($this);
+                    })
+                }).trigger('scroll');
+
+                // 展示图片
+                function act(_self){
+                    // 已经加载过了，则中断后续代码
+                    if (_self.attr('lazyImgLoaded')) return;
+                    var img = new Image(),
+                        original = _self.attr('dataimg');
+                    // 图片请求完成后的事件，把dataimg指定的图片，放到src里面，浏览器显示
+                    img.onload = function() {
+                        _self.attr('src', original);
+                        anim && _self.css({ opacity: .2 }).animate({ opacity: 1 }, 280);
+                    };
+                    // 当你设置img.src的时候，浏览器就在发送图片请求了
+                    original && (img.src = original);
+                    _self.attr('lazyImgLoaded', true);
+                }
+            }
+        }
+    };
+
+    /*
+     * selectorName，要懒加载的选择器名称
+     * extend_height  扩展高度
+     * anim  是否开启动画
+     * realSrcAtr  图片真正地址*/
+    lazyload.init({
+        anim:false,
+        selectorName:".lazy"
+    });
+
+    $('.lazy').on('onerror', function (e) {
+        var img = e.srcElement;
+        img.src="STATIC_PATH/assets/wxweb/images/lazyloadImg.png";
+        img.onerror=null;
+    });
+
+
+
+    // 語言切換下拉
+    var flag = false;
+    $('.language-sel').on('click', function () {
+        flag = !flag;
+        flag ? $('.language-ul').show() : $('.language-ul').hide();
+    });
+
+    $('.language-li').on('click', function () {
+        $('.language-text').text($(this).text()).attr('value',$(this).attr('value'));
+        $('.language-ul').hide();
+        flag = false;
+    });
+
+</script>
+</body>
+</html>

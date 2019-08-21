@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('餐枱編輯')}</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/jquery.core.image.upload.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery.core.image.upload.js"></script> <!-- File Upload -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="container">
+	<div class="register-main">
+        <div class="register-scroll">
+    		<form  action="{:url('editmember')}" method="post" id="edit">
+                <div class="register-info">
+                    <div class="food-input-li">
+                        <div class="food-cate-label">{:lang('餐枱類型')}：</div>
+                        <div id="category">{$member.cCategoryName}</div><img src="STATIC_PATH/assets/mobile/images/arrow-next.png" class="food-arrow">
+                        <input type="hidden" name="id" id="id" value="{$member.id}">
+                        <input type="hidden" name="categoryId" id="categoryId" value="{$member.cCategory}">
+                        <input type="hidden" name="categoryName" id="categoryName" value="{$member.cCategoryName}">
+                    </div>
+                    <div class="register-input-li-long">
+                        <div class="register-long-label">{:lang('餐枱名稱')}：</div><input name="name" type="text" value="{$member.name}">
+                    </div>
+                    <div class="register-input-li-long">
+                        <div class="register-long-label">{:lang('餐枱編號')}：</div><input name="number" type="text" value="{$member.number}">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="member-cate-add-btn-left">{:lang('確認')}</div>
+        <div class="member-cate-del-btn-right">{:lang('删除')}</div>
+	</div>
+</div>
+	
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+	$('.member-cate-add-btn-left').click(function () {
+        $.ajax({
+          type: "POST",
+          url : "{:url('editmember')}",
+          data: $('#edit').serialize(),
+          async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+                swal({
+					'text':'{:lang(\'頁面錯誤\')}',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+    $('.member-cate-del-btn-right').click(function () {
+		swal({
+            text: '{:lang(\'是否刪除餐枱\')}?',
+            imageUrl: 'STATIC_PATH/assets/mobile/images/shanchu.png',
+            showCancelButton: true,
+            confirmButtonText: '{:lang(\'確認\')}',
+            confirmButtonColor: '#e07a0a',
+            cancelButtonText: '{:lang(\'取消\')}',
+			imageSize: '16x16',
+			customClass: 'del'
+        }).then(function(isConfirm) {
+          if (isConfirm === true) {
+            $.ajax({
+                
+                type: "POST",
+                url : "{:url('delMember')}",
+                data: {'id':{$member['id']},'type':'trade'},
+                async: true,
+                success: function(data) {
+                    if (data.code) {
+                      swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                          location.href = data.url;
+                      });
+                    } else {
+						swal({
+							'text':data.msg,
+							'confirmButtonText': '{:lang(\'確認\')}',
+							'confirmButtonColor':'#e07a0a',
+							'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+							'imageSize': '16x16',
+							'customClass': 'fail'
+						});
+                    }
+                },
+                error: function(request) {
+                    swal({
+						'text':'{:lang(\'頁面錯誤\')}',
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            });
+          }
+        });
+        
+    });
+
+    function setCategory(){
+        var selectOption = mobileSelect1.getValue();
+        $("#categoryId").val(selectOption[0]['id']);
+        $("#categoryName").val(selectOption[0]['value']);
+    }
+
+    // 設置分類選項數組
+    var option = [];
+    {volist name="category" id="vo" key="i"}
+    // 設置分類選項
+    option.push({id:{$vo.id},value:'{$vo.name}'});
+    {if($vo.id==$member.cCategory)}
+    // 設置默認值
+    positionKey = {$key};
+    {/if}
+    {/volist}
+    //分类组
+
+    var mobileSelect1 = new MobileSelect({
+        trigger: '#category', 
+        title: '{:lang(\'餐枱類型\')}',
+        wheels: [
+            {data:option,},
+        ],
+        callback:setCategory,
+        position:[positionKey] //初始化定位
+    });
+</script>
+</body>
+
+</html>

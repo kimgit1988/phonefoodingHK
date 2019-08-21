@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>api测试-接口列表</title>
+    <link href="./assets/css/style.css" rel="stylesheet">
+    <script src="./assets/js/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div class="main">
+    <div class="form-div">
+        <form action="./demo1.php" id="selectcontact">
+            <div class="input-div"><a href="./demo6.html"><label for="number" class="input-label">获取令牌</label></a></div>
+            <div class="input-div"><a href="./demo1.html"><label for="number" class="input-label">获取餐厅信息</label></a></div>
+            <div class="input-div"><a href="./demo2.html"><label for="number" class="input-label">获取餐厅菜品</label></a></div>
+            <div class="input-div"><a href="./demo3.html"><label for="number" class="input-label">获取用户订单</label></a></div>
+            <div class="input-div"><a href="./demo5.html"><label for="number" class="input-label">获取美食广场餐厅</label></a></div>
+            <div class="input-div"><a href="./demo4.html"><label for="number" class="input-label">下单</label></a></div>
+            <div class="input-div"><a href="./demo7.html"><label for="number" class="input-label">確認訂單支付</label></a></div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $(".submit").click(function(){
+        $.ajax({
+            type: "POST",
+            url : './demo1.php',
+            data: $("#selectcontact").serialize(),
+            async: true,
+            success: function(data) {
+                data = JSON.parse(data);
+                if(data.code==1){
+                    $(".result-info").html('');
+                    $(".result-info").append('<div>餐厅名称:'+data.msg.name+'<div>');
+                }else{
+                    $(".result-info").html('');
+                    alert(data.msg);
+                }
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+    });
+</script>
+</html>

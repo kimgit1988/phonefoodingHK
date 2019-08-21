@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('菜式分類修改')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_date.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll_date.js"></script> 
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll.js"></script> 
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<style type="text/css">
+.dw-persp{
+    z-index: 11000;
+}
+</style>
+<div class="container">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='{:url(\'manage/goodsCategory\')}';"></i>
+        <div class="title">{:lang('菜式分類修改')}</div>
+    </div>
+	<div class="main">
+		<form  action="{:url('editGoodsCategory')}" method="post" id="edit" onkeydown="if(event.keyCode==13)return false;">
+    		<div class="member-cate-li edit-category-li clearfix">
+    			<input name="id" type="hidden" value="{$category.id}">
+    			<div class="member-cate-add-name">{:lang('分類名-繁体')}</div><input name="name" type="text" value="{$category.name}" maxlength="100">
+    		</div>
+            <div class="member-cate-li edit-category-li clearfix">
+                <div class="member-cate-add-name">{:lang('分類名-英文')}</div><input name="name_en" type="text" value="{$category.name_en}" maxlength="100">
+            </div>
+            <div class="member-cate-li edit-category-li clearfix">
+                <div class="member-cate-add-name">{:lang('分類名-其他')}</div><input name="name_other" type="text" value="{$category.name_other}" maxlength="100">
+            </div>
+            <div class="member-cate-li edit-category-li clearfix">
+                <div class="member-cate-add-name">{:lang('排序')}</div><input name="ordnum" type="text" value="{$category.ordnum}" maxlength="10">
+            </div>
+    		<div class="food-input-li">
+                <div class="food-cate-label">{:lang('有效期')}</div><div class="select-modal" onclick="openVaild();" id="selectVaild">{$category.startTime}-{$category.endTime}</div>
+            </div>
+    		<div class="modal fade" id="validityTime" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div id="validityTime-checked-2">
+                                <div class="validity-datetime-div">
+                                    <input id="starttime" name="starttime" type="text" onfocus="this.blur()" readonly="readonly" unselectable="on" placeholder="{:lang('開始時間')}" value="{$category.startTime}">
+                                </div>
+                                <div class="validity-datetime-div">
+                                    <input id="endtime" name="endtime" type="text" onfocus="this.blur()" readonly="readonly" unselectable="on" placeholder="{:lang('結束時間')}" value="{$category.endTime}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="border:0;text-align: center;">
+                            <button type="button" class="btn btn-primary" style="margin-right: 5vw;" onclick="closeVaild(1);">{:lang('確認')}</button>
+                            <button type="button" class="btn btn-default" style="margin-left: 5vw;" onclick="closeVaild(0);">{:lang('重置')}</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+    		<div class="member-cate-add-btn">{:lang('確認')}</div>
+        </form>
+	</div>
+</div>
+	
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+		var currYear = (new Date()).getFullYear();  
+        var opt={};
+        opt.date = {preset : 'date'};
+        opt.datetime = {preset : 'datetime'};
+        opt.time = {preset : 'time'};
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式 
+            mode: 'scroller', //日期选择模式
+            lang: 'zh',
+            dateFormat: 'yy-mm-dd',  
+            dateOrder: 'yymmdd', //面板中日期排列格式 
+            timeFormat: 'HH:ii:ss',  
+            timeWheels: 'HHiiss',
+            setText:"{:lang('確定')}",
+            cancelText: "{:lang('取消')}",
+            startYear: currYear - 50, //开始年份
+            endYear: currYear, //结束年份
+            showLabel: false, // 是否显示 年月日标签
+        };
+        $("#starttime").mobiscroll($.extend(opt['time'], opt['default']));
+        $("#endtime").mobiscroll($.extend(opt['time'], opt['default']));
+	};
+	function openVaild(method){
+        $(".modal-body").show();
+        $("#validityTime").modal('show');
+    }
+    function closeVaild(method){
+        if(method==0){
+            $("#starttime").val('');
+            $("#endtime").val('');
+            $("#selectVaild").text('');
+        }else{
+            var start = $("#starttime").val();
+            var end = $("#endtime").val();
+            if(start!=''&&end!=''){
+                $("#selectVaild").text(start+'-'+end);
+            }else if(start==''){
+                swal({
+                    'text':'{:lang(\'請選擇開始時間\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+                return;
+            }else{
+                swal({
+                    'text':'{:lang(\'請選擇結束時間\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+                return;
+            }
+            $("#validityTime").modal('hide');
+        }
+    }
+	$('.member-cate-add-btn').click(function () {
+        $.ajax({
+            type: "POST",
+            url : "{:url('editGoodsCategory')}",
+            data: $('#edit').serialize(),
+            async: true,
+            beforeSend: function(){
+			    openloading("STATIC_PATH/assets/img/loading-2.gif");
+			},
+            success: function(data) {
+            	closeloading();
+                if (data.code) {
+                    swal({
+            		    'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+            		    'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+            		}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+            	closeloading();
+                swal({
+					'text':'{:lang(\'頁面錯誤\')}',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+</script>
+</body>
+</html>

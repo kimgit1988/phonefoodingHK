@@ -1,0 +1,103 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">焦点图位置</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+
+
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/focus/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+
+
+			<div class="clearfix"></div>
+		</header>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>ID</th>
+									<th>调用代码</th>
+									<th>名称</th>
+									<th>焦点图个数</th>
+									<th>更新时间</th>
+									<th>操作</th>
+								</tr>
+								{volist name="positionRows" id="positionRow"}
+								<tr>
+									<td>{$positionRow->id}</td>
+									<td>{$positionRow->code}</td>
+									<td>{$positionRow->name}</td>
+									<td>{$positionRow->focus()->count()}</td>
+									<td>{$positionRow->update_time}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('back/focusposition/edit',['id'=>$positionRow['id']])}">编辑</a>
+										<a class="btn btn-xs btn-default delete" href="{:url('back/focusposition/destroy',['id'=>$positionRow['id']])}">删除</a>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					焦点图位置添加</div>
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('back/focusposition/add')}" class="form-horizontal ajax-form" method="post" name="rule">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">调用代码</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="code" id="inputname" placeholder="调用代码">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputurl"> 调用名称 </label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="name" id="inputurl" placeholder="调用名称">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-9">
+											<button type="submit" class="btn btn-primary">提交</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

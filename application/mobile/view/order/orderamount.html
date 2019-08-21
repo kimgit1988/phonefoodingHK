@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('訂單')}</title>
+    <!-- CSS -->
+    <!-- <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/jquery.mobile-1.4.5.min.css"> -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/dropload.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/orderstatis.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css"><!-- 图标库css-->
+
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <!-- <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery.mobile-1.4.5.min.js"></script> -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script type="text/javascript" src="STATIC_PATH/assets/js/dropload.min.js"></script>
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+    <style type="text/css">
+
+        .pay-method {
+            width: 1.24rem;
+            height: 1.24rem;
+            vertical-align: top;
+            margin-right: 0.2rem;
+            display: inline-block;
+        }
+
+        .pay-method img {
+            width: 100%;
+        }
+
+        .pay-method + div {
+            display: inline-block;
+        }
+
+        .pay-money {
+            border-bottom: 1px dashed #DCDCDC;
+            padding: 0 0.2rem 0.3rem;
+        }
+
+        .pay-total {
+            padding: 0.3rem 0.2rem 0;
+            line-height: 0.7rem;
+            font-size: 0;
+        }
+
+        .pay-name {
+            font-size: 0.32rem;
+            color: #010101;
+            display: block;
+        }
+
+        .pay-price {
+            display: inline-block;
+            margin-top: 0.2rem;
+            color: #FA875D;
+            font-size: 0.28rem;
+        }
+
+        .pay-price span {
+            font-size: 0.56rem;
+        }
+
+        .pay-num {
+            color: #999999;
+            font-size: 0.28rem;
+        }
+
+        .pay-num span {
+            font-size: 0.4rem;
+            color: #FA875D;
+        }
+
+        .btn-detail {
+            float: right;
+            border: none;
+            color: #fff;
+            background-color: #87C6AF;
+            border-radius: 6px;
+            width: 2rem;
+            line-height: 0.7rem;
+            font-size:0.28rem;
+        }
+
+        #order-scroll {
+            width: 100%;
+            top: 0;
+            bottom: 10vw;
+        }
+    </style>
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/order/orderstatis.html';"></i>
+        <div class="title">{:lang('流水詳情')}</div>
+    </div>
+    <div class="content-main">
+        {if($data)}
+        {:var_dump($data)}
+        {volist name="data" id="vo" key="k"}
+        <div class="order-pay-item">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="{$vo.filename}"></use>
+            </svg>
+            <div class="order-pay-box">
+                <span class="name">{:lang($vo.name)}</span>
+                <span class="desc">{:lang($vo.order_count)}<em> {:lang('單')} </em>{$vo.order_amount}HK$</span>
+            </div>
+            <div class="order-pay-more" onclick="javascript:location.href='{:url(\'order/orderpaytype\',[\'type\'=>$vo.payType])}'">{:lang('更多詳情')}</div>
+        </div>
+        {/volist}
+        {else}
+        <div class="empty">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-none"></use>
+            </svg>
+            <div class="text-none">{:lang('暫時未有流水情況')}</div>
+        </div>
+        {/if}
+    </div>
+</div>
+</body>
+</html>

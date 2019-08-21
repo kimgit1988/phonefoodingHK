@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>菜品添加</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/market/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/jquery.core.image.upload.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/marketSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery.core.image.upload.js"></script> <!-- File Upload -->
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/marketSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<div class="container">
+	<div class="main">
+		<form  action="{:url('add')}" method="post" id="add">
+        	<div class="food-input-li">
+        		<div class="food-cate-label">分類：</div><div id="category"></div><img src="STATIC_PATH/assets/market/images/arrow-next.png" class="food-arrow">
+            <input type="hidden" name="categoryId" id="categoryId">
+            <input type="hidden" name="categoryName" id="categoryName">
+        	</div>
+            <div class="food-input-li">
+                <div class="food-cate-label">名稱：</div><input name="name" type="text">
+            </div>
+            <div class="food-input-li">
+                <div class="food-cate-label">編號：</div><input name="number" type="text">
+            </div>
+            <div class="food-input-li">
+                <div class="food-cate-label">價格：</div><input name="price" type="text">
+            </div>
+            <div class="food-input-li"><div class="food-cate-label">圖片(上傳)</div><div class="upload-img">建議分辨率80*80</div><img src="STATIC_PATH/assets/market/images/add-img.png" class="food-img"><input type="hidden" name="pic_path" id="pic_path"></div>
+            <div class="food-input-li">
+                <div class="food-cate-label">備註：</div><input name="detail" type="text">
+            </div>
+            <div class="food-input-li">
+                <div class="food-cate-label">是否启用：</div>
+                <div class="food-radio-div">
+                    <input name="status" type="radio" value="1" id="label-yes" checked="checked">
+                    <label for="label-yes">是</label>
+                    <input name="status" type="radio" value="0" id="label-no">
+                    <label for="label-no">否</label>
+                </div>
+            </div>
+            <div class="member-cate-add-btn">確認添加</div>
+        </form>
+   
+	</div>
+	{include file="common:footer"}
+</div>
+	
+<script type="text/javascript">
+	var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+	window.onload=function(){ //在页面整体加载完毕时
+		$('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+	};
+	$('.member-cate-add-btn').click(function () {
+        $.ajax({
+          
+          type: "POST",
+          url : '{:url('add')}',
+          data: $('#add').serialize(),
+          async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/market/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/market/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+				swal({
+					'text':'页面错误',
+					'confirmButtonText': '确认',
+					'confirmButtonColor':'#ea831e',
+					'imageUrl': 'STATIC_PATH/assets/market/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+    $(".upload-img").coreImageUpload ({
+      url: '{:url("foods/uploadImg")}',
+      inputOfFile: 'image',
+      uploadedCallback: function (result) {
+            submitInfo = true;
+            if(result.code==1){
+				swal({
+					'text':'上传成功！',
+					'confirmButtonText': '确认',
+					'confirmButtonColor':'#ea831e',
+					'imageUrl': 'STATIC_PATH/assets/market/images/wancheng.png',
+					'imageSize': '16x16',
+					'customClass': 'success'
+				});
+                $(".food-img").attr("src",result.msg);
+                $("#pic_path").val(result.msg);
+            }else{
+				swal({
+					'text':'上传失败！',
+					'confirmButtonText': '确认',
+					'confirmButtonColor':'#ea831e',
+					'imageUrl': 'STATIC_PATH/assets/market/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+      }
+    });
+
+    function setCategory(){
+        var selectOption = marketSelect1.getValue();
+        $("#categoryId").val(selectOption[0]['id']);
+        $("#categoryName").val(selectOption[0]['value']);
+    }
+
+    // 設置分類選項數組
+    var option = [];
+    {volist name="category" id="vo" key="i"}
+    // 設置分類選項
+    option.push({id:{$vo.id},value:'{$vo.name}'});
+    {/volist}
+
+    var marketSelect1 = new marketSelect({
+        trigger: '#category', 
+        title: '分類',  
+        wheels: [
+            {data:option,},
+        ],
+        callback:setCategory,
+  });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,194 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">卡券列表</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Cardinfo/add')}" title="添加卡券" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('Cardinfo/index')}">
+			<select class="search-select select2" id="cardType" name="cardType">
+				<option value="">请选择卡券类型</option>
+				<option value="1" {if(isset($param.cardType)&&$param.cardType==='1')}selected="selected"{/if}>折扣券</option>
+				<option value="2" {if(isset($param.cardType)&&$param.cardType==='2')}selected="selected"{/if}>满减券</option>
+				<option value="3" {if(isset($param.cardType)&&$param.cardType==='3')}selected="selected"{/if}>指定商品优惠券</option>
+			</select>
+			<select class="search-select select2" id="useType" name="useType">
+				<option value="">请选择使用商户类型</option>
+				<option value="1" {if(isset($param.useType)&&$param.useType==='1')}selected="selected"{/if}>全平台通用</option>
+				<option value="2" {if(isset($param.useType)&&$param.useType==='2')}selected="selected"{/if}>指定商户</option>
+			</select>
+			<div style="display: none;width: 15%;" id="selectContact">
+				<select class="search-select select2" id="contactNumber" name="contactNumber">
+					<option value="">请选择使用商户</option>
+					{volist name="contact" id="vo"}
+					<option value="{$vo.number}" {if(isset($param.contactNumber)&&$param.contactNumber==$vo.number)}selected="selected"{/if}>{$vo.name}({$vo.number})</option>
+					{/volist}
+				</select>
+			</div>
+			<select class="search-select select2" id="distributeType" name="distributeType" style="display: none;">
+				<option value="">请选择派发方式</option>
+				<option value="1" {if(isset($param.distributeType)&&$param.distributeType==='1')}selected="selected"{/if}>二维码扫码派发</option>
+				<option value="2" {if(isset($param.distributeType)&&$param.distributeType==='2')}selected="selected"{/if}>消费满派发</option>
+				<option value="3" {if(isset($param.distributeType)&&$param.distributeType==='3')}selected="selected"{/if}>商家/平台批量派发</option>
+				<option value="4" {if(isset($param.distributeType)&&$param.distributeType==='4')}selected="selected"{/if}>登录自动派发</option>
+			</select>
+			<select class="search-select select2" id="status" name="status">
+				<option value=""selected="selected">请选择状态</option>
+				<option value="1" {if(isset($param.status)&&$param.status==='1')}selected="selected"{/if}>启用</option>
+				<option value="0" {if(isset($param.status)&&$param.status==='0')}selected="selected"{/if}>禁用</option>
+			</select>
+			<!-- <div class="search-label">分類</div> --><input type="text" name="search" class="search-input" placeholder="卡券名/卡券编号" value="{if(!empty($param.search))}{$param.search}{/if}">
+			<button class="search-btn btn-primary">搜索</button>
+			</form>
+		</header>
+		<script type="text/javascript">
+			function changeContactNumber(){
+				var useType = $("#useType").val();
+				if(useType==2){
+					$("#selectContact").css('display','inline-block');
+				}else{
+					$("#selectContact").css('display','none');
+				}
+			}
+		    //页面加载完成后初始化select2控件  
+		    $(function () {
+		    	changeContactNumber();
+		    	$("#cardType").select2({
+			    	width:'15%',
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				}); 
+				$("#useType").select2({
+			    	width:'15%',
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				});
+				$("#contactNumber").select2({
+			    	width:'100%',
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				});
+				$("#status").select2({
+			    	width:'15%',
+				    language: {
+				        noResults: function (params) {
+				            return "没有该选项";
+				        }
+				    }
+				});
+				$("#useType").change(function(){
+					console.log(useType);
+					changeContactNumber();
+				});    
+			}); 
+		</script> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>卡券编号</th>
+									<th>卡券名</th>
+									<th>可用商户</th>
+									<th>卡券总量</th>
+									<th>剩余数量</th>
+									<th>卡券类型</th>
+									<th>领取开始时间</th>
+									<th>领取结束时间</th>
+									<th>派发方式</th>
+									<th>有效期类型</th>
+									<th>领取次数限制</th>
+									<th>状态</th>
+									<th>操作</th>
+								</tr>
+								{volist name="card" id="vo"}
+								<tr>
+									<td class="text-left">{$vo.id}</td>
+									<td>{$vo.cardSN}</td>
+									<td>{$vo.name}</td>
+									<td>{if($vo.useType==1)}全平台{else}{$vo.contactName}{/if}</td>
+									<td>{if($vo.cardCount>=0)}{$vo.cardCount}{else}无限量{/if}</td>
+									<td>{if($vo.cardNumber>=0)}{$vo.cardNumber}{else}无限量{/if}</td>
+									<td>{if($vo.cardType==1)}折扣券{elseif($vo.cardType==2)}满减券{elseif($vo.cardType==3)}指定商品优惠券{/if}</td>
+									<td>{:date('Y-m-d H:i:s',$vo.receiptStartTime)}</td>
+									<td>{:date('Y-m-d H:i:s',$vo.receiptEndTime)}</td>
+									<td>{if($vo.distributeType==1)}二维码扫码派发{elseif($vo.distributeType==2)}消费满派发{elseif($vo.distributeType==3)}批量派发{elseif($vo.distributeType==4)}登录自动派发{/if}</td>
+									<td>{if($vo.timeType==1)}领取后计时{elseif($vo.timeType==2)}指定时间段使用{elseif($vo.timeType==3)}永久有效{/if}</td>
+									<td>{$vo.limitNumber}</td>
+									<td>{if($vo.status==1)}启用{elseif($vo.status==0)}禁用{/if}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Cardinfo/edit',['id'=>$vo['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default" onclick="href_ajax('{:url('Cardinfo/destroy',['id'=>$vo['id']])}',true,'確認刪除?');">删除</div>
+										{if($vo['distributeType']==1)}<a class="btn btn-xs btn-default" href="{:url('Cardinfo/downqrcode',['id'=>$vo['id']])}">下载二维码</a>{/if}
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script type="text/javascript">
+	function href_ajax(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	                location.href = data.url;
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+</script>

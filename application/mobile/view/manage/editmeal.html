@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>{:lang('添加跟餐')}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/addmeal.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/manage/addmealmanage.html';"></i>
+        <div class="title">{:lang('跟餐信息')}</div>
+    </div>
+    <div class="content-main">
+        <form  action="{:url('addmeal')}" method="post" id="addmeal">
+            <div class="register-info b-3">
+                <div class="register-input-li-long">
+                    <div class="register-long-label">{:lang('跟餐分組名稱-中文繁體')}</div>
+                    <input name="name" type="text" value="{$addon_data.name}" maxlength="20" placeholder="{:lang('跟餐餐品')}"/>
+                </div>text
+                <div class="register-input-li-long">
+                    <div class="register-long-label">{:lang('跟餐分組名稱-英文')}</div>
+                    <input name="name_en" type="text" value="{$addon_data.name_en}" maxlength="20" />
+                </div>
+                <div class="register-input-li-long">
+                    <div class="register-long-label">{:lang('跟餐分組名稱-其他')}</div>
+                    <input name="name_other" type="text" value="{$addon_data.name_other}" maxlength="20"/>
+                </div>
+            </div>
+            <div class="item-tr-6  b-3">
+                <span class="item-text">
+                    <span class="text">{:lang('是否啟用跟餐分組')}</span>
+                </span>
+                <div class="check-box">
+                    <input type="checkbox" name="status" value="1" id="set" {if($addon_data.status)}checked{/if}>
+                    <label for="set">
+                        <span class="check-div">
+                            <span class="inner"></span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div class="item-tr-6  b-3" onclick="deletemeal('{$addon_data.id}')">
+                <span class="item-text">
+                    <span class="text">{:lang('刪除跟餐分組')}</span>
+                </span>
+            </div>
+            <div class="button t-6">
+                <input name="id" type="hidden" value="{$addon_data.id}" />
+                <div class="button-normal confirm">{:lang('保存')}</div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $('.confirm').click(function () {
+        $.ajax({
+            type: "POST",
+            url : '{:url("editmeal")}',
+            data: $('#addmeal').serialize(),
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function(data) {
+                closeloading();
+                if (data.code) {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-modify.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = "{:url('manage/addmealmanage')}";
+                    });
+                } else {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/correct-format.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function(request) {
+                closeloading();
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    });
+    
+    
+    function deletemeal(id) {
+        $.ajax({
+            type:'POST',
+            url:'{:url("manage/delMeal")}',
+            data:{'id':id},
+            async: true,
+            beforeSend: function(){
+                openloading("STATIC_PATH/assets/img/loading-2.gif");
+            },
+            success: function (res) {
+                closeloading();
+                if (res.code) {
+                    swal({
+                        'text':res.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-add.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = "{:url('manage/addmealmanage')}";
+                    });
+                } else {
+                    swal({
+                        'text':res.msg,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/fill-content.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    });
+                }
+            },
+            error: function (msg) {
+                swal({
+                    'text':'{:lang(\'頁面錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>
+

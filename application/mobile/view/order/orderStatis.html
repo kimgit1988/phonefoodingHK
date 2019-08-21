@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('数据统计')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll.css" rel="stylesheet" />
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/mobiscroll_date.css" rel="stylesheet" />
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/orderstatis.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll_date.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/mobiscroll.js"></script>
+
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='/index.php/mobile/owner/index.html';"></i>
+        <div class="title">{:lang('數據統計')}</div>
+    </div>
+    <div class="content-main">
+        <div class="date-div item-tr-6 border-b">
+            <div class="div-left" onclick="prevDay()"><i class="fab-left"></i>{:lang('前一天')}</div>
+            <div class="datetime" onclick="showdate()"><span class="today" id="today"></span><i class="fab-down"></i></div>
+            <div class="div-right no" onclick="nextDay()">{:lang('後一天')}<i class="fab-right"></i></div>
+        </div>
+        <div class="data-wrapper">
+        </div>
+        <div class="date-search-wrapper">
+            <div class="data-search-bg"></div>
+            <div class="date-search-main">
+                <ul class="tab-menu">
+                    <li class="tab-item active" id="tab1">{:lang('常用條件')}</li>
+                    <li class="tab-item" id="tab2">{:lang('按日期搜')}</li>
+                    <li class="tab-item" id="tab3">{:lang('自定義時間')}</li>
+                </ul>
+                <ul class="content-ul">
+                    <li class="content-item active">
+                        <ul class="item-ul">
+                            <li class="item-li" onclick="selectOrder('','','all')">{:lang('全部')}</li>
+                            <li class="item-li" onclick="selectOrder('','','today')">{:lang('今日')}</li>
+                            <li class="item-li" onclick="selectOrder('','','yesterday')">{:lang('昨日')}</li>
+                            <li class="item-li" onclick="selectOrder('','','week')">{:lang('本週')}</li>
+                            <li class="item-li" onclick="selectOrder('','','lastweek')">{:lang('上週')}</li>
+                            <li class="item-li" onclick="selectOrder('','','month')">{:lang('本月')}</li>
+                            <li class="item-li" onclick="selectOrder('','','lastmonth')">{:lang('上月')}</li>
+                            <li class="item-li" onclick="selectOrder('','','seven')">{:lang('近7日')}</li>
+                            <li class="item-li" onclick="selectOrder('','','thirty')">{:lang('近30日')}</li>
+                        </ul>
+                    </li>
+                    <li class="content-item">
+                        <div class="datetime-div">
+                            <i class="fab-calendar"></i>
+                            <input type="text" id="datetime" class="date-input" placeholder="{:lang('請選擇日期')}" readonly>
+                        </div>
+                        <div class="button-normal confirm" onclick="selectDate()">{:lang('查詢')}</div>
+                    </li>
+                    <li class="content-item">
+                        <div class="datetime-div">
+                            <i class="fab-calendar"></i>
+                            <input type="text" id="starttime" class="date-input" placeholder="{:lang('請選擇起始日期')}" readonly>
+                        </div>
+                        <div class="datetime-div">
+                            <i class="fab-calendar"></i>
+                            <input type="text" id="endtime" class="date-input" placeholder="{:lang('請選擇結束日期')}" readonly>
+                        </div>
+                        <div class="button-normal confirm" onclick="selectCust()">{:lang('查詢')}</div>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="alert-fail"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+    // 日期選擇tab切換
+    $('.tab-menu .tab-item').on('click', function (e) {
+        var index = $(this).index();
+        var con = $('.content-ul').find('.content-item');
+        $(this).addClass('active').siblings().removeClass('active');
+        $(con).eq(index).addClass('active').siblings().removeClass('active');
+    });
+
+    //顯示日期選擇層
+    function showdate(){
+        var flag =  $('.date-search-wrapper').css('display');
+        flag=="none" ? $('.date-search-wrapper').show() : $('.date-search-wrapper').hide();
+    }
+
+
+
+    // 时间格式转换
+    function setFormat(curDate,type) {
+        var setYear = curDate.getFullYear();
+            setMonth = (curDate.getMonth()+1)<10 ? "0" + (curDate.getMonth()+1) : (curDate.getMonth()+1);
+            setDate = curDate.getDate()<10 ? "0" + curDate.getDate() : curDate.getDate();
+            setHour = curDate.getHours()<10 ? "0" + curDate.getHours() : curDate.getHours();
+            setMinute = curDate.getMinutes()<10 ? "0" + curDate.getMinutes() : curDate.getMinutes();
+            setSecond = curDate.getSeconds()<10 ? "0" + curDate.getSeconds() : curDate.getSeconds();
+            day = [setYear,setMonth,setDate].join("-");
+            time = day + " " + [setHour,setMinute,setSecond].join(":");
+        if(type=="d"){
+            return day;
+        }else if(type=="t"){
+            return time;
+        }
+    }
+
+
+    //當天時間
+    var curDate = new Date();
+    curDate.setTime(curDate.getTime());
+    $('#today').text(setFormat(curDate,"d")+' {:lang(\'今日\')}');
+    getOrderList('','','today');
+
+
+    //前一天
+    function prevDay(){
+        curDate.setTime(curDate.getTime()-24*60*60*1000);
+        showNexday();
+        getOrderList(setFormat(curDate,"d"),setFormat(curDate,"d"),'');
+    }
+
+    //后一天
+    function nextDay() {
+        curDate.setTime(curDate.getTime()+24*60*60*1000);
+        showNexday();
+        getOrderList(setFormat(curDate,"d"),setFormat(curDate,"d"),'');
+    }
+
+    // 判断是否禁止后一天按钮
+    function showNexday(){
+        var year = curDate.getFullYear()-new Date().getFullYear(),
+            month = curDate.getMonth()-new Date().getMonth(),
+            num = curDate.getDate()-new Date().getDate();
+        var str = '';
+        if(year===0 && month===0 && num===-1){
+            str = ' {:lang(\'昨日\')}';
+            $('.div-right').removeClass('no');
+        }else if(year===0 && month===0 && num===0){
+            str = ' {:lang(\'今日\')}';
+            $('.div-right').addClass('no');
+        }
+        $('#today').text(setFormat(curDate,"d")+str);
+    }
+
+    //關閉日期選擇層
+    $('.data-search-bg').on('click', function () {
+        $('.date-search-wrapper').hide();
+    });
+
+
+    // 日期查詢
+    $(function () {
+        var currYear = (new Date()).getFullYear();
+        var opt={};
+        opt.date = {preset : 'date'};
+        opt.datetime = {preset : 'datetime'};
+        opt.time = {preset : 'time'};
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式
+            mode: 'scroller', //日期选择模式
+            dateFormat: 'yy-mm-dd',
+            lang: 'zh',
+            showNow: true,
+            nowText: "{:lang('今日')}",
+            cancelText: "{:lang('取消')}",
+            setText: '{:lang(\'確定\')}',
+            startYear: currYear - 50, //开始年份
+            endYear: currYear, //结束年份
+        };
+        $("#datetime").mobiscroll($.extend(opt['date'], opt['default']));
+        $("#starttime").mobiscroll($.extend(opt['date'], opt['default']));
+        $("#endtime").mobiscroll($.extend(opt['date'], opt['default']));
+    });
+
+
+    // 自定義時間觸發
+    $("#starttime,#endtime").change(function(){
+        var start = $("#starttime").val();
+        var end = $("#endtime").val();
+        if(!compareDate(start,end)){
+            $('.alert-fail').text('{:lang(\'結束日期必須大于起始日期\')}').show().delay(1500).fadeOut();
+            $("#starttime").val("");
+            $("#endtime").val("");
+            return false;
+        }
+    });
+
+
+    //自定義時間
+    function selectCust() {
+        var start = $("#starttime").val();
+        var end = $("#endtime").val();
+        if(!start || !end){
+            $('.alert-fail').text('{:lang(\'請選擇日期\')}！').show().delay(1500).fadeOut();
+            return false;
+        }else{
+            getDate(start,end,'');
+            selectOrder(start,end,'');
+        }
+    }
+
+
+    // 自定義時間觸發
+    $("#datetime").change(function(){
+        var datetime = $("#datetime").val();
+        var cur = new Date();
+        cur.setTime(cur.getTime()+24*60*60*1000);
+        if(!compareDate(datetime,setFormat(cur,'d'))){
+            $('.alert-fail').text('{:lang(\'不能大于今天的日期\')}').show().delay(1500).fadeOut();
+            $("#datetime").val("");
+            return false;
+        }
+    });
+
+    // 按日期查詢
+    function selectDate() {
+        var datetime = $('#datetime').val();
+        if(!datetime){
+            $('.alert-fail').text('{:lang(\'請選擇日期\')}！').show().delay(1500).fadeOut();
+            return false;
+        }else{
+            // 獲取選擇日期
+            getDate(datetime,'','');
+            // 查詢
+            selectOrder(datetime,datetime,'');
+        }
+    }
+
+    // 日期比较
+    function compareDate(logintime, logouttime) {
+        var arys1 = new Array();
+        var arys2 = new Array();
+        if (logintime != null && logouttime != null) {
+            arys1 = logintime.split('-');
+            var logindate = new Date(arys1[0], parseInt(arys1[1] - 1), arys1[2]);
+            arys2 = logouttime.split('-');
+            var logoutdate = new Date(arys2[0], parseInt(arys2[1] - 1), arys2[2]);
+            if (logindate >= logoutdate) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+
+    /**
+     * 获取本周、上周、本月、上月、近七天、近30天的开始日期、结束日期
+     */
+    var now = new Date(), //当前日期
+        nowDayOfWeek = now.getDay(), //今天本周的第几天
+        nowDay = now.getDate(), //当前日
+        nowMonth = now.getMonth(), //当前月
+        nowYear = now.getYear(); //当前年
+        nowYear += (nowYear < 2000) ? 1900 : 0; //
+
+    var lastMonthDate = new Date(); //上月日期
+    lastMonthDate.setDate(1);
+    lastMonthDate.setMonth(lastMonthDate.getMonth()-1);
+    var lastMonth = lastMonthDate.getMonth();
+
+    //获得某月的天数
+    function getMonthDays(myMonth){
+        var monthStartDate = new Date(nowYear, myMonth, 1),
+            monthEndDate = new Date(nowYear, myMonth + 1, 1),
+            days = (monthEndDate - monthStartDate)/(1000 * 60 * 60 * 24);
+        return days;
+    }
+
+    //查询数据
+    function selectOrder(startdate,enddate,string){
+        if(string){
+            getDate(startdate,enddate,string);
+        }
+        getOrderList(startdate,enddate,string);
+    }
+
+    // 初始化数据
+    function getOrderList(startdate,enddate,string) {
+        $.ajax({
+            type: "POST",
+            url:"{:url('Order/orderStatis')}",
+            data:{
+                startDate:startdate,
+                endState:enddate,
+                request:string
+            },
+            async:true,
+            success:function (data) {
+                if(data){
+                    var allHtml = '';
+                    var time = setFormat(new Date(),"t");
+                    allHtml = '<div class="table-box b-3">'
+                    + '<div class="fresh-time">「<span class="currentTime">'+time+'</span> {:lang(\'更新\')}」</div>'
+                    + '<div class="order-ul"><div class="order-statis-item">'
+                    + '<div class="order-text-count">'+data.allData.order_amount+'</div>'
+                    + '<div class="order-text-title">{:lang(\'銷售總額\')}(HK$)</div></div>'
+                    + '<div class="order-statis-item">'
+                    + '<div class="order-text-count">'+data.groupData[1].order_amount+'</div>'
+                    + '<div class="order-text-title">{:lang(\'堂食銷售總額\')}(HK$)</div></div>'
+                    + '<div class="order-statis-item">'
+                    + '<div class="order-text-count">'+data.groupData[2].order_amount+'</div>'
+                    + '<div class="order-text-title">{:lang(\'外賣銷售總額\')}(HK$)</div></div>'
+                    + '<div class="order-statis-item">'
+                    + '<div class="order-text-count">'+data.allData.order_count+'</div>'
+                    + '<div class="order-text-title">{:lang(\'訂單總數\')}</div></div>'
+                    + '<div class="order-statis-item">'
+                    + '<div class="order-text-count">'+data.groupData[1].order_count+'</div>'
+                    + '<div class="order-text-title">{:lang(\'堂食訂單數\')}</div></div>'
+                    + '<div class="order-statis-item">'
+                    + '<div class="order-text-count">'+data.groupData[2].order_count+'</div>'
+                    + '<div class="order-text-title">{:lang(\'外賣訂單數\')}</div></div></div>'
+                    + '<div class="order-more" onclick="selectOrderAmount()">{:lang(\'查看流水\')}></div></div>'
+                    + '<div class="table-box b-3">'
+                    + '<div class="item-tr-5 border-b item-title">{:lang(\'堂食詳情\')}</div>'
+                    + '<div class="desc-list"><div class="desc-box border-b"><div class="desc-item">'
+                    + '<span class="desc-name">{:lang(\'堂食訂單數\')}</span>'
+                    + '<span class="desc-count">'+data.groupData[1].order_count+'</span></div>'
+                    + '<div class="desc-item"><span class="desc-name">{:lang(\'未支付訂單數\')}</span>'
+                    + '<span class="desc-count">'+data.nopayData.order_count+'</span> </div>'
+                    + '<div class="desc-item">'
+                    + '<span class="desc-name">{:lang(\'未支付訂單金額\')}</span>'
+                    + '<span class="desc-count">HK$'+data.nopayData.order_amount+'</span></div></div>'
+                    + '<div class="desc-box border-b"><div class="desc-item">'
+                    + '<span class="desc-name">{:lang(\'線下結賬訂單數\')}</span>'
+                    + '<span class="desc-count">'+data.moneyData.order_count+'</span></div>'
+                    + '<div class="desc-item"><span class="desc-name">{:lang(\'線下結賬金額\')}</span>'
+                    + '<span class="desc-count">HK$'+data.moneyData.order_amount+'</span></div></div>'
+                    + '<div class="desc-box border-b"><div class="desc-item">'
+                    + '<span class="desc-name">{:lang(\'線上結帳訂單數\')}</span>'
+                    + '<span class="desc-count">'+data.onlineData.order_count+'</span></div>'
+                    + '<div class="desc-item"><span class="desc-name">{:lang(\'線上結帳金額\')}</span>'
+                    + '<span class="desc-count">HK$'+data.onlineData.order_amount+'</span></div></div>'
+                    + '<div class="desc-box border-b"><div class="desc-item">'
+                    + '<span class="desc-name">{:lang(\'堂食銷售總額\')}</span>'
+                    + '<span class="desc-count">HK$'+data.groupData[1].order_amount+'</span></div>'
+                    /*+ '<div class="desc-item"><span class="desc-name">堂食銷售總額</span>'
+                    + '<span class="desc-count">HK$'+data.groupData[1].order_amount+'</span></div>'*/
+                    + '</div></div></div>'
+                   /* + '<div class="table-box">'
+                    + '<div class="item-tr-5 border-b item-title">外賣詳情</div>'
+                    + '<div class="desc-list"><div class="desc-box border-b"><div class="desc-item">'
+                    + '<span class="desc-name">外賣訂單數</span><span class="desc-count">0</span></div>'
+                    + '<div class="desc-item"><span class="desc-name">餐盒費</span>'
+                    + '<span class="desc-count">HK$0.00</span></div>'
+                    + '<div class="desc-item"><span class="desc-name">折扣金額</span>'
+                    + '<span class="desc-count">HK$0.00</span></div></div>'
+                    + '<div class="desc-box border-b"><div class="desc-item">'
+                    + '<span class="desc-name">外賣銷售額</span><span class="desc-count">HK$0.00</span></div>'
+                    + '<div class="desc-item">'
+                    + '<span class="desc-name">外賣銷售總額</span><span class="desc-count">HK$0.00</span>'
+                    + '</div></div></div></div>'*/
+                    + '<div class="button"><div class="button-normal confirm" onclick="printData()">{:lang(\'打印結單\')}</div></div>';
+
+                    $('.data-wrapper').html("").append(allHtml);
+                }
+            },
+            error:function (mes) {
+                console.log(mes.messageerror);
+            }
+        });
+    }
+
+
+    // 获取选择日期
+    function getDate(startdate,enddate,string) {
+        var text = '';
+        if(startdate){
+            text = startdate;
+            curDate = new Date(startdate);
+            $('.div-left,.div-right').show().removeClass('no');
+        }
+
+        if(startdate && enddate){
+            text = startdate + ' ~ ' + enddate;
+            $('.div-left,.div-right').hide();
+        }
+        if(!startdate && !enddate && string){
+            $('.div-left,.div-right').hide();
+            if(string==='yesterday'){
+                var yesterday = new Date(nowYear , nowMonth ,nowDay - 1);
+                curDate.setTime(new Date().getTime()-24*60*60*1000);
+                text = setFormat(yesterday,"d")+' {:lang(\'昨日\')}';
+                $('.div-right,.div-left').show().removeClass('no');
+            }else if(string==='today'){
+                curDate.setTime(new Date().getTime());
+                text = setFormat(now,"d")+' {:lang(\'今日\')}';
+                $('.div-right,.div-left').show();
+                $('.div-right').addClass('no');
+            }else if(string==='all'){
+                text = (now.getFullYear() - 1)+'-01-01 ~ '+setFormat(now,"d");
+            }else if(string==='week'){
+                var weekStartDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek);  //本周开始日期
+                text = setFormat(weekStartDate,"d") + ' ~ ' + setFormat(now,"d");
+            }else if(string==='lastweek'){
+                var lastweekStartDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek - 7);
+                var lastweekEndDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek - 1);
+                text = setFormat(lastweekStartDate,"d") + ' ~ ' + setFormat(lastweekEndDate,"d");
+            }else if(string==='month'){
+                var monthStartDate = new Date(nowYear, nowMonth, 1); //本月开始日期
+                text = setFormat(monthStartDate,"d") + ' ~ ' + setFormat(now,"d");
+            }else if(string==='lastmonth'){
+                var lastMonthStartDate = new Date(nowYear, lastMonth, 1);   // 上月开始日期
+                var lastMonthEndDate = new Date(nowYear, lastMonth, getMonthDays(lastMonth)); // 上月结束日期
+                text = setFormat(lastMonthStartDate,"d") + ' ~ ' + setFormat(lastMonthEndDate,"d");
+            }else if(string==='seven'){
+                var seven = new Date(nowYear, nowMonth, nowDay - 6);
+                text = setFormat(seven,"d") + ' ~ ' + setFormat(now,"d");
+            }else if(string==='thirty'){
+                var thirty = new Date(nowYear, nowMonth, nowDay - 29);
+                text = setFormat(thirty,"d") + ' ~ ' + setFormat(now,"d");
+            }
+        }
+
+        $('#today').text(text);
+        $('.date-search-wrapper').hide();
+    }
+
+
+    // 查看流水
+    function selectOrderAmount() {
+        window.location.href='{:url(\'order/orderamount\')}';
+    }
+    
+    function printData() {
+        $.ajax({
+            type: "POST",
+            url : "{:url('orderStatis')}",
+            data: {
+                request:'print'
+            },
+            async: true,
+            success: function(data) {
+                $('.alert-fail').text(data.msg).show().delay(1500).fadeOut();
+            },
+            error: function(request) {
+                $('.alert-fail').text('{:lang(\'打印失敗，請檢查打印機\')}').show().delay(1500).fadeOut();
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

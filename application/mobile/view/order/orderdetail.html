@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+
+    <title>{:config('web_title')}</title>
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/orderstatis.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/order.css">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <i class="fab-left" onclick="javascript:location.href='{:url(\'order/index\')}';"></i>
+        <div class="title">{:lang('訂單詳情')}</div>
+    </div>
+    {$orderdata.data.order_info.orderStatus}
+    <div class="progress-box">
+       <div class="progress-inner">
+           <input type="radio" readonly id="step-1" name="step" {if($orderdata.data.order_info.orderStatus===2 || ($orderdata.data.order_info.orderStatus===3 && $orderdata.data.order_info.addStatus===1))} checked {/if}>
+           <input type="radio" readonly id="step-2" name="step" {if($orderdata.data.order_info.orderStatus===3 && $orderdata.data.order_info.addStatus===0)} checked {/if}>
+           <input type="radio" readonly id="step-3" name="step" {if($orderdata.data.order_info.orderStatus===4)} checked {/if}>
+           <div class="progress-inner-step">
+               <label for="step-1">{:lang('待接單')}</label>
+           </div>
+           <div class="progress-inner-step">
+               <label>
+                   {if(session('mob_user.laterPay')==1)}{:lang('待支付')} {else}{:lang('已接單')} {/if}
+               </label>
+           </div>
+           <div class="progress-inner-step">
+               <label>{:lang('已完成')}</label>
+           </div>
+           <div class="progress-inner-bar"></div>
+           <div class="progress-inner-bar-set"></div>
+       </div>
+    </div>
+    {if($orderdata.data.order_info.addStatus===1)}
+    <div class="order-li-add pro">
+        <div class="order-table-code">
+            <span class="order-table">{:lang('餐枱號')}<em>{$orderdata.data.order_info.contactMemberName}</em></span>
+            <span class="order-code">{:lang('取餐碼')}<em>{$orderdata.data.order_info.orderAssignedNumber}</em></span>
+        </div>
+        <div class="order-add-head">{:lang('待接新訂單')} <span class="button">{:lang('加單')}</span></div>
+        {volist name="orderdata.data.goods_info" id="good" key="k"}
+        {if($good.addStatus===1)}
+        {if(!empty($good._food))}
+        <div class="li-meal-item">
+            <div class="li-item meal printer-tr">
+                <div class="li-text printer-td">
+                    <span>{$good.goodsName}</span>
+                </div>
+                <div class="pir  printer-td">
+                    <span class="pri-text">HK${$good.goodsPrice}</span>
+                </div><div class="num  printer-td">
+                <span class="num-text">x{$good.num}</span>
+            </div>
+            </div>
+            <div class="li-foods printer-table">
+                {volist name="good._food" id="food"}
+                <div class="li-item printer-tr">
+                    <div class="li-text printer-td">
+                        <span>{$food.goodsName}</span>
+                    </div>
+                    <div class="num  printer-td">
+                        <span class="num-text">x{$food.num}</span>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+        </div>
+        {else}
+        <div class="li-item printer-tr">
+            <div class="li-text printer-td">
+                <span>{$good.goodsName}</span>
+            </div>
+            <div class="pir  printer-td">
+                <span class="pri-text">HK${$good.goodsPrice}</span>
+            </div>
+            <div class="num  printer-td">
+                <span class="num-text">x{$good.num}</span>
+            </div>
+        </div>
+        {/if}
+        {/if}
+        {/volist}
+    </div>
+    {/if}
+    <div class="order-li {if($orderdata.data.order_info.orderStatus===2)}bg-color{/if}">
+        <div class="order-table-code">
+            <span class="order-table">{:lang('餐枱號')}<em>{$orderdata.data.order_info.contactMemberName}</em></span>
+            <span class="order-code">{:lang('取餐碼')}<em>{$orderdata.data.order_info.orderAssignedNumber}</em></span>
+        </div>
+        <div class="order-header">
+            <div class="order-head-title">
+                {if($orderdata.data.order_info.orderStatus===2)}{:lang('待確認訂單')}
+                {elseif($orderdata.data.order_info.orderStatus===3)}{:lang('已下單')}
+                {elseif($orderdata.data.order_info.orderStatus===4)}{:lang('已完成')}
+                {else}{:lang('已取消')}{/if}
+            </div>
+        </div>
+            <div class="order-li-body clearfix">
+                {volist name="orderdata.data.goods_info" id="vo" key="k"}
+                {if($vo.addStatus==0)}
+                    {if(!empty($vo._food))}
+                        <div class="order-meal-food printer-tr">
+                            <div class="order-food meal">
+                                <div class="order-food-name">{$vo.goodsName}</div>
+                            </div>
+                            <div class="meal-foods printer-table">
+                            {volist name="vo._food" id="f"}
+                                <div class="order-meal printer-tr">
+                                    <div class="order-food-name printer-td"><span class="text">{$f.goodsName}</span></div>
+                                    <div class="order-food-number printer-td">{$f.num}</div>
+                                </div>
+                            {/volist}
+                            </div>
+                            <div class="order-food">
+                                <div class="order-food-price">HK$<em>{$vo.goodsPrice}</em></div>
+                                <div class="order-food-number printer-td">
+                                    {if($orderdata.data.order_info.orderStatus===2 || $orderdata.data.order_info.orderStatus===3)}
+                                        {if($vo.num>0)}
+                                        <div class="cart-reduce" onclick="reducecar(this,'{$vo.id}')"><i class="fab-reduce-b"></i></div>
+                                        {/if}
+                                        <span class="num-text">{$vo.num}</span>
+                                        <div class="cart-add" onclick="addcar(this,'{$vo.id}')"><i class="fab-add-b"></i></div>
+                                    {else}
+                                        <span class="num-text" style="margin-right:0.3rem;">{$vo.num}</span>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                    {else}
+                        <div class="order-food printer-tr">
+                            <div class="order-food-name printer-td">{$vo.goodsName}</div>
+                            <div class="order-food-price printer-td">HK$<em class="food-price">{$vo.goodsPrice}</em></div>
+                            <div class="order-food-number printer-td">
+                                {if($orderdata.data.order_info.orderStatus===2 || $orderdata.data.order_info.orderStatus===3)}
+                                    {if($vo.num>0)}
+                                    <div class="cart-reduce" onclick="reducecar(this,'{$vo.id}')"><i class="fab-reduce-b"></i></div>
+                                    {/if}
+                                    <span class="num-text">{$vo.num}</span>
+                                    <div class="cart-add" onclick="addcar(this,'{$vo.id}')"><i class="fab-add-b"></i></div>
+                                {else}
+                                    <span class="num-text" style="margin-right:0.3rem;">{$vo.num}</span>
+                                {/if}
+                            </div>
+                        </div>
+                   {/if}
+                {/if}
+                {/volist}
+            </div>
+    </div>
+    <div class="order-li">
+        <div class="order-li-header">
+            <div class="order-title">{:lang('訂單明細')}</div>
+        </div>
+        <div class="order-box">
+            <div class="order-tr">
+                <div class="order-tr-title">{:lang('訂單金額')}</div>
+                <div class="order-tr-text">${$order.foodsAmount}</div>
+            </div>
+           <!-- <div class="order-tr">
+                <div class="order-tr-title">優惠券-滿50減5</div>
+                <div class="order-tr-text">-￥5.00</div>
+            </div>-->
+
+            <div class="order-tr">
+                <div class="order-tr-title">{:lang('茶位費')}</div>
+                <div class="order-tr-text">${$order.tea_fees}</div>
+            </div>
+            <div class="order-tr">
+                <div class="order-tr-title">{:lang('服務費')}</div>
+                <div class="order-tr-text">${$order.service_fees}</div>
+            </div>
+            {if($orderdata.data.order_info.orderStatus===3 && $orderdata.data.order_info.addStatus==0)}
+            <div class="order-tr">
+                <div class="order-tr-title">{:lang('餐盒費')}</div>
+                <div class="order-food-number printer-td box-fee">
+                    <div class="cart-reduce" onclick="reducebox()"><i class="fab-reduce-b"></i></div>
+                    <span class="num-text">0</span>
+                    <div class="cart-add" onclick="addbox()"><i class="fab-add-b"></i></div>
+                </div>
+                <div class="box-price">$<span class="box-price-text">{$order.box_frees}</span></div>
+             </div>
+            {elseif($orderdata.data.order_info.orderStatus==4 && $order.box_frees>0)}
+                <div class="order-tr">
+                    <div class="order-tr-title">{:lang('餐盒費')}</div>
+                    <div class="box-price">$<span class="box-price-text">{$order.box_frees}</span></div>
+                </div>
+            {/if}
+            {if($order.discount!=10)}
+            <div class="order-tr">
+                <div class="order-tr-title">{:lang('折扣')}</div>
+                <div class="order-tr-text">{$order.discount}{:lang('折')}</div>
+            </div>
+            {/if}
+            <div class="order-li-footer">
+                <div class="order-price">{:lang('總計')}：<span class="order-food-price printer-td">HK$<em class="total-price">{$order.goodsAmount}</em></span></div>
+            </div>
+        </div>
+    </div>
+    <div class="order-li margin-bottom-3">
+        <div class="order-li-header">
+            <div class="order-title">{:lang('訂單信息')}</div>
+        </div>
+        <div class="order-box">
+            <!--<div class="order-tr">
+                <div class="order-tr-title">就餐碼</div>
+                <div class="order-tr-text">6548</div>
+            </div>-->
+            <div class="order-tr">
+                <div class="order-tr-title">{:lang('訂單編號')}</div>
+                <div class="order-tr-text">{$orderdata.data.order_info.orderSN}</div>
+            </div>
+            <div class="order-tr">
+                <div class="order-tr-title">{:lang('落單時間')}</div>
+                <div class="order-tr-text">{$orderdata.data.order_info.createTime}</div>
+            </div>
+        </div>
+    </div>
+    {if($orderdata.data.order_info.orderStatus===2 || $orderdata.data.order_info.orderStatus===3)}
+    <div class="btn-fix">
+        {if($orderdata.data.order_info.orderStatus===3)}
+        <div class="button-normal cancel" onclick="addFood()">{:lang('加單')}</div>
+        {/if}
+        {if($orderdata.data.order_info.orderStatus===3 && $orderdata.data.order_info.addStatus===0)}
+        <div class="button-normal confirm" onclick="showPay('{$orderdata.data.order_info.orderSN}')">{:lang('完成訂單')}</div>
+        {/if}
+        {if($orderdata.data.order_info.orderStatus===2 || ($orderdata.data.order_info.orderStatus===3 && $orderdata.data.order_info.addStatus===1))}
+        <div class="button-normal confirm btn-confirm" onclick="getOrder('{$orderdata.data.order_info.orderSN}')">{:lang('確認並打印小票')}</div>
+        {/if}
+    </div>
+    {/if}
+    <div class="modal-pay-wrapper">
+        <div class="modal-main"></div>
+        <div class="modal-body">
+            <div class="modal-title">{:lang('選擇支付方式')}</div>
+            <div class="pay-list">
+                {volist name="payment_data" id="vo" key="k"}
+                <div class="pay-item">
+                    <input type="radio" name="paytype" value="{$vo.id}" id="{$vo.code}" {if($k==1)}checked{/if}>
+                    <label for="{$vo.code}">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="{$vo.fileName}"></use>
+                        </svg>
+                        <span class="pay-text">{$vo.name}</span>
+                    </label>
+                </div>
+                {/volist}
+            </div>
+            <div class="modal-title">{:lang('折扣設置')}
+                <div class="check-box">
+                    <input type="checkbox" name="sale" id="sale">
+                    <label for="sale">
+                        <span class="check-div">
+                            <span class="inner"></span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div class="sale-price">
+                {:lang('折扣金額')} <input type="text" class="sale-text" onchange="calcSale(this)"/>&nbsp;{:lang('折')}
+            </div>
+            <div class="modal-change">
+                <span class="change-left">{:lang('現金')}<input type="text" class="input-cash" onchange="calcChange()"/></span>
+                <span class="change-right">找零：<em class="change-text"></em></span>
+            </div>
+            <div class="button">
+                <div class="pay-price">HK$&nbsp;<span class="pay-price-text"></span></div>
+                <div class="button-normal confirm  btn-pay-confirm">{:lang('確認')}</div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    var orderData = eval(<?php echo json_encode($orderdata); ?>);
+    var orderArr = orderData.data.goods_info;
+    function addcar(index,id) {
+        var num = parseInt($(index).prev('.num-text').text());
+        if(num>0 && num){
+            num++;
+            $(index).prev('.num-text').text(num);
+        }
+        calculate(id,num);
+    }
+    function reducecar(index,id) {
+        var num = parseInt($(index).next('.num-text').text());
+        if(num>0 && num){
+            num--;
+            $(index).next('.num-text').text(num);
+        }
+        calculate(id,num);
+        $.each(orderArr,function (i,arr) {
+            if(arr.num<=0){
+                orderArr.splice(i,1);
+                $(index).closest('.printer-tr').remove();
+                return false;
+            }
+        })
+    }
+    function calculate(id,num) {
+        var totalPrice = 0;
+        $.each(orderArr,function (n,order) {
+            if(order.id == id){
+                order.num = num;
+            }
+            if(order.num>0){
+                totalPrice += order.goodsPrice * order.num;
+            }
+        })
+        var boxPrice = $('.box-price-text').text();
+        totalPrice +=  parseFloat(boxPrice);
+        $('.total-price').html(totalPrice.toFixed(2));
+    }
+
+    function addFood() {
+        window.location.href = "{:url('order/orderedit',['ordersn'=>$order.orderSN])}";
+    }
+
+    function orderConfirm() {
+        var order = JSON.stringify(orderArr);
+        $.ajax({
+            type: "POST",
+            url : "{:url('order/orderDetail')}",
+            data: {'order':order},
+            async: true,
+            success: function(data) {
+                if (data.code) {
+                    location.href='{:url(\'order/index\')}';
+                } else {
+                }
+            },
+            error: function(errmsg) {
+                console.log(errmsg);
+            }
+        });
+    }
+
+    function getOrder(orderSN) {
+        openloading("STATIC_PATH/assets/img/loading-2.gif");
+        $.ajax({
+            type: "POST",
+            url: "{:url('order/printAgain')}",
+            data: {'orderSN': orderSN},
+            async: true,
+            success: function (data) {
+                if (data.text && data.text != '') {
+                    //非云打印返回打印字串，用来请求非云打印机打印
+                    try {
+                        javascript:lee.funAndroid(data.text);
+                    } catch (e) {
+                        console.log('{:lang(\'請在非雲打印機使用打單才能打印\')}');
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "{:url('order/getordersuccess')}",
+                        data: {'orderSN': orderSN},
+                        async: true,
+                        success: function (res) {
+                            if (res.code == 1) {
+                                closeloading();
+                                $('.container,.swal2-overlay').css('pointer-events', 'none');
+                                swal({
+                                    'text': '{:lang(\'打印成功\')}',
+                                    'confirmButtonText': '{:lang(\'確認\')}',
+                                    'confirmButtonColor': '#e07a0a',
+                                    'imageUrl': 'STATIC_PATH/assets/mobile/images/a-print.png',
+                                    'imageSize': '16x16',
+                                    'customClass': 'success'
+                                }).then(function (isConfirm) {
+                                    if (isConfirm) {
+                                        window.location.href = "{:url('order/index',['action'=>2])}";
+                                    }
+                                });
+                            }
+                        },
+                        error: function (request) {
+                            console.log(request.messageerror);
+                        }
+                    });
+                } else if (data.code == 1) {
+                    //云打印成功
+                    closeloading();
+                    $('.container,.swal2-overlay').css('pointer-events', 'none');
+                    swal({
+                        'text': '{:lang(\'打印成功\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor': '#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/a-print.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function (isConfirm) {
+                        if (isConfirm) {
+                            window.location.href = "{:url('order/index',['action'=>2])}";
+                        }
+                    });
+                } else {
+                    //云打印失败
+                    closeloading();
+                    swal({
+                        'text': data.tip,
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor': '#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    }).then(function (isConfirm) {
+                        if (isConfirm) {
+                            window.location.href = "{:url('order/index',['action'=>2])}";
+                        }
+                    });
+                }
+            },
+            error: function (request) {
+                closeloading();
+                swal({
+                    'text': '{:lang(\'打印機設置錯誤\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor': '#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    };
+
+</script>
+<script>
+    window.onload=function () {
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, {
+            passive: false  // 关闭被动监听
+        });
+        var lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            var now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, {
+            passive: false  // 关闭被动监听
+        });
+        document.addEventListener('gesturestart', function (event) {
+            event.preventDefault();
+        }, {
+            passive: false  // 关闭被动监听
+        });
+    }
+
+
+    //折扣设置开关显示内容
+    $("input[name='sale']").on('change', function(event){
+        var flag = $("input[name='sale']").is(":checked");
+        flag ? $(".sale-price").show() : $(".sale-price").hide();
+        flag ? "" : $('.sale-text').val("");
+    });
+
+    // 关闭支付方式框
+    $('.modal-main,.btn-pay-close').on('click', function () {
+        $('.modal-pay-wrapper').hide();
+    });
+
+    var sn;
+    var payPrice='{$order.goodsAmount}';
+    // 打開收款提示框
+    function showPay(orderSN) {
+        $('.modal-pay-wrapper').show();
+        $('input[name="sale"][id="sale"]').prop('checked',false);
+        $('.sale-price').hide();
+        $('.sale-text').val("");
+        $('.pay-price-text').text(payPrice);
+        sn = orderSN;
+    }
+
+    // 確认收款
+    $('.btn-pay-confirm').on('click', function () {
+        $('.modal-pay-wrapper').hide();
+        confirmPay(sn);
+    });
+
+    function confirmPay(orderSN) {
+        var paytype = $('.pay-list').find('input[type="radio"][name="paytype"]:checked').val();
+        var discount = $('.sale-text').val();
+        openloading("STATIC_PATH/assets/img/loading-2.gif");
+        $.ajax({
+            type: "POST",
+            url: "{:url('order/confirmPay')}",
+            data: {'orderSN': orderSN,'paytype':paytype,'box_count':num,'discount':discount},
+            async: true,
+            success: function (data) {
+                closeloading();
+                if (data.code) {
+                    $('.container,.swal2-overlay').css('pointer-events', 'none');
+                    swal({
+                        text: "{:lang('付款成功')}",
+                        confirmButtonText: "{:lang('確認')}",
+                        confirmButtonColor: "#e07a0a",
+                        imageUrl: "STATIC_PATH/assets/mobile/images/a-payment.png",
+                        imageSize: "16x16",
+                        customClass: "success"
+                    }).then(function (isConfirm) {
+                        if (isConfirm) {
+                            window.location.href = "{:url('order/index',['action'=>3])}";
+                        }
+                    })
+                }else{
+                    swal({
+                        text: "{:lang('付款失败')}",
+                        confirmButtonText: "{:lang('確認')}",
+                        confirmButtonColor: "#e07a0a",
+                        imageUrl: "STATIC_PATH/assets/mobile/images/error-img.png",
+                        imageSize: "16x16",
+                        customClass: "fail"
+                    })
+                }
+            },
+            error: function (request) {
+                closeloading();
+                swal({
+                    'text': '{:lang(\'操作失敗\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor': '#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    }
+
+    //添加餐盒費
+    var num = $('.box-fee').find('.num-text').text();
+    function addbox() {
+        if(num>=0){
+            num++;
+            $('.box-fee').find('.cart-reduce').css('display','inline-block');
+            $('.box-fee').find('.num-text').text(num).css('display','inline-block');
+            calcBox();
+        }
+    }
+    
+    //減少餐合費
+    function reducebox() {
+        if(num>1){
+            num--;
+            $('.box-fee').find('.num-text').text(num).show();
+        }else if(num==1){
+            num=0;
+            $('.box-fee').find('.cart-reduce').hide();
+            $('.box-fee').find('.num-text').text(num).hide();
+        }
+        calcBox();
+    }
+
+    //計算餐盒費
+    function calcBox() {
+        var moneyPaid = '{$order.moneyPaid}',
+            price = '{$contact_info.box_fee}',
+            boxPrice = 0,
+            totalPrice = 0;
+        boxPrice = num * price;
+        $('.box-price-text').text(boxPrice.toFixed(2));
+        totalPrice = parseFloat(moneyPaid) + parseFloat(boxPrice);
+        $('.total-price').text(totalPrice.toFixed(2));
+        payPrice = totalPrice.toFixed(2);
+    }
+
+    //選擇現金顯示找零
+    $('input[type="radio"][name="paytype"]').on('click', function () {
+        if($(this).attr('id')==="cash"){
+            $('.modal-change').show();
+        }else {
+            $('.modal-change').hide();
+            $('.change-right').hide();
+            $('.input-cash').val("");
+        }
+    });
+
+    //自動結算找零
+    function calcChange(){
+        var price = parseFloat($('.pay-price-text').text());
+        var cash = parseFloat($('.input-cash').val());
+        if(cash){
+            var change = cash - price;
+            $('.change-text').text(change.toFixed(2));
+            $('.change-right').show();
+        }else{
+            $('.change-text').text("");
+            $('.change-right').hide();
+        }
+    }
+
+    //折扣結算
+    function calcSale(e){
+        var sale = $(e).val() ? $(e).val() : 10;
+        var price = payPrice * parseFloat(sale) / 10;
+        $('.pay-price-text').text(price.toFixed(2));
+        calcChange();
+    }
+
+</script>
+</html>
+

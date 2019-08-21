@@ -1,0 +1,97 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">渠道結算单</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<form method="get" action="{:url('balance/channlestatements')}">
+				<select class="search-select select2" id="paymethod" name="paymethod">
+					<option value="" selected="selected">请选择支付渠道</option>
+					{volist name="paymethod" id="vo"}
+					<option value="{$vo.id}" {if(!empty($param.paymethod)&&$param.paymethod==$vo.id)}selected="selected"{/if}>{$vo.name}</option>
+					{/volist}
+				</select>
+				<input type="text" id="account" name="account" class="search-input" placeholder="結算日" value="{if(!empty($param.account))}{$param.account}{/if}" readonly="readonly">
+				<input type="text" id="ctimeStart" name="ctimeStart" class="search-input" placeholder="創建起始時間" value="{if(!empty($param.ctimeStart))}{$param.ctimeStart}{/if}" readonly="readonly">
+				<input type="text" id="ctimeEnd" name="ctimeEnd" class="search-input" placeholder="創建結束時間" value="{if(!empty($param.ctimeEnd))}{$param.ctimeEnd}{/if}" readonly="readonly">
+				<button class="search-btn btn-primary">搜索</button>
+			</form>
+		</header>
+		<script src="{$Think.config.Houtai}js/laydate.js"></script>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {
+				$("#paymethod").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "沒有該選項";
+				        }
+				    }
+				});
+			});
+
+		laydate.render({
+		  elem: '#account', //指定元素
+		  type:'date',
+		});
+		laydate.render({
+		  elem: '#ctimeStart', //指定元素
+		  type:'datetime',
+		});
+		laydate.render({
+		  elem: '#ctimeEnd', //指定元素
+		  type:'datetime',
+		});
+		</script> 
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>流水ID</th>
+									<th>渠道編號</th>
+									<th>渠道名稱</th>
+									<th>结算起始时间</th>
+									<th>结算結束时间</th>
+									<th>結算日</th>
+									<th>結算總額</th>
+									<th>結算金額</th>
+									<th>結算費率</th>
+									<th>結算手續費</th>
+									<th>記錄創建時間</th>
+								</tr>
+								{volist name="lists" id="Row"}
+								<tr>
+									<td>{$Row.id}</td>
+									<td>{$Row.code}</td>
+									<td>{$Row.name}</td>
+									<td>{$Row.accountStartTime}</td>
+									<td>{$Row.accountEndTime}</td>
+									<td>{$Row.payAccountDate}</td>
+									<td>{$Row.balanceTotal}</td>
+									<td>{$Row.balanceMoney}</td>
+									<td>{$Row.balanceRate}</td>
+									<td>{$Row.balancePoundage}</td>
+									<td>{$Row.ctime}</td>
+								</tr>
+								{/volist}
+								
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

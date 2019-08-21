@@ -1,0 +1,50 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">栏目文章</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('article/add')}" title="添加文章" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+			</ul>
+
+			<div class="clearfix"></div>
+		</header>
+
+		{volist name="searchArticle" id="article"}
+		<div class="media">
+			<div class="pull-left">{$article.id}</div>
+			<img class="media-object pull-left" src="{$article.thumbnail}" alt="" width="45">
+
+			<div class="media-body">
+				{$article.title}
+				<div class="clearfix"></div>
+				<small> {$article.description}</small><br>
+				<div class="block attrs">
+					添加时间: {$article->create_time}
+
+				</div>
+			</div>
+			<div class="list-options">
+				<button class="btn btn-sm"><a href="{:url('article/edit',['id'=>$article['id']])}">编辑</a></button>
+				<button class="btn btn-sm"><a href="{:url('article/delete',['id'=>$article['id']])}">删除</a></button>
+			</div>
+		</div>
+		{/volist}
+
+		<div class="media panel-footer text-center">
+			{$page}
+		</div>
+	</div>
+
+</section>

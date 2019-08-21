@@ -1,0 +1,95 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">广告列表</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Adlist/add')}" title="添加广告" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+		</header>
+		<!-- <script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script>  -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>广告位置</th>
+									<th>广告类型</th>
+									<th>广告名称</th>
+									<th>跳转链接</th>
+									<th>开始时间</th>
+									<th>结束时间</th>
+									<th>联系人</th>
+									<th>电话</th>
+									<th>邮箱</th>
+									<th>点击数</th>
+									<th>状态</th>
+									<th>操作</th>
+								</tr>
+								{volist name="ad" id="vo"}
+								<tr>
+									<td class="text-left">{$vo.id}</td>
+									<td>{$position[$vo.adPosition]['name']}</td>
+									<td>{$type[$vo.adType]}</td>
+									<td>{$vo.adName}</td>
+									<td>{$vo.adLink}</td>
+									<td>{:date('Y-m-d H:i:s',$vo.adStart)}</td>
+									<td>{:date('Y-m-d H:i:s',$vo.adEnd)}</td>
+									<td>{$vo.adMan}</td>
+									<td>{$vo.adPhone}</td>
+									<td>{$vo.adEmail}</td>
+									<td>{$vo.adClick}</td>
+									<td>{$disable[$vo.disable]}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Adlist/edit',['id'=>$vo['id']])}">编辑</a>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

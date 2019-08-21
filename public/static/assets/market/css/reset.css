@@ -1,0 +1,169 @@
+body{
+	background-color: #eee;
+}
+.title-div{
+	width: 100%;
+	height: auto;
+	background-color: #fff;
+	position: fixed;
+	top: 0;
+	font-size: 16px;
+	text-align: center;
+	padding: 15px 0;
+	z-index: 12;
+}
+.title-div .fanhui{
+	width: 10px;
+	position: absolute;
+	top: 15px;
+	left: 20px;
+}
+.title-div .title{
+	width: 100%;
+	line-height: 1;
+}
+.title-div .del-btn{
+	width: max-content;
+	position: absolute;
+	top: 12px;
+	right: 20px;
+}
+.container{
+	padding-top: calc(1vw + 48px);
+	height: auto;
+}
+.container-div{
+	padding-top: 0;
+}
+.main{
+	position: relative;
+	bottom: 0;
+	height: 100%;
+}
+
+.food-input-li{
+	background-color:#fff;
+}
+input, .select{
+	color: #999;
+	width: 64vw!important;
+	text-align: right!important;
+}
+.food-arrow{
+	right: 3.1vw;
+}
+.contact-type-img{
+	width: 64vw!important;
+}
+.img-div{
+	height: 30vw;
+}
+.img-div .upload-img{
+	width: max-content;
+	margin-left: 0;
+	height: auto;
+	line-height: 2;
+	width: 100%;
+	text-align: right;
+	padding: 0 5vw;
+}
+.f-l{
+	float:left;
+}
+.f-r{
+	float:right;
+}
+
+.img-div .food-cate-img.b-img{
+	width: 36vw;
+	height: 18vw;
+}
+
+.img-div .food-cate-img{
+	width: 18vw;
+	height: 18vw;
+	margin-top: 5.5vw;
+	margin-right: 5.5vw;
+}
+.food-cate-img .food-img{
+	position:relative;
+	width: 18vw;
+	max-height: 18vw;
+	top: 0;
+	right: 0;
+}
+
+.b-img .food-img{
+	width: 36vw;
+	max-height: 18vw;
+	border-radius: 0;
+}
+.register-scroll{
+	position: relative;
+	float:left;
+	bottom: 0;
+}
+.register-main{
+	position: relative;
+	float:left;
+	margin-bottom: 14vw;
+}
+.register-info{
+	margin-top: 0;
+}
+.register-info:last-child{
+	margin-bottom: 0;
+}
+.member-cate-li{
+	background-color: #fff;
+}
+.member-btn{
+	position: relative;
+	width: 90vw;
+	margin: 5vw;
+	float: left;
+	border-radius: 2vw;
+	font-size: 4.5vw;
+	bottom: 0;
+}
+
+ .member-cate-btn{
+	position: relative;
+	width: 40vw;
+	margin: 5vw;
+	float: left;
+	border-radius: 2vw;
+	font-size: 4vw;
+}
+
+.remark-div{
+	height: auto;
+}
+.register-small-textarea-label,
+.remark-div .food-cate-label{
+	line-height: 2;
+	height: auto;
+}
+.remark-div textarea{
+	position: relative;
+    display: inline-block;
+    width: 89.5vw;
+    height: max-content;
+	min-height: 27vw;
+    line-height: 6vw;
+    font-size: 4vw;
+    outline: none;
+    border: none;
+	margin-top: 0.9vw;
+    margin-right: 5.5vw;
+    float: left;
+    resize: none;
+    box-sizing: inherit;
+	color: #999;
+}
+.register-textarea-li-small textarea{
+	margin-left: 5vw;
+}
+.remark-div textarea:focus{
+	outline-offset: 0;
+}

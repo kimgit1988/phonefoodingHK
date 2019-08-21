@@ -1,0 +1,399 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<!-- 调用select2需要新版jquery -->
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+    <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key={:config('QQLbs.Key')}"></script> <!-- 腾讯地图插件 -->
+	<h4 class="page-title b-0">添加美食廣場</h4>
+
+	<div class="listview list-container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('Court/Add')}" enctype="multipart/form-data" class="form-horizontal ajax-form" method="post" id="add">
+									<div class="form-group">
+										<label for="" class="col-sm-2 control-label">--------基礎信息--------</label>
+									</div>
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">分類</label>
+										<div class="col-sm-11">
+											<select name="cCategory" class="form-control" id="cCategory">
+												<option value="">请选择</option>
+												{volist name="category" id="vo"}
+												<option value="{$vo.id}">{$vo.name}</option>
+												{if(isset($vo.child))}{:getChildOption($vo.child)}{/if}
+												{/volist}
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">平台</label>
+										<div class="col-sm-11">
+											<select name="type" class="form-control" id="type">
+												<option value="">请选择</option>
+												{volist name="type" id="vo"}
+												<option value="{$vo.contact_type}">{$vo.name}</option>
+												{/volist}
+											</select>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">名稱</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="name" id="inputname" placeholder="名稱"maxlength="40">
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">編號</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="number" id="inputnumber" placeholder="編號">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputurl"> 联系电话 </label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="linkMans" id="inputurl" placeholder="联系方式" maxlength="40">
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">费率</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="rate" id="rate" placeholder="费率" value="" style="display: inline-block; width: 90%;">%
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">結算週期</label>
+										<div class="col-sm-11">
+											T+<input type="text" class="form-control" name="cycle" id="cycle" placeholder="結算週期" value="" style="display: inline-block; width: 90%;">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">logo图片</label>
+										<div class="col-sm-11">
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<div class="fileupload-new thumbnail big form-control"></div>
+												<div class="fileupload-preview form-control fileupload-exists thumbnail big">
+													<img src="">
+												</div>
+												<span class="btn btn-file btn-alt btn-sm">
+                            					<span class="fileupload-new">Select image</span>
+												<span class="fileupload-exists">Change</span>
+												<input type="file" name="image" onchange="fileChange(this,1);"/>
+												</span>
+												<a href="#" class="btn-sm btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">bg图片</label>
+										<div class="col-sm-11">
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<div class="fileupload-new thumbnail big form-control"></div>
+												<div class="fileupload-preview form-control fileupload-exists thumbnail big">
+													<img src="">
+												</div>
+												<span class="btn btn-file btn-alt btn-sm">
+                            					<span class="fileupload-new">Select image</span>
+												<span class="fileupload-exists">Change</span>
+												<input type="file" name="bg" onchange="fileChange(this,1);"/>
+												</span>
+												<a href="#" class="btn-sm btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="disable" id="inputstatus" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="disable" id="inputstatus" value="0" />停用</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputremark"> 备注 </label>
+										<div class="col-sm-11">
+											<textarea name="remark" class="form-control"></textarea>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label"> 餐廳地址 </label>
+										<div class="col-sm-11 mapDiv">
+						                    <input name="address" oninput="getResult()" class="form-control" type="text" maxlength="80" id="address" placeholder="餐廳地址" value="">
+						                    <input name="Latitude" type="hidden" maxlength="64" id="Latitude" value="">
+						                    <input name="Longitude" type="hidden" maxlength="64" id="Longitude" value="">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label"></label>
+										<div class="col-sm-5" id="infoDiv">
+										</div>
+										<div class="col-sm-6" id="map" class="map" style="height:25vw;"></div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-2 control-label">--------管理賬號--------</label>
+									</div>
+
+									<div class="form-group">
+					                    <label class="col-sm-1 control-label"> 用戶名 </label>
+										<div class="col-sm-11">
+					                    	<input name="username" type="text" maxlength="20" class="form-control">
+					                	</div>
+					                </div>
+					                <div class="form-group">
+					                    <label class="col-sm-1 control-label"> 密碼 </label>
+										<div class="col-sm-11">
+					                    	<input name="password" type="password" maxlength="20" class="form-control">
+					                	</div>
+					                </div>
+					                <div class="form-group">
+					                    <label class="col-sm-1 control-label"> 確認密碼 </label>
+										<div class="col-sm-11">
+					                    	<input name="repassword" type="password" maxlength="20" class="form-control">
+					                	</div>
+					                </div>
+					                <div class="form-group">
+					                    <label class="col-sm-1 control-label"> 暱稱 </label>
+										<div class="col-sm-11">
+					                    	<input name="nick" type="text" maxlength="20" class="form-control">
+					                	</div>
+					                </div>
+					                <div class="form-group">
+					                    <label class="col-sm-1 control-label"> 郵箱 </label>
+										<div class="col-sm-11">
+					                    	<input name="mail" type="text" maxlength="30" class="form-control">
+					                	</div>
+					                </div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-1 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+function fileChange(target, filetypeid) {
+    var filepath = target.value;
+    if (filepath == "") {
+        return false;
+    }
+
+    var fileSize = 0;
+    var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+    if (isIE && !target.files) {
+        var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+        var file = fileSystem.GetFile(filepath);
+        fileSize = file.Size;
+    } else {
+        fileSize = target.files[0].size;
+    }
+    if (fileSize > 10*1024*1024) {
+        target.value = '';
+        alert('图片大小不能大于10M！');
+        return false;
+    }
+}  
+
+$(".submit").click(function(){
+    var options = {
+        "beforeSubmit" : checkForm,
+        "success" : resultForm,
+        "resetForm" : false,
+        "dataType" : "json"
+    };
+    $("#add").ajaxSubmit(options);
+});
+
+function checkForm(formData, form, options) {
+}
+
+function resultForm(data, status) {
+    //表单完成
+    if(data.code){
+        alert(data.msg);
+	    window.history.go(-1);
+    }else{
+        alert(data.msg);
+    }
+}
+function getResult() {
+    // window.clearTimeout(t1);
+    // var t1=window.setTimeout(getLatlng, 1000 * 3);
+    //getLatlng(); 
+	
+    //设置searchRequest
+    var poiText = document.getElementById("address").value;
+	$('#infoDiv').html('');
+    searchService.search(poiText);
+}
+function getLatlng(){
+    var address = $('#address').val();
+    $.ajax({
+        type : 'post',
+        url : '{:url('base/ted')}',
+        data : {'address':address},              
+        success : function(data) {
+            if(data.msg.status==0){
+                setLatitude(data.msg.result.location.lat);
+                setLongitude(data.msg.result.location.lng);
+                center = new qq.maps.LatLng(Latitude,Longitude);
+                map.panTo(center);
+                deletemarket();
+                addmarker(Latitude,Longitude);
+            }else{
+                swal({
+                    'text':'请输入正确的地址',
+                    'confirmButtonText': '确认',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }    
+        },
+        error : function() {
+            swal({
+                'text':'页面错误',
+                'confirmButtonText': '确认',
+                'confirmButtonColor':'#e07a0a',
+                'imageUrl': 'STATIC_PATH/assets/mobile/images/shanchu.png',
+                'imageSize': '16x16',
+                'customClass': 'fail'
+            });
+        }
+    });
+}
+setLatitude(22.219279685846963);
+setLongitude(113.53977837265015);
+var center = new qq.maps.LatLng(Latitude,Longitude);
+map = new qq.maps.Map(document.getElementById("map"));
+map.panTo(center);
+map.zoomTo(17);
+var marker = new qq.maps.Marker({
+    position: center,
+    map: map
+});
+
+qq.maps.event.addListener(map, 'center_changed', function() {
+    var newCenter = map.getCenter();
+    setLatitude(newCenter.lat);
+    setLongitude(newCenter.lng);
+    deletemarket();
+    addmarker(Latitude,Longitude);
+});
+qq.maps.event.addListener(map,'click',function(event) {
+    setLatitude(event.latLng.getLat());
+    setLongitude(event.latLng.getLng());
+    center = new qq.maps.LatLng(Latitude,Longitude);
+    map.panTo(center);
+    deletemarket();
+    addmarker(Latitude,Longitude);
+});
+function isEmpty(str){
+	if(str == undefined || str == null || str == ''){
+		return true;
+	}
+	return false;
+}
+//调用Poi检索类
+var searchPois = [];
+var searchService = new qq.maps.SearchService({
+	pageCapacity: 100,
+	complete: function(results) {
+		searchPois = results.detail.pois;
+		var htmlStr = '<ul>';
+		$.each(searchPois, function(i, obj){
+			var name = '', address = '', phone = '';
+			if(!isEmpty(obj.name)){
+				name = obj.name;
+			}
+			if(!isEmpty(obj.address)){
+				address = obj.address;
+			}
+			if(!isEmpty(obj.phone)){
+				phone = obj.phone;
+			}
+			htmlStr += '<li onclick="selectAddress(' + i + ')">'
+					+ '<span class="title">' + name + '</span>'
+					+ '<span class="address">' + address + '</span>'
+					+ '<span class="tel">' + phone + '</span>'
+					+ '</li>';
+		});
+		htmlStr += '</ul>';
+		$('#infoDiv').html(htmlStr);
+		$('#infoDiv').show();
+	}
+});
+
+function addmarker(lat,lng){
+    var markerCenter = new qq.maps.LatLng(lat,lng);
+    marker = new qq.maps.Marker({
+        position: markerCenter,
+        map: map
+    });
+}
+function deletemarket() {
+    if (marker) {
+        marker.setMap(null);
+    }
+}
+function setLatitude(number){
+    Latitude = number;
+    $("#Latitude").val(Latitude);
+}
+function setLongitude(number){
+    Longitude = number;
+    $("#Longitude").val(Longitude);
+}
+function selectAddress(index){
+	$('#infoDiv').hide();
+	var obj = searchPois[index];
+	$('input[name="address"]').val(obj.name);
+	setLatitude(obj.latLng.lat);
+	setLongitude(obj.latLng.lng);
+	center = new qq.maps.LatLng(Latitude,Longitude);
+	map.panTo(center);
+	deletemarket();
+	addmarker(Latitude,Longitude);
+}
+    //页面加载完成后初始化select2控件  
+    $(function () {  
+        $("#cCategory").select2({
+        	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该類型";
+		        }
+		    }
+		});
+		$("#type").select2({
+        	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该商家";
+		        }
+		    }
+		});
+	});
+</script> 

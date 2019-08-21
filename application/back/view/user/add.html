@@ -1,0 +1,330 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<!-- 调用select2需要新版jquery -->
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">用户添加</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/user/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header> -->
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('back/user/add')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="addform">
+									<div class="form-group">
+										<label for="inputrole_id" class="col-sm-3 control-label">用户组</label>
+										<div class="col-sm-5">
+											<select name="id" id="inputrole_id" class="form-control">
+												<option value="">请选择用户组</option>
+												{volist name="groupRows" id="vo"}
+												<option value="{$vo.id}">{$vo.title}</option>
+
+												{/volist}
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">用户名</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="inputname" value="" placeholder="用户名" maxlength="20">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">昵称</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="nick" id="inputnick" value="" placeholder="昵称" maxlength="20">
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label for="inputpassword" class="col-sm-3 control-label">用户密码</label>
+										<div class="col-sm-5">
+											<input type="password" class="form-control" name="password" id="inputpassword" placeholder="用户密码" maxlength="20">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">确认密码</label>
+										<div class="col-sm-5">
+											<input type="password" class="form-control" name="repassword" id="inputrepassword" placeholder="确认密码" maxlength="20">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">邮箱</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="email" id="inputemail" placeholder="邮箱" maxlength="30">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputrepassword" class="col-sm-3 control-label">手机号</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="mobile" id="inputemobile" placeholder="手机号" maxlength="40">
+										</div>
+									</div>
+									<!-- <div class="form-group">
+										<label for="" class="col-sm-3 control-label">头像</label>
+										<div class="col-sm-5">
+											<img src="" style="max-width:100px; max-height:100px;" id="head" class="img-circle upload">
+											<input type="hidden" name="head" value="" />
+										</div>
+									</div> -->
+									<div class="form-group">
+										<label for="" class="col-sm-3 control-label">头像</label>
+										<div class="col-sm-5">
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<div class="fileupload-new thumbnail small form-control"></div>
+												<div class="fileupload-preview form-control fileupload-exists thumbnail small">
+													<img src="">
+												</div>
+												<span class="btn btn-file btn-alt btn-sm">
+                            					<span class="fileupload-new">Select image</span>
+												<span class="fileupload-exists">Change</span>
+												<input type="file" name="images" id="icon" onchange="fileChange(this,1)";/>
+												</span>
+												<a href="#" class="btn-sm btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+											</div>
+
+										</div>
+									</div>
+									{if($Request.session.ext_user.is_contact==0)}
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="contact"> 系统管理员/商家 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="contact" id="inputcontact0" value="0" checked="checked"/>系统管理员</label>
+											<label><input type="radio" name="contact" id="inputcontact1" value="1" />商家</label>
+											<label><input type="radio" name="contact" id="inputcontact3" value="3" />市场人员</label>
+										</div>
+									</div>
+									<div id="contact_number" style="display: none;">
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="method"></label>
+											<div class="col-sm-5" style="margin-top: 7px;">
+												<label><input type="radio" name="method" id="inputmethod0" value="0" />选定商家</label>
+												<label><input type="radio" name="method" id="inputmethod1" value="1" checked="checked"/>手动输入</label>
+											</div>
+										</div>
+										<div id="contact_list" style="display: none;">
+											<div class="form-group">
+												<label for="inputname" class="col-sm-3 control-label">选中商家</label>
+												<div class="col-sm-5">
+													<select id="selectnumber" class="form-control select2" name="selectnumber">  
+													    <option value="">请选择</option>
+														{volist name="list" id="vo"}
+														<option value="{$vo.number}">{$vo.name}</option>
+														{/volist} 
+													</select>
+												</div>
+											</div>
+										</div>
+										<div id="number_input" style="display: none;">
+											<div class="form-group">
+												<label class="col-sm-3 control-label" for="setnumber">商家编号</label>
+												<div class="col-sm-5" style="margin-top: 7px;">
+													<input type="text" class="form-control" name="setnumber" id="setnumber" value="" placeholder="商家编号">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div id="market_input" style="display: none;">
+										<div class="form-group">
+											<label for="inputname" class="col-sm-3 control-label">佣金分组</label>
+											<div class="col-sm-5">
+												<select id="commission" class="form-control select2" name="commission" id="commission">  
+												    <option value="">请选择</option>
+													{volist name="commission" id="vo"}
+													<option value="{$vo.id}">{$vo.name}</option>
+													{/volist} 
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="inputname" class="col-sm-3 control-label">发款银行账号</label>
+											<div class="col-sm-5">
+												<select id="paynumber" class="form-control select2" name="paynumber" id="paynumber">
+												    <option value="">请选择</option>
+													{volist name="bn" id="vo"}
+													<option value="{$vo.id}">{$vo.bank_number}({$vo.owner})</option>
+													{/volist} 
+												</select>
+											</div>
+										</div>
+									</div>
+									{/if}
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											<label><input type="radio" name="status" id="inputstatus1" value="1" checked="checked"/>启用</label>
+											<label><input type="radio" name="status" id="inputstatus0" value="0" />停用</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style>
+	.select2{
+		background: rgba(0, 0, 0, 0.05);
+	    border: 1px solid rgba(255, 255, 255, 0.3);
+	    text-shadow: none;
+	    color: #000;
+	    box-shadow: none;
+	    font-family: open-sans-regular;
+	}
+	.select2-results{
+		color:#000;
+	}
+	.select2-search__field{
+		color:#000;
+	}
+</style>
+<script type="text/javascript"> 
+	function fileChange(target, filetypeid) {
+	    var filepath = target.value;
+	    if (filepath == "") {
+	        return false;
+	    }
+
+	    var fileSize = 0;
+	    var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+	    if (isIE && !target.files) {
+	        var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+	        var file = fileSystem.GetFile(filepath);
+	        fileSize = file.Size;
+	    } else {
+	        fileSize = target.files[0].size;
+	    }
+	    if (fileSize > 10*1024*1024) {
+	        target.value = '';
+	        alert('图片大小不能大于10M！');
+	        return false;
+	    }
+	}
+    //页面加载完成后初始化select2控件  
+    $(function () {
+        $("#inputrole_id").select2({
+        	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该分组";
+		        }
+		    }
+		});  
+        $("#selectnumber").select2({
+        	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该商家";
+		        }
+		    }
+		});
+		$("#commission").select2({
+        	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该分类";
+		        }
+		    }
+		});
+		$("#paynumber").select2({
+        	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该发款账号";
+		        }
+		    }
+		});
+		setcontact();
+		setmethod();
+		$("input[name='contact']").on('ifChecked', function(event){
+		    setcontact();
+		});
+		$("input[name='method']").on('ifChecked', function(event){
+		    setmethod();
+		});
+		function setcontact(){
+			if($("input[name='contact']:checked").val()==1){
+				$('#contact_number').show();
+		    	$('#market_input').hide();
+		    }else if($("input[name='contact']:checked").val()==3){
+		    	$('#market_input').show();
+		    	$('#contact_number').hide();
+		    }else{
+		    	$('#contact_number').hide();
+		    	$('#market_input').hide();
+		    }
+		}
+		function setmethod(){
+			if($("input[name='method']:checked").val()==0){
+				$('#contact_list').show();
+				$('#number_input').hide();
+		    }else{
+		    	$('#contact_list').hide();
+				$('#number_input').show();
+		    }
+		}
+		$(".submit").click(function(){
+            if (!$("#detail").summernote('isEmpty')) {
+                var detail = $('#detail').summernote('code');
+                $("#inputdetail").val(detail);
+            }
+            var options = {
+                "beforeSubmit" : checkForm,
+                "success" : resultForm,
+                "resetForm" : false,
+                "dataType" : "json"
+            };
+            $("#addform").ajaxSubmit(options);
+        });
+ 
+        function checkForm(formData, form, options) {
+        }
+ 
+        function resultForm(data, status) {
+            //表单完成
+            if(data.code){
+	            alert(data.msg);
+	            window.history.go(-1);
+            }else{
+	            alert(data.msg);
+            }
+        }
+	});
+</script> 

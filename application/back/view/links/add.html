@@ -1,0 +1,92 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">添加链接</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('links/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+
+			<div class="clearfix"></div>
+		</header>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-11">
+								<form action="{:url('back/links/add')}" enctype="multipart/form-data" class="form-horizontal ajax-form" method="post" name="rule">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-1 control-label">标题</label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="title" id="inputname" placeholder="标题">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputurl"> 链接地址 </label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="url" id="inputurl" placeholder="链接地址">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="" class="col-sm-1 control-label">LOGO</label>
+										<div class="col-sm-11">
+											<div class="fileupload fileupload-new" data-provides="fileupload">
+												<div class="fileupload-new thumbnail small form-control"></div>
+												<div class="fileupload-preview form-control fileupload-exists thumbnail small">
+													<img src="">
+												</div>
+												<span class="btn btn-file btn-alt btn-sm">
+                                                <span class="fileupload-new">Select image</span>
+												<span class="fileupload-exists">Change</span>
+												<input type="file" name="image" />
+												</span>
+												<a href="#" class="btn-sm btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+											</div>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputlinker"> 联系人说明 </label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control" name="linker" id="inputlinker" placeholder="联系人说明">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputstatus"> 是否启用 </label>
+										<div class="col-sm-11">
+											<input type="checkbox" name="status" id="inputstatus" value="1" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-1 control-label" for="inputSort"> 排序 </label>
+										<div class="col-sm-11">
+											<input type="text" class="form-control " name="sort" value="255" id="inputSort" placeholder="越小越靠前">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<button type="submit" class="btn btn-primary">添加</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

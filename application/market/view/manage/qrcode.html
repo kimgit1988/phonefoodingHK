@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <meta name="format-detection" content="telephone=no">
+    <meta charset="UTF-8">
+    <meta name="description" content="Violate Responsive Admin Template">
+    <meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+    <title>市场人员二维码</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/jquery.core.image.upload.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/mobileSelect.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/market/css/sweetalert2.min.css">
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/jquery.core.image.upload.js"></script> <!-- File Upload -->
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/mobileSelect.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/market/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+	<style>
+		.title-div{
+			width: 100%;
+			height: auto;
+			background-color: #fff;
+			position: fixed;
+			top: 0;
+			font-size: 16px;
+			text-align: center;
+			padding: 15px 0;
+			z-index: 12;
+		}
+		.title-div .fanhui{
+			width: 10px;
+			position: absolute;
+			top: 15px;
+			left: 20px;
+		}
+		.title-div .title{
+			width: 100%;
+			line-height: 1;
+		}
+		.title-div .del-btn{
+			width: max-content;
+			position: absolute;
+			top: 12px;
+			right: 20px;
+		}
+		.qrcode-scroll{
+			padding-top: calc(1vw + 48px);
+			bottom: 2vw;
+		}
+		.qrcode-info{
+			margin-top: 0;
+		}
+		
+		.register-main{
+			bottom: 0;
+		}
+	</style>
+</head>
+<body>
+<div class="title-div">
+	<img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="javascript:history.back(-1);"/>
+	<div class="title">
+		市场人员二维码
+	</div>
+</div>
+<div class="container">
+    <div class="register-main">
+        <div class="qrcode-scroll">
+            <div class="qrcode-info">
+                <div class="qrcode-head">
+                    <img src="{$user.head}">
+                    <span>{$user.nick}</span>
+                </div>
+                <div class="qrcode-body"><img src="{$user.qrcode}" id="qrcode-img"></div>
+                <div class="qrcode-foot">商家掃碼註冊</div>
+            </div>
+            <div class="qrcode-btn">重新生成</div>
+        </div>
+    </div>
+</div>
+    
+<script type="text/javascript">
+    var hrt = $(window).height(); //获取当前可视区域的高度存到hrt的变量里。
+    window.onload=function(){ //在页面整体加载完毕时
+        $('body').height(hrt+'px'); //把获取到的高度直接赋值给body避免虚拟键盘改变页面样式
+    };
+    $('.qrcode-btn').click(function () {
+        $.ajax({
+          
+          type: "POST",
+          url : '{:url('manage/qrcode')}',
+          data: $('#repass').serialize(),
+          async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/market/images/wancheng.png',
+						'imageSize': '16x16',
+						'customClass': 'success'
+					}).then(function(isConfirm) {
+                        $("#qrcode-img").attr('src',data.pic);
+                        // location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '确认',
+						'confirmButtonColor':'#ea831e',
+						'imageUrl': 'STATIC_PATH/assets/market/images/shanchu.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+                swal({
+					'text':'页面错误',
+					'confirmButtonText': '确认',
+					'confirmButtonColor':'#ea831e',
+					'imageUrl': 'STATIC_PATH/assets/market/images/shanchu.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

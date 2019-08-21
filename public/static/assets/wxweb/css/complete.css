@@ -1,0 +1,169 @@
+body {
+    position: relative;
+    background-color: #F6F8F8;
+    padding-top: 0.96rem;
+}
+
+.container-div {
+    width: 100%;
+    height: auto;
+    position: relative;
+    text-align: center;
+}
+
+.container-div .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.head-div {
+    font-size: 0.36rem;
+    width: 100%;
+    height: 0.96rem;
+    position: fixed;
+    color: #ffffff;
+    background: rgba(216, 216, 216, 1) linear-gradient(180deg, rgba(80, 152, 157, 1) 0%, rgba(83, 182, 146, 1) 100%);
+    z-index: 10;
+    top: 0;
+}
+
+.head-div .fanhui {
+    position: absolute;
+    width: 0.2rem;
+    left:0.24rem;
+    top:50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    float: left;
+}
+
+.head-div .title {
+    margin-left: 0.8rem;
+    line-height: 0.96rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.tit {
+    width: 100%;
+    font-size: 0.36rem;
+    text-align: center;
+    color: #000000;
+}
+
+.tit img {
+    display: block;
+    width: 21.3vw;
+    height: 21.3vw;
+    margin: 6.4vw auto 3.7vw;
+}
+
+.tit .order-number {
+    margin-top: 2.1vw;
+    font-size: 3.7vw;
+    color: #FA875D;
+}
+
+.content {
+    position: relative;
+    width: 80%;
+    margin: 4.3vw 10% 12.3vw;
+    padding: 4vw;
+    color: #06bc04;
+    background-color: #fff;
+    font-size: 4vw;
+    margin-bottom: 3vw;
+}
+
+.content:before {
+    position: absolute;
+    content: "";
+    top: 14.4vw;
+    left: -2.1vw;
+    width: 4.3vw;
+    height: 4.3vw;
+    border-radius: 50%;
+    background-color: #F6F8F8;
+
+}
+
+.content:after {
+    position: absolute;
+    content: "";
+    top: 14.4vw;
+    right: -2.1vw;
+    width: 4.3vw;
+    height: 4.3vw;
+    border-radius: 50%;
+    background-color: #F6F8F8;
+
+}
+
+.content .total {
+    width: 100%;
+    line-height: 9.6vw;
+    padding: 0 1.3vw 2.7vw;
+    border-bottom: 1px dotted rgba(151, 151, 151, 0.29);
+}
+
+.content .pay-sale {
+    line-height: 8vw;
+    padding: 2.7vw 1.3vw;
+    border-bottom: 1px dotted rgba(151, 151, 151, 0.29);
+    margin-bottom: 2.7vw;
+}
+
+.content .no {
+    width: 100%;
+    padding: 1.3vw;
+    line-height: 5.3vw;
+}
+
+.left {
+    float: left;
+    color: #999999;
+    font-size: 3.22vw;
+}
+
+.right {
+    float: right;
+    color: #000000;
+    font-size: 3.7vw;
+}
+
+.content .total .right {
+    color: #000000;
+}
+
+.button {
+    width: 100%;
+    padding: 12.3vw 5.3vw 0;
+    justify-content: space-between;
+    display: flex;
+}
+
+.button button {
+    width: 41.4vw;
+    height: 10.7vw;
+    line-height: 10.7vw;
+    border: none;
+    border-radius: 5.3vw;
+    font-size: 4vw;
+    margin-bottom: 2vw;
+}
+
+.button .check {
+    color: #fff;
+    background-color: #65ABA6;
+    margin-right: 5.3vw;
+}
+
+.button .home {
+    color: #65ABA6;
+    border: 1px solid rgba(101, 171, 166, 1);
+    background-color: transparent;
+}

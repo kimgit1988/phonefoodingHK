@@ -1,0 +1,115 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">规格管理</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline pull-right m-t-5 m-b-0 hidden">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Spec/add')}" title="添加规格" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<form method="get" action="{:url('Spec/index')}">
+			<select class="search-select select2" id="contact" name="contact">
+				<option value="" selected="selected">请选择餐廳</option>
+				{volist name="contact" id="vo"}
+				<option value="{$vo.number}" {if(!empty($param.contact)&&$param.contact==$vo.number)}selected="selected"{/if}>{$vo.name}({$vo.number})</option>
+				{/volist}
+			</select>
+			<button class="search-btn btn-primary">搜索</button>
+				<a class="search-btn btn-primary" href="{:url('spec/importspec')}">导入规格</a>
+			</form>
+		</header>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>分类名</th>
+									<th>排序</th>
+									<th>分类等级</th>
+									<th>餐廳名稱</th>
+									<th>状态</th>
+									<th>操作</th>
+								</tr>
+								{volist name="list" id="vo"}
+								<tr>
+									<td>{$vo.id}</td>
+									<td class="text-left">{$vo.spec_name}</td>
+									<td>{$vo.spec_order}</td>
+									<td>父级</td>
+									<td>{$vo.name}</td>
+									<td>{$disable[$vo.spec_disable]}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('spec/edit',['id'=>$vo['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('spec/del',['id'=>$vo['id']])}')">删除</div>
+									</td>
+								</tr>
+								{volist name="$vo->parents" id="Rows"}
+								<tr>
+									<td>{$Rows.id}</td>
+									<td class="text-left">┗━{$Rows.spec_name}</td>
+									<td>{$Rows.spec_order}</td>
+									<td>子级</td>
+									<td></td>
+									<td>{$disable[$Rows.spec_disable]}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('spec/edit',['id'=>$Rows['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('spec/del',['id'=>$Rows['id']])}')">删除</div>
+									</td>
+								</tr>
+								{/volist}
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

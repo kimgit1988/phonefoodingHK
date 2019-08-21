@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<title>{:lang('登錄')}</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="Cache-Control" content="no-siteapp"/>
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="TAO dian dian"/>
+	<meta name="msapplication-TileColor" content="#0e90d2">
+	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/bootstrap.min.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script>
+	<script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+	<meta name="format-detection" content="telephone=no" />
+</head>
+<body>
+	<!-- 页面整体 -->
+	<div class="login-container">
+		<!-- 头部图片 -->
+		<!--<div class="login-register" onclick="window.location.href='{:url('login/register')}'">註冊</div>-->
+		<div class="logo-div">
+			<img src="STATIC_PATH/assets/mobile/images/logo.png" class="login-header">
+		</div>
+		
+		<!-- 输入区域 -->
+		<div class="login-from">
+			<form  action="{:url('login')}" method="post" id="login" autocomplete="off">
+			<div class="login-user">
+                <img src="STATIC_PATH/assets/mobile/images/owner-icon.png"><input type="text" name="user" autocomplete="off" placeholder="{:lang('請輸入賬號名')}">
+            </div>
+			<div class="login-pass">
+                <img src="STATIC_PATH/assets/mobile/images/lock.png"><input type="password" name="pass" autocomplete="new-password" placeholder="{:lang('請輸入密碼')}">
+            </div>
+				<div class="login-get">
+					<div class="login-register" onclick="window.location.href='{:url(\'login/register\')}'">{:lang('註冊')}</div>
+					<div class="login-language">
+						<div class="language-sel" value="1"><span class="language-text">{:get_lang_name(cookie('think_var'))}</span><i class="fab-down"></i></div>
+						<ul class="language-ul">
+							<li class="language-li" value="1" onclick="changelang('zh-tw')">{:lang('繁體中文')}</li>
+							<li class="language-li" value="2" onclick="changelang('en-us')">{:lang('English')}</li>
+							<!--<li class="language-li" value="3">{:lang('其它')}</li>-->
+						</ul>
+					</div>
+					<div class="login-reset" onclick="window.location.href='{:url(\'login/reset\')}'">{:lang('忘記密碼')}</div>
+				</div>
+				<div class="login-btn">{:lang('登錄')}</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+
+	$(function () {
+        //给body設置高度避免虚拟键盘改变页面样式
+        $('body').height($('body')[0].clientHeight);
+    })
+	try{
+		var code = window.lee.getPrinter();
+		//获取失败为空
+		if(code!=undefined&&code!=null&&code!=''){
+			$.ajax({
+	        	type: "POST",
+	        	url : '{:url(\'printerlogin\')}',
+	        	data: {code:code},
+	        	async: true,
+	            success: function(data) {
+	                if (data.code==1) {
+	                    location.href = data.url;
+	                }
+	            },
+	            error: function(request) {
+					swal({
+						'text':'{:lang(\'頁面錯誤\')}',
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+	            }
+	        });
+		}else{
+			// alert('快速登錄失敗!');
+
+		}
+		
+	}catch(e){
+	}
+	$('.login-btn').click(function () {
+        $.ajax({
+        	type: "POST",
+        	url : "{:url('login')}",
+        	data: $('#login').serialize(),
+        	async: true,
+        	beforeSend: function(){
+    	    	openloading("STATIC_PATH/assets/img/loading-2.gif");
+    	    },
+            success: function(data) {
+            	closeloading();
+                if (data.code==1) {
+                    // swal({
+            		//     'text':data.msg,
+            		//     'confirmButtonColor':'#e07a0a',
+					// 	'confirmButtonText': '確認',
+					// 	'imageUrl': 'STATIC_PATH/assets/mobile/images/login-ful.png',
+					// 	'imageSize': '16x16',
+					// 	'customClass': 'success'
+            		// }).then(function(isConfirm) {
+                        location.href = data.url;
+                    // });
+                }else if (data.code==2) {
+					swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/a-user-error.png',
+						'imageSize': '16x16',
+						'customClass': 'fail custom-red'
+					}).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+						'text':data.msg,
+						'confirmButtonText': '{:lang(\'確認\')}',
+						'confirmButtonColor':'#e07a0a',
+						'imageUrl': 'STATIC_PATH/assets/mobile/images/a-user-error.png',
+						'imageSize': '16x16',
+						'customClass': 'fail'
+					});
+                }
+            },
+            error: function(request) {
+            	closeloading();
+				swal({
+					'text':'頁面錯誤',
+					'confirmButtonText': '{:lang(\'確認\')}',
+					'confirmButtonColor':'#e07a0a',
+					'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+					'imageSize': '16x16',
+					'customClass': 'fail'
+				});
+            }
+        });
+    });
+
+
+    function changelang(lang){
+        $.ajax({
+            type: "POST",
+            url : "{:url('login/changeLang')}",
+            data: {lang:lang},
+            async: true,
+            success: function(data) {
+                location.reload();
+            }
+        });
+    }
+
+	// 語言切換
+	var flag = false;
+	$('.language-sel').on('click', function () {
+		flag = !flag;
+	    flag ? $('.language-ul').show() : $('.language-ul').hide();
+    });
+
+    $('.language-li').on('click', function () {
+        $('.language-text').text($(this).text()).attr('value',$(this).attr('value'));
+        $('.language-ul').hide();
+        flag = false;
+    });
+</script>
+<script type="text/javascript" src="STATIC_PATH/assets/js/scale.js"></script>
+</html>

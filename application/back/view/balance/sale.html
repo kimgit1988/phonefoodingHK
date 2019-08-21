@@ -1,0 +1,99 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">市场人员日结算单</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<form method="get" action="{:url('balance/sale')}">
+				<select class="search-select select2" id="mechanism" name="mechanism">
+					<option value="" selected="selected">请选择机构/个人</option>
+					{volist name="mechanism" id="vo"}
+					{if(empty($vo.mechanismId))}
+					<option value="{$vo.id}" {if(!empty($param.mechanism)&&$param.mechanism==$vo.id)}selected="selected"{/if}>{$vo.nick}</option>
+					{else}
+					<option value="{$vo.id}" {if(!empty($param.mechanism)&&$param.mechanism==$vo.id)}selected="selected"{/if}>{$vo.mname}</option>
+					{/if}
+					
+					{/volist}
+				</select>
+				<select class="search-select select2" id="status" name="status">
+					<option value="" selected="selected">请选择結算狀態</option>
+					<option value="0" {if(isset($param.status)&&$param.status==='0')}selected="selected"{/if}>未結算</option>
+					<option value="1" {if(isset($param.status)&&$param.status==='1')}selected="selected"{/if}>已結算</option>
+				</select>
+				<input type="text" id="date" name="date" class="search-input" placeholder="结算日期" value="{if(!empty($param.date))}{$param.date}{/if}" readonly="readonly">
+				<button class="search-btn btn-primary">搜索</button>
+			</form>
+		</header>
+		<script src="{$Think.config.Houtai}js/laydate.js"></script>
+		<script type="text/javascript">  
+		 //页面加载完成后初始化select2控件  
+		 $(function () {  
+			$("#mechanism").select2({
+			    language: {
+			        noResults: function (params) {
+			            return "沒有該選項";
+			        }
+			    }
+			});
+			$("#status").select2({
+			    language: {
+			        noResults: function (params) {
+			            return "沒有該選項";
+			        }
+			    }
+			});
+		});
+		laydate.render({
+		  elem: '#date', //指定元素
+		  type:'date',
+		});
+		</script> 
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>ID</th>
+									<th>机构/市场人员</th>
+									<th>名称</th>
+									<th>订单总值</th>
+									<th>佣金比例</th>
+									<th>订单佣金</th>
+									<th>订单日期</th>
+									<th>结算日期</th>
+									<th>状态</th>
+								</tr>
+								{volist name="lists" id="Row"}
+								<tr>
+									<td>{$Row.id}</td>
+									<td>{if($Row.bizType=='mechanism')}机构{else}市场人员{/if}</td>
+									<td>{$Row.bizName}</td>
+									<td>{$Row.orderMoney}</td>
+									<td>{$Row.percent}</td>
+									<td>{$Row.commission}</td>
+									<td>{$Row.orderDate}</td>
+									<td>{$Row.balanceDate}</td>
+									<td>{if($Row.isStatement)==1}已结算{else}未结算{/if}</td>
+								</tr>
+								{/volist}
+								
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

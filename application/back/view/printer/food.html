@@ -1,0 +1,474 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">打印机菜品</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Bank/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+ -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+
+							<div class="col-sm-3" style="padding:0;">
+								<form action="{:url('Printer/food')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="food">
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">餐廳選擇</label>
+										<div class="col-sm-8">
+											<select id="contact" class="form-control select2" name="contact">  
+											    <option value="">請選擇</option>
+												{volist name="contact" id="vo"}
+												<option value="{$vo.number}">{$vo.name}({$vo.number})</option>
+												{/volist} 
+											</select>
+										</div>
+									</div>
+									<div class="form-group" id="printerList">
+									</div>
+								</form>
+							</div>
+
+							<div class="col-sm-9 select-food-list" id="select-food-list">
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style>
+	.note-toolbar-wrapper,.note-toolbar{
+		background-color: #666 !important;
+	}
+	#printerList{
+		margin:20px 0;
+	}
+	.printer-li{
+		padding:10px 5px;
+		border: 1px solid #EEE;
+		cursor: pointer;
+		margin:5px 0;
+		position: relative;
+	}
+	.printer-li.active{
+		background-color:#EEE;
+	}
+	#select-food-list{
+		display: none;
+		background-color: #EEE;
+		max-height: 750px;
+		min-height: 250px;
+		overflow-y: scroll;
+	}
+	.header-form{
+		margin-top: 5px;
+	}
+	.relation-label{
+		padding: 5px;
+	}
+	input[type="checkbox"], input[type="radio"]{
+		opacity: unset;
+		vertical-align: top;
+	}
+	#food-relation-list {
+		overflow: hidden;
+	    min-height:20px;
+	    padding:19px;
+	    margin-bottom:20px;
+	    background-color:#fbfbfb;
+	    border:1px solid #999;
+	    -webkit-border-radius:4px;
+	    -moz-border-radius:4px;
+	    border-radius:4px;
+	    -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	    -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	    box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	}
+	#food-relation-list li {
+	    list-style-type:none;
+	    margin:0;
+	    padding:10px 5px 0 5px;
+	    position:relative;
+	}
+	.category-food>li ul{
+		overflow: hidden;
+	}
+	.category-food>li li{
+	    float: left;
+	}
+	#food-relation-list li::before, #food-relation-list li::after {
+	    left:-20px;
+	    position:absolute;
+	    right:auto
+	}
+	#food-relation-list li::before {
+	    border-left:1px solid #999;
+	    bottom:50px;
+	    height:100%;
+	    top:0;
+	    width:1px
+	}
+	#food-relation-list li::after {
+	    border-top:1px solid #999;
+	    height:20px;
+	    top:25px;
+	    width:25px
+	}
+	#food-relation-list li span,#food-relation-list li>label {
+    	text-align: center;
+	    -moz-border-radius:5px;
+	    -webkit-border-radius:5px;
+	    border:1px solid #999;
+	    border-radius:5px;
+	    display:inline-block;
+	    padding:3px 8px;
+	    text-decoration:none
+	}
+	#food-relation-list li.parent_li>span {
+	    cursor:pointer
+	}
+	#food-relation-list>ul>li::before, #food-relation-list>ul>li::after {
+	    border:0
+	}
+	#food-relation-list li:last-child::before {
+	    height:30px
+	}
+	#food-relation-list li.parent_li>span:hover, #food-relation-list li.parent_li>span:hover+ul li span {
+	    background:#eee;
+	    border:1px solid #94a0b4;
+	    color:#000
+	}
+</style>
+<script type="text/javascript">
+	var list;
+	var food;
+	function allChecked(e){
+		if($(e).is(':checked')){
+			$(e).parent().parent().find('input').attr("checked", true);
+		}else{
+			$(e).parent().parent().find('input').attr("checked", false);
+		}
+	}
+	function selectPrinter(id){
+		if($("#printer-"+id).hasClass('active')){
+			$("#printer-"+id).removeClass('active');
+			$("#select-food-list").hide();
+			$("#select-food-list").html('');
+		}else{
+			var contact = $("#contact").val();
+			$(".printer-li").not("#printer-"+id).removeClass('active');
+			$("#printer-"+id).addClass('active')
+			$("#select-food-list").html('<div>数据加载中...</div>');
+			$("#select-food-list").show();
+			$.ajax({
+				type: 'POST',
+		        url: '{:url('base/getprinterinfo')}',
+		        data: {contact:contact,printer:id},
+		        async: true,
+		        success: function(data) {
+		        	if(data.code){
+		        		var html = '';
+						html += '<div class="header-form col-sm-11">';
+						html += '<form action="{:url('base/getselectfood')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="selectlist">';
+						html += '<div class="col-sm-3">';
+						html += '<input type="hidden" name="printerId" id="printerId" value="'+id+'">';
+						html += '<select id="select-category" class="form-control select2" name="selectCategory" onchange="categoryChange();">';
+						html += '<option value="">請選擇分类</option>';
+						if(data.msg.category&&data.msg.category.length>0){
+							$.each(data.msg.category, function(i, obj){
+			        			html += '<option value="'+obj.id+'">'+obj.name+'</option>';
+			        		});
+						}else{
+							html = '<option value="" disabled="disabled" selected="selected">该餐厅没有分类</option>';
+						}
+						html += '</select>';
+						html += '</div>';
+						html += '<div class="col-sm-3">';
+						html += '<select id="select-food" class="form-control select2" name="selectFood" onchange="foodChange()">';
+						html += '<option value="">請選擇菜品</option>';
+						if(data.msg.food&&data.msg.food.length>0){
+							$.each(data.msg.food, function(i, obj){
+			        			html += '<option value="'+obj.id+'" data-category="'+obj.categoryId+'">'+obj.name+'</option>';
+			        		});
+						}else{
+							html = '<option value="" disabled="disabled" selected="selected">该餐厅没有菜品</option>';
+						}
+						html += '</select>';
+						html += '</div>';
+						html += '<label class="relation-label"><input type="checkbox" name="selectRelation" id="select-relation">仅显示已关联</label>';
+						html += '<div class="search-btn btn-primary" onclick="selectList()">查询</div>';
+						html += '</form>';
+						html += '</div>';
+						html += '<div class="body-form col-sm-11">'
+						html += '<form action="{:url('printer/food')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="setting">';
+						html += '<input type="hidden" name="printer" id="printer" value="'+id+'">';
+						html += '<div id="food-relation-list">';
+						html += '<ul>';
+						html += '<li class="parent_li">';
+						if(id==data.msg.contact){
+							html += '<span><i class="glyphicon glyphicon-minus-sign"></i></span><label><input type="checkbox" name="mainPrinter" checked="checked">收银台</label>';
+						}else{
+							html += '<span><i class="glyphicon glyphicon-minus-sign"></i></span><label><input type="checkbox" name="mainPrinter">收银台</label>';
+						}
+						html += '</li>';
+						html += '<li class="parent_li">';
+						html += '<span onclick="toggleFood(this);"><i class="glyphicon glyphicon-minus-sign"></i></span><label><input type="checkbox" id="all-food" onclick="allChecked(this)">菜品</label>';
+						html += '<ul class="category-food" id="category-food">';
+						html += addFoodHtml(data.msg.list,id);
+						html += '</ul>';
+						html += '</li>';
+						html += '</ul>';
+						html += '</div>';
+						html += '<div class="form-group">';
+						html += '<div class="col-sm-offset-1 col-sm-10">';
+						html += '<div class="btn btn-primary" onclick="addToPrinter()" style="margin-right: 15px;">新增</div>';
+						html += '<div class="btn btn-primary" onclick="submitToPrinter()">保存</div>';
+						html += '</div>';
+						html += '</div>';
+						html += '</form>';
+						html += '</div>';
+						$("#select-food-list").html(html);
+						addSelect2('select-category');
+						addSelect2('select-food');
+						list = JSON.parse(data.msg.jsonlist);
+						food = JSON.parse(data.msg.jsonfood);
+						$('#food-relation-list li:has(ul)').addClass('parent_li');
+		        	}else{
+			            alert(data.msg);
+		        	}
+		        },
+		        error: function(request) {
+		            alert('頁面錯誤');
+		        }
+			});
+		}
+	}
+
+	function addFoodHtml(list,printerId){
+		var html = '';
+		$.each(list, function(i, obj){
+			// 输出有菜品的分类
+			if(obj._food&&obj._food.length>0){
+				html += '<li class="parent_li">';
+				html += '<span onclick="toggleFood(this);"><i class="glyphicon glyphicon-minus-sign"></i> </span> <label><input type="checkbox" id="food-category-'+obj.id+'" onclick="allChecked(this)">'+obj.name+'</label>';
+				html += '<ul>';
+				$.each(obj._food, function(vi, vo){
+					html += '<li class="parent_li">';
+					html += '<label><label style="position:relative;">';
+					if(printerId==vo.printerId){
+						html +='<input type="checkbox" name="food['+vo.id+']" style="position:absolute;right:2px;top:2px;margin:0;" checked="checked">';
+					}else{
+						html +='<input type="checkbox" name="food['+vo.id+']" style="position:absolute;right:2px;top:2px;margin:0;">';
+					}
+					html += '<img src="'+vo.thumbnailUrl+'"></label>'
+					+'<div style="width:100%;text-align:center">'+vo.name+'</div>'
+					+'</label>';
+					html += '</li>';
+				});
+				html += '</ul>';
+				html += '</li>';
+			}
+			
+		});
+		return html;
+	}
+	function selectList(){
+		var contact = $("#contact").val();
+		var printer = $("#printerId").val();
+		var category = $("#select-category").val();
+		var food = $("#select-food").val();
+		if($("#select-relation").is(':checked')){
+			var relation = true;
+		}else{
+			var relation = false;
+		}
+		$.ajax({
+            type: "POST",
+            url : '{:url('Base/selectlist')}',
+            data: {contact:contact,printer:printer,category:category,food:food,relation:relation},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+            		var html = '';
+	                html = addFoodHtml(data.msg.list,printer);
+	                $("#category-food").html(html);
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+    function addSelect2(id){
+		$("#"+id).select2({
+		    language: {
+		        noResults: function (params) {
+		            return "没有该选项";
+		        }
+		    }
+		});
+	}
+	function foodChange(){
+		var categoryId = $("#select-food option:selected").attr('data-category');
+		$("#select-category").val(categoryId).select2();
+	}
+
+	function categoryChange(){
+		var category = $("#select-category").val();
+		var option = '<option value="">請選擇菜品</option>';
+		if(category){
+			if(list[category]._food&&list[category]._food.length>0){
+				$.each(list[category]._food, function(i, obj){
+			    	option += '<option value="'+obj.id+'">'+obj.name+'</option>';
+			    });
+			}else{
+				option = '<option value="" disabled="disabled" selected="selected">该分类没有菜品</option>';
+			}
+		}else{
+			if(food&&food.length>0){
+				$.each(food, function(i, obj){
+			    	option += '<option value="'+obj.id+'">'+obj.name+'</option>';
+			    });
+			}else{
+				option = '<option value="" disabled="disabled" selected="selected">该餐厅没有菜品</option>';
+			}
+		}
+		$("#select-food").html(option);
+	}
+
+	function toggleFood(e){
+	    var children = $(e).parent('li.parent_li').find(' > ul > li');
+	    if (children.is(":visible")) {
+	        children.hide('fast');
+	        $(e).find(' > i').addClass('glyphicon-plus-sign').removeClass('glyphicon-minus-sign');
+	    } else {
+	        children.show('fast');
+	        $(e).find(' > i').addClass('glyphicon-minus-sign').removeClass('glyphicon-plus-sign');
+	    }
+	    // e.stopPropagation();
+	}
+
+	function addToPrinter(){
+		var r=confirm("是否将所选数据添加为该打印机数据,原有数据不改变")
+		if (r==true){
+			var contact = $("#contact").val();
+			var url = '{:url('Printer/food',['type'=>'add','contact'=>'thiscontact'])}';
+			url=url.replace('thiscontact',contact);
+	    	$.ajax({
+	            type: "POST",
+	            url : url,
+	            data: $("#setting").serialize(),
+	            async: true,
+	            success: function(data) {
+	            	if(data.code){
+		                alert(data.msg);
+		                $(".printer-li").removeClass('active');
+						$("#select-food-list").hide();
+						$("#select-food-list").html('');
+	            	}else{
+		                alert(data.msg);
+	            	}
+	            },
+	            error: function(request) {
+	                alert('頁面錯誤');
+	            }
+	        });
+	    }
+		
+	};
+
+	function submitToPrinter(){
+		var r=confirm("是否从打印机移除原有数据,并将所选数据设置为打印机数据,")
+		if (r==true){
+			var contact = $("#contact").val();
+			var url = '{:url('Printer/food',['type'=>'submit','contact'=>'thiscontact'])}';
+			url=url.replace('thiscontact',contact);
+	    	$.ajax({
+	            type: "POST",
+	            url : url,
+	            data: $("#setting").serialize(),
+	            async: true,
+	            success: function(data) {
+	            	if(data.code){
+		                alert(data.msg);
+		                $(".printer-li").removeClass('active');
+						$("#select-food-list").hide();
+						$("#select-food-list").html('');
+	            	}else{
+		                alert(data.msg);
+	            	}
+	            },
+	            error: function(request) {
+	                alert('頁面錯誤');
+	            }
+	        });
+	    }
+		
+	};
+
+    //页面加载完成后初始化select2控件  
+    $(function () {
+    	
+		$("#contact").select2({
+	    	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该選項";
+		        }
+		    }
+		});
+
+		$("#contact").change(function(){
+			var contact = $("#contact").val();
+			$("#select-food-list").hide();
+			$("#select-food-list").html('');
+			$.ajax({
+	            type: "POST",
+	            url : '{:url('base/getcontactprinter')}',
+	            data: {contact:contact},
+	            async: true,
+	            success: function(data) {
+	            	if(data.code){
+	            		$("#printerList").html('');
+	            		var html = '';
+	            		$.each(data.msg, function(i, obj){
+	            			html += '<div class="col-sm-3"></div>';
+	            			html += '<div class="printer-li col-sm-9" onclick="selectPrinter(\''+obj.id+'\')" id="printer-'+obj.id+'">'+obj.brand+'-'+obj.brandNumber+'-'+obj.deviceNick+'</div>';
+	            		});
+	            		$("#printerList").html(html);
+	            	}else{
+		                alert(data.msg);
+	            	}
+	            },
+	            error: function(request) {
+	                alert('頁面錯誤');
+	            }
+	        });
+		});
+	});
+</script> 

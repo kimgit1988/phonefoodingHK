@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('餐枱管理')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/table.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+
+</head>
+<body>
+<div class="container-div">
+    {include file="common:search"}
+	<div class="content-main">
+		<div class="title-box">
+			<span class="title-name">{:lang('餐枱')}</span>
+			<div class="statu-box">
+				<div class="statu-item">{:lang('待接單')}<span class="statu-d"></span></div>
+				<!---0 線下-->
+				{if(session('mob_user.laterPay')==0)}
+				<div class="statu-item">{:lang('待付款')}<span class="statu-z"></span></div>
+				{else}
+				<div class="statu-item">{:lang('已接單')}<span class="statu-y"></span></div>
+				{/if}
+				<div class="statu-item">{:lang('空閒中')}<span class="statu-k"></span></div>
+			</div>
+		</div>
+		{if(!empty($contact_member))}
+		<div class="table-list">
+			{volist name="contact_member" id="vo" key="k"}
+
+			{if($vo.orderStatus==2 && session('mob_user.laterPay')==0)}
+			<div class="table-item statu-d" onclick="window.location.href='{:url('order/index',['table'=>$vo.number])}'"><i class="triangle"></i>{$vo.name}({$vo.sname})</div>
+			{elseif($vo.orderStatus==3 && session('mob_user.laterPay')==0)}
+			<div class="table-item statu-z" onclick="window.location.href='{:url('order/index',['table'=>$vo.number])}'"><i class="triangle"></i>{$vo.name}({$vo.sname})</div>
+			{elseif($vo.orderStatus==3 && session('mob_user.laterPay')==1)}
+			<div class="table-item statu-y" onclick="window.location.href='{:url('order/index',['table'=>$vo.number])}'"><i class="triangle"></i>{$vo.name}({$vo.sname})</div>
+			{else}
+			<div class="table-item statu-k" onclick="window.location.href='{:url('wxweb/index/index',['contactNo'=>session('mob_user.contact_number'),'contactMemberNo'=>$vo.number,'contacttype'=>2])}'"><i class="triangle"></i>{$vo.name}({$vo.sname})</div>
+			{/if}
+			{/volist}
+		</div>
+		{/if}
+		<div class="fresh" onclick="freshTable()"><i class="fab-fresh"></i></div>
+	</div>
+</div>
+</body>
+
+<script type="text/javascript">
+	function freshTable() {
+        window.location.href='{:url(\'Manage/tablemanage\')}';
+    }
+</script>
+</html>

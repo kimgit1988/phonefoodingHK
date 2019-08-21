@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>餐厅列表</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/style.css">
+	<!-- <link rel="stylesheet" href="STATIC_PATH/assets/court/css/jquery.mobile-1.4.5.min.css"> -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/court/css/sweetalert2.min.css">
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/jquery-3.3.1.min.js"></script>
+	<!-- <script type="text/javascript" src="STATIC_PATH/assets/court/js/jquery.mobile-1.4.5.min.js"></script> -->
+	<script type="text/javascript" src="STATIC_PATH/assets/court/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+</head>
+<body>
+<script>
+$(function(){
+	$("#order-hear li").click(function(){
+		$(this).css({
+			background: "#FFF",
+			color:"#ea831e"
+		}).siblings('li').css({
+			background: "#ea831e",
+			color:"#FFF"
+		});
+		$(this).find('p').css({
+			background: "#ea831e",
+			color:"#FFF"
+		});
+		$(this).siblings('li').find('p').css({
+			background: "#FFF",
+			color:"#ea831e"
+		});
+	});					
+		
+	$("#order-hear li").click(function(){
+		$(this).addClass("action").siblings().removeClass("action");
+		var index = $(this).index();
+		$("#order-list li").eq(index).css("display","block").siblings().css("display","none");
+	});
+});
+</script>
+<div class="container">
+	<div class="scroll-main bg-contact-order">
+		<!-- 头部图片 -->
+		<ul id="order-hear">
+			<li class="action" style="background: #FFF;color: #ea831e;"><div>全部</div></li>
+		</ul>
+		<ul id="order-list">
+			<li style="display: block;">
+				{volist name="contact" id="vo"}
+				<div class="contact-list-li mg-top">
+					<div class="contact-list-li-head" onclick="window.location.href='{:url('more/edit',['id'=>$vo.id])}'">
+						<div class="contact-list-head-icon"><img src="{$vo.logoUrl}"></div>
+						<div class="contact-list-head-name">{$vo.name}</div>
+						<div class="contact-list-head-type">
+							{if(!empty($type[$vo.contactType]['icon']))}
+							{foreach $type[$vo.contactType]['icon'] as $typeicon}
+							<img src="{$typeicon}">
+							{/foreach}
+							{/if}
+						</div>
+					</div>
+					<div class="contact-list-li-body" onclick="window.location.href='{:url('index/contactOrder',['id'=>$vo.id])}'">
+						<div class="contact-list-body-icon" style="background: url({$vo.bgImageUrl}) no-repeat center center;"></div>
+						{if($vo.disable==1)}
+						<div class="contact-list-body-money">
+							<div class="contact-list-money-title">订单总额</div>
+							<div class="contact-list-money-number">￥{if(isset($money[$vo.number]['money']))}{$money[$vo.number]['money']}{else}0{/if}</div>
+						</div>
+						<div class="contact-list-body-commission">
+							<div class="contact-list-commission-title">订单总数</div>
+							<div class="contact-list-commission-number">{if(isset($money[$vo.number]['number']))}{$money[$vo.number]['number']}{else}0{/if}</div>
+						</div>
+						{elseif($vo.disable==0)}
+						<div class="contact-review">
+							<div class="contact-review-title">餐厅状态:审核中</div>
+						</div>
+						{elseif($vo.disable==2)}
+						<div class="contact-submission">
+							<div class="contact-submission-title">餐厅状态:已拒绝</div>
+							<div class="contact-submission-tip">拒绝原因:{$vo.reason}</div>
+						</div>
+						{/if}
+					</div>
+					<!-- <div class="contact-list-li-footer">地址：澳门永利酒店大堂酒廊旁</div> -->
+				</div>
+				{/volist}
+			</li>
+		</ul>
+	</div>
+	{include file="common:footer"}
+</div>
+	
+
+</body>
+
+</html>

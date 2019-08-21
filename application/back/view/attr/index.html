@@ -1,0 +1,39 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<h4 class="page-title b-0">属性名 </h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('back/attr/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header>
+
+		{volist name="attr" id="attr"}
+		<div class="media">
+		
+			<div class="media-body">
+				{$attr.attr_name}
+			</div>
+			<div class="list-options">
+				<button class="btn btn-sm"><a href="{:url('attr/edit',['aid'=>$attr['aid']])}">编辑</a></button>
+				<button class="btn btn-sm"><div onclick="href_ajax('{:url('attr/destroy',['aid'=>$attr['aid']])}')">删除</div></button>
+			</div>
+		</div>
+		{/volist}
+		<div class="media text-center">
+		</div>
+	</div>
+</section>

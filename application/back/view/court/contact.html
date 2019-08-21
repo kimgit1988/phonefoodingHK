@@ -1,0 +1,88 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">{$court.name}-餐厅管理</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Court/Contactadd',['id'=>$court['id']])}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+		</header>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table  table-bordered table-hover">
+								<tr>
+									<th>餐厅ID</th>
+									<th>logo</th>
+									<th>餐厅编号</th>
+									<th>餐厅名称</th>
+									<th>餐厅分类</th>
+									<th>餐厅状态</th>
+									<th>餐廳平臺</th>
+									<th>费率</th>
+									<th>週期</th>
+									<th>添加时间</th>
+									<th>操作</th>
+								</tr>
+								{volist name="lists" id="Row"}
+								<tr>
+									<td>{$Row->id}</td>
+									<td><img src="{$Row->logoUrl}" style="max-width: 68px;"></td>
+									<td>{$Row->number}</td>
+									<td>{$Row->name}</td>
+									<td>{$Row->cCategoryName}</td>
+									<td>{$Row->contactdisable}</td>
+									<td>{if(!empty($Row.contactType))}{$type[$Row.contactType]['name']}{/if}</td>
+									<td>{$Row->rate}%</td>
+									<td>T+{$Row->cycle}</td>
+									<td>{if !empty($Row->ctime)}{:date('Y-m-d H:i:s',$Row->ctime)}{else/}无{/if}</td>
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('Court/Contactedit',['id'=>$court['id'],'cid'=>$Row['id']])}">编辑</a>
+										<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('Court/Contactdestroy',['id'=>$court['id'],'cid'=>$Row['id']])}')">删除</div>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="panel-footer">
+						{$pages}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript">
+	function href_ajax(url){
+		$.ajax({
+            type: "POST",
+            url : url,
+            data: {},
+            async: true,
+            success: function(data) {
+            	if(data.code){
+	                alert(data.msg);
+	                location.href = data.url;
+            	}else{
+	                alert(data.msg);
+            	}
+            },
+            error: function(request) {
+                alert('頁面錯誤');
+            }
+        });
+	}
+</script>

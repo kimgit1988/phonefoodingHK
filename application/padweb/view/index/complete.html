@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <title>{:config('web_title')}</title>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="STATIC_PATH/assets/wxweb/js/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="STATIC_PATH/assets/wxweb/js/bootstrap.min.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/wxweb/css/bootstrap.min.css">
+    <link href="STATIC_PATH/assets/wxweb/css/menu.css" rel="stylesheet">
+    <link href="STATIC_PATH/assets/wxweb/css/complete.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="container-div">
+    <div class="head-div">
+        <img class="fanhui" src="STATIC_PATH/assets/wxweb/images/fanhui.png" onclick="saveCart()"/>
+        <div class="title">
+            <span>{$order.order_status_name}</span>
+        </div>
+    </div>
+    <div class="tit">
+        <img src="STATIC_PATH/assets/wxweb/images/pay_check.png"/>
+        <span>{$order.order_status_name}</span>
+        <!--<div class="order-number">取餐碼 10089</div>-->
+    </div>
+    <div class="content clearfix">
+        <div class="total clearfix">
+            <span class="left">{$order.payName}</span>
+            <span class="right">¥&nbsp;{$order.moneyPaid}</span>
+        </div>
+        <div class="pay-sale clearfix">
+            <div class="pay-div clearfix">
+                <span class="left">消費</span>
+                <span class="right">¥&nbsp;{$order.moneyPaid}</span>
+            </div>
+            <div class="sale-div clearfix">
+                <span class="left">優惠</span>
+                <span class="right">¥&nbsp;{$order.moneyPaid}</span>
+            </div>
+        </div>
+        <div class="no clearfix">
+            <span class="left">訂單編號</span>
+            <span class="right">{$order.orderSN}</span>
+        </div>
+        <div class="no clearfix">
+            <span class="left">下單時間</span>
+            <span class="right">{$order.payTime}</span>
+        </div>
+    </div>
+    <div class="button">
+        <button class="check">訂單詳情</button>
+        <button class="home">繼續點餐</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(".check").click(function () {
+        window.location.href = "{:url('index/allorder')}";
+    });
+    $(".home").click(function () {
+        window.location.href = "{:url('index/index',['courtNumber'=>$courtNumber,'contactNo'=>$order['contactNumber'],'contactMemberNo'=>$order['contactMemberNumber']])}";
+    });
+</script>
+</body>
+</html>

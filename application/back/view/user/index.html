@@ -1,0 +1,84 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">用户列表</h4>
+
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<form method="get" action="{:url('User/index')}">
+			<ul class="list-inline list-mass-actions pull-left" style="margin-right: 5px;">
+				<li>
+					<a data-toggle="modal" href="{:url('back/User/add')}" title="添加用户" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul>
+			<select class="search-select select2" id="group" name="group">
+				<option value="" selected="selected">请选择分類</option>
+				{volist name="group" id="vo"}
+					<option value="{$vo.id}" {if(!empty($param.group)&&$param.group==$vo.id)}selected="selected"{/if}>{$vo.title}</option>
+				{/volist}
+			</select>
+			<!-- <div class="search-label">分類</div> --><input type="text" name="search" class="search-input" placeholder="輸入账号" value="{if(!empty($param.search))}{$param.search}{/if}">
+			<button class="search-btn btn-primary">搜索</button>
+			</form>
+
+
+			<div class="clearfix"></div>
+		</header>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#group").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script> 
+		<div class="table-responsive">
+			<table class="table  table-bordered table-hover">
+				<tr>
+					<th>ID</th>
+					<th>账号</th>
+					<th>用户组</th>
+					<th>餐厅名称</th>
+					<th>状态</th>
+
+					<th>操作</th>
+				</tr>
+				{volist name="userRows" id="vo"}
+				<tr>
+					<td>{$vo.zid}</td>
+					<td>
+						{$vo.name}
+					</td>
+					<td>
+						{$vo.title}
+					</td>
+					<td>
+						{$vo.cname}
+					</td>
+					<td>
+						{$vo.status}
+						<!-- {if($vo.status==1)}啟用{else}禁用{/if} -->
+					</td>
+					<td>
+						<a class="btn btn-xs btn-default" href="{:url('back/user/edit',['zid'=>$vo['zid']])}">编辑</a>
+						<div class="btn btn-xs btn-default delete" onclick="href_ajax('{:url('back/user/destroy',['zid'=>$vo['zid']])}')">删除</div>
+					</td>
+				</tr>
+				{/volist}
+			</table>
+		</div>
+		<div class="panel-footer text-center">
+			{$pages}
+		</div>
+	</div>
+</section>

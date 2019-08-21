@@ -1,0 +1,122 @@
+{layout name="layout" /}
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">合作伙伴列表</h4>
+	<div class="listview list-container">
+		<header class="listview-header media">
+			<!-- <ul class="list-inline pull-right m-t-5 m-b-0">
+				<li>
+					<a href="" title="Previous" class="tooltips">
+							<i class="sa-list-back"></i>
+					</a>
+				</li>
+				<li>
+					<a href="" title="Next" class="tooltips">
+						<i class="sa-list-forwad"></i>
+					</a>
+				</li>
+			</ul>
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Mechanism/add')}" title="添加机构" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+			</ul> -->
+		</header>
+		<!-- <script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {  
+				$("#contact").select2({
+				    language: {
+				        noResults: function (params) {
+				            return "没有该分类";
+				        }
+				    }
+				});
+			});
+		</script>  -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>ID</th>
+									<th>名称</th>
+									<th>类型</th>
+									<th>商户數量</th>
+									<th>当前佣金分组</th>
+									<th>建议佣金分组</th>
+									<th>狀態</th>
+									<th>操作</th>
+								</tr>
+								{volist name="mechanism" id="vo"}
+								<tr>
+									<td class="text-left">{$vo.id}</td>
+									{if($vo.mechanismAdmin==1)}
+									<td>{$vo.mname}</td>
+									<td>机构</td>
+									<td>{php}$number = countContact($vo['mid'],1); echo $number;{/php}</td>
+
+										{if(isset($vo.cname)&&isset($vo.percent)&&isset($vo.startNum)&&isset($vo.endNum))}
+											<td>{$vo.cname}({$vo.percent}%)({$vo.startNum}-{$vo.endNum})</td>
+											<td>{php}$new = updateCommission($commission,$number);{/php}{$new.name}({$new.percent}%)({$new.startNum}-{$new.endNum})</td>
+										{else}
+											<td>未选择分组</td>
+											<td>{php}$new = updateCommission($commission,$number);{/php}{$new.name}({$new.percent}%)({$new.startNum}-{$new.endNum})</td>
+										{/if}
+
+										{if($vo.disable==1)}
+											<td>啟用</td>
+										{elseif($vo.disable==0)}
+											<td>禁用</td>
+										{else}
+											<td>錯誤狀態</td>
+										{/if}
+
+									{else}
+									<td>{$vo.nick}</td>
+									<td>个人</td>
+									<td>{php}$number = countContact($vo['id'],2); echo $number;{/php}</td>
+
+										{if(isset($vo.cname)&&isset($vo.percent)&&isset($vo.startNum)&&isset($vo.endNum))}
+											<td>{$vo.cname}({$vo.percent}%)({$vo.startNum}-{$vo.endNum})</td>
+											<td>{php}$new = updateCommission($commission,$number);{/php}{$new.name}({$new.percent}%)({$new.startNum}-{$new.endNum})</td>
+										{else}
+											<td>未选择分组</td>
+											<td>{php}$new = updateCommission($commission,$number);{/php}{$new.name}({$new.percent}%)({$new.startNum}-{$new.endNum})</td>
+										{/if}
+
+										{if($vo.status==1)}
+											<td>啟用</td>
+										{elseif($vo.status==0)}
+											<td>禁用</td>
+										{else}
+											<td>錯誤狀態</td>
+										{/if}
+
+									{/if}
+									<td>
+										<a class="btn btn-xs btn-default" href="{:url('market/commission',['id'=>$vo['id']])}">调整佣金</a>
+									</td>
+								</tr>
+								{/volist}
+							</table>
+						</div>
+					</div>
+					<div class="media panel-footer text-center">
+						{$pages}
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

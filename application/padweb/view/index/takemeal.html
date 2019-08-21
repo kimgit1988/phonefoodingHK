@@ -1,0 +1,103 @@
+{include file="common:header"}
+<body>
+	<div class="index-wrapper">
+        <div class="container">
+            <div class="item-title">您需要我們送餐到枱，還是自行到櫃枱取餐</div>
+            <div class="item-subtitle">如您需要“送餐到枱”，我們將在餐點準備好後送到您的枱上，請取餐號牌</div>
+            <ul class="ul-type">
+                <li class="li-item delivery">
+                    <input type="radio" name="type" id="one">
+                    <label for="one">
+                    <img class="icon-type" src="STATIC_PATH/assets/padweb/images/meal.png" alt="">
+                    <div class="text">送餐到枱</div>
+                    </label>
+                </li>
+                <li class="li-item take">
+                    <input type="radio" name="type" id="two">
+                    <label for="two">
+                    <img class="icon-type" src="STATIC_PATH/assets/padweb/images/take-meal.png" alt="">
+                    <div class="text">櫃枱取餐</div>
+                    </label>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <style type="text/css">
+        .index-wrapper{
+            width:100vw;
+            height: 100vh;
+            margin:0 auto;
+            background:url("/static/assets/padweb/images/bg.jpg") no-repeat center;
+            background-size:100% 100%;
+        }
+        .index-wrapper .container{
+            width:100%;
+            height: 100%;
+            padding-top:18%;
+            background-color:rgba(100,164,169,.7);
+        }
+        .item-title{
+            font-size:60px;
+            color:#ffffff;
+            text-align: center;
+            margin:150px 10% 60px;
+            width: 80%;
+            line-height: 1.4;
+        }
+        .item-subtitle{
+            color: #fff;
+            font-size: 24px;
+            text-align: center;
+            margin:40px 10% 97px;
+            width: 80%;
+            line-height: 1.4;
+        }
+        .ul-type{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin:0 100px;
+        }
+        .ul-type .li-item,
+        .ul-type .li-item label{
+            display: inline-block;
+            width:350px;
+            margin:auto;
+            background-color:#ffffff;
+            color:#000000;
+            text-align: center;
+            border-radius:8px;
+        }
+        .ul-language .li-item{
+            height: 120px;
+        }
+        .li-item .icon-type{
+            height: 186px;
+            margin:62px auto;
+        }
+        .li-item .text{
+            font-size:50px;
+            margin-bottom:55px;
+            line-height: 120px;
+        }
+
+        .ul-type .li-item input[type="radio"]:checked + label{
+            color: #6DAEB0;
+            box-shadow: 0 -2px 7px 5px rgba(96, 191, 181, 1);
+        }
+        input[type="radio"] {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+        }
+    </style>
+    <script type="text/javascript">
+        $(".delivery").on("click",function () {
+            window.location.href='diningtable.html';
+        })
+        $(".take").on("click",function () {
+            window.location.href='paychoose.html';
+        })
+    </script>
+</body>
+</html>

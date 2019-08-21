@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>店主</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/common.css"/>
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/reset.css">
+	<link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/icon.css"><!-- 图标库css-->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+	<!-- <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-1.9.1.js"></script> -->
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/date.js"></script>
+	<script type="text/javascript" src="STATIC_PATH/assets/mobile/js/iscroll.js"></script>
+</head>
+<body>
+<style type="text/css">
+	/*#daywrapper{
+		display: none;
+	}*/
+	.order-main{
+		position: relative;
+		float:left;
+		background: none;
+	}
+	.container{
+		height: 92.2%;
+	}
+</style>
+<div class="title-div">
+	<div class="title" onclick="javascript:location.href='{:url('owner/index')}';"><i class="icon-fab-chevron-left"></i>
+		發送月訂單
+	</div>
+</div>
+<div class="container">
+	<div class="order-main">
+		<form  action="{:url('register')}" method="post" id="register">
+            <div class="register-info">
+                <div class="register-input-li-small">
+                    <div class="register-long-label">選擇日期:</div><input id="beginTime"  name="time" type="text" placeholder="選擇日期" >
+                </div>
+    		</div>
+    	</form>
+		<div class="member-cate-add-btn">確認發送</div>
+	</div>
+	<div id="datePlugin"></div>
+</div>
+
+</body>
+  <script type="text/javascript">
+    $(function() {
+      $('#beginTime').date({
+      	beginyear: 2012, //日期--年--份开始
+	    endyear: {:date('Y')}, //日期--年--份结束
+	    beginmonth: 1, //日期--月--份结束
+	    endmonth: {:date('m')}, //日期--月--份结束
+	    beginday: 1, //日期--日--份结束
+	    endday: {:date('d')}, //日期--日--份结束
+	    curdate: true, //打开日期是否定位到当前日期
+	    theme: "date", //控件样式（1：日期，2：日期+时间）
+        fromat: 'yyyy-mm',
+      });
+    });
+    $('.member-cate-add-btn').click(function () {
+        $.ajax({
+            type: "POST",
+            url : '{:url('sendMonExl')}',
+            data: $('#register').serialize(),
+            async: true,
+            success: function(data) {
+                if (data.code) {
+                    swal({
+                        'text':data.msg,
+                        'confirmButtonText': '確認',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/wancheng.png',
+                        'imageSize': '16x16',
+                        'customClass': 'success'
+                    }).then(function(isConfirm) {
+                        location.href = data.url;
+                    });
+                } else {
+                    swal({
+                        'title': '豐富點智能系统',
+                        'text':'發送失敗',
+                        'confirmButtonColor':'#AAA',
+                    });
+                }
+            },
+            error: function(request) {
+                swal({
+                    'title': '豐富點智能系统',
+                    'text':'頁面錯誤',
+                    'confirmButtonColor':'#AAA',
+                });
+            }
+        });
+    });
+  </script>
+</html>

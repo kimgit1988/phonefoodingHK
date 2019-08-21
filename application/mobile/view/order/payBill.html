@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no">
+	<meta charset="UTF-8">
+	<meta name="description" content="Violate Responsive Admin Template">
+	<meta name="keywords" content="Super Admin, Admin, Template, Bootstrap">
+	<title>{:lang('埋單')}</title>
+	<!-- CSS -->
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/style.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/mobile/css/order.css">
+    <link rel="stylesheet" href="STATIC_PATH/assets/css/icon.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/mobile/js/sweetalert2.js"></script><!-- alert confirm插件 -->
+    <script src="STATIC_PATH/assets/mobile/js/bootstrap.min.js"></script>
+    <script src="STATIC_PATH/assets/mobile/js/iconfont.js"></script>
+    <script type="text/javascript" src="STATIC_PATH/assets/js/loading.js"></script>
+
+</head>
+<body>
+<div class="container-div">
+    <div class="search-warpper">
+        <i class="fab-left" onclick="window.location.href='{:url(\'owner/index\')}'"></i>
+        <div class="search-div">
+            <i class="fab-search"></i>
+            <input type="text" class="order-input" placeholder="{:lang('搜索訂單號碼')}">
+        </div>
+        <i class="fab-table" onclick="window.location.href='{:url(\'manage/tablemanage\')}'"></i>
+        <i class="fab-order" onclick="window.location.href='{:url(\'order/index\')}'"></i>
+    </div>
+    <div class="paybill-div">
+        <div class="no-pay">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-none"></use>
+            </svg>
+            <div class="text-none">{:lang('暫時未有訂單埋單')}</div>
+        </div>
+    </div>
+    <div class="pay-footer">
+        <div class="button-normal cancel" onclick="orderClear()">{:lang('清空訂單')}</div>
+        <svg class="icon" aria-hidden="true" onClick="window.lee.scanQr()">
+            <use xlink:href="#icon-code-c"></use>
+        </svg>
+        <div class="pay button-normal confirm btn-pay-type">HKD$<span class="total-price">0.00</span><span class="text">{:lang('埋單')}</span></div>
+    </div>
+
+    <div class="modal-pay-wrapper">
+        <div class="modal-main"></div>
+        <div class="modal-body">
+            <div class="modal-title">{:lang('選擇支付方式')}</div>
+            <div class="pay-list">
+                {volist name="payment_data" id="vo" key="k"}
+                <div class="pay-item">
+                    <input type="radio" name="paytype" value="{$vo.id}" id="{$vo.code}" {if($k==1)}checked{/if}>
+                    <label for="{$vo.code}">
+                        <svg class="icon" aria-hidden="true">
+                        <use xlink:href="{$vo.fileName}"></use>
+                    </svg>
+                    <span class="pay-text">{$vo.name}</span>
+                    </label>
+                </div>
+                {/volist}
+            </div>
+            <div class="modal-title">{:lang('折扣設置')}
+                <div class="check-box">
+                    <input type="checkbox" name="sale" id="sale">
+                    <label for="sale">
+                        <span class="check-div">
+                            <span class="inner"></span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div class="sale-price">
+                {:lang('折扣金額')} <input type="text" class="input-text" placeholder="8.5" />{:lang('折')}
+            </div>
+            <div class="button">
+                <div class="button-normal confirm  btn-pay-confirm">{:lang('確認')}</div>
+            </div>
+        </div>
+    </div>
+    <div class="alert-fail"></div>
+</div>
+</body>
+<script type="text/javascript">
+    function getwqcode(wqcode) {
+        selectOrder(wqcode);
+    }
+
+    var arrSn = [];
+    var totalPrice=0;
+
+    // 清空
+    function orderClear(){
+        totalPrice=0;
+        arrSn=[];
+        $('.paybill-div').empty();
+        $('.total-price').html("0.00");
+    }
+
+    // 查詢訂單號
+    $('.order-input').bind('keydown', function (event) {
+        var orderSN = $('.order-input').val();
+        $('.dropload-down').hide();
+        if(event.keyCode == 13){
+            selectOrder(orderSN);
+        }
+    });
+
+
+    // 查詢訂單
+    function selectOrder(orderSN){
+        $.ajax({
+            type: "POST",
+            url:"{:url('order/getOrderinfo')}",
+            dataType:"json",
+            data:{
+                'orderSN':orderSN
+            },
+            async:true,
+            success: function (res) {
+                var listHtml="";
+                if(res.code){
+                    var order = res.data;
+                    if(order.order_info.orderStatus == 4){
+                        swal({
+                            'text':'{:lang(\'此訂單已完成\')}',
+                            'confirmButtonText': '{:lang(\'確認\')}',
+                            'confirmButtonColor':'#e07a0a',
+                            'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                            'imageSize': '16x16',
+                            'customClass': 'fail'
+                        })
+                        return false;
+                    }
+                    if(order.order_info.orderStatus == 0){
+
+                        swal({
+                            'text':'{:lang(\'此訂單已取消\')}',
+                            'confirmButtonText': '{:lang(\'確認\')}',
+                            'confirmButtonColor':'#e07a0a',
+                            'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                            'imageSize': '16x16',
+                            'customClass': 'fail'
+                        })
+                        return false;
+                    }
+                    for(var k=0;k<arrSn.length;k++){
+                        if(order.order_info.orderSN == arrSn[k]){
+                            swal({
+                                'text':'{:lang(\'此訂單已存在\')}',
+                                'confirmButtonText': '{:lang(\'確認\')}',
+                                'confirmButtonColor':'#e07a0a',
+                                'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                                'imageSize': '16x16',
+                                'customClass': 'fail'
+                            })
+                            return false;
+                        }
+                    }
+                    listHtml += "<div class=\"order-li clearfix\"><div class=\"order-li-header\"><div class=\"order-member\">";
+                    listHtml += "<span>"+order.order_info.contactMemberName+"{:lang('埋单')}枱</span><div class=\"order-sn\">["+order.order_info.orderSN+"]</div></div>";
+                    listHtml += "</div><div class=\"order-li-body printer-table\">";
+                    $.each(order.goods_info,function (index, goods) {
+                        listHtml += "<div class=\"order-food printer-tr\"><div class=\"order-food-name printer-td\">"+goods.goodsName+"</div>";
+                        listHtml += "<div class=\"order-food-number printer-td\">"+goods.num+"</div><div class=\"order-food-price printer-td\">"+goods.goodsPrice+"</div></div>";
+                    })
+                    listHtml += "</div><div class=\"order-li-footer\"><div class=\"order-price\"><div class=\"order-time\">"+order.order_info.createTime+"</div><div class='order-total'>{:lang('總額')}：<span style=\"color:#FF5901;\">HKD$&nbsp;<span class='order-total-price'>"+order.order_info.moneyPaid+"</span></span></div></div></div></div>";
+                    $('.paybill-div .no-pay').remove();
+                    $('.paybill-div').append(listHtml);
+                    totalPrice += parseFloat(order.order_info.moneyPaid);
+                    arrSn.push(order.order_info.orderSN);
+                    $('.total-price').html(totalPrice.toFixed(2));
+
+                }else{
+                    swal({
+                        'text':'{:lang(\'無此訂單\')}',
+                        'confirmButtonText': '{:lang(\'確認\')}',
+                        'confirmButtonColor':'#e07a0a',
+                        'imageUrl': 'STATIC_PATH/assets/mobile/images/no-order.png',
+                        'imageSize': '16x16',
+                        'customClass': 'fail'
+                    })
+                }
+            },
+            error: function (msg) {
+                console.log("{:lang('操作錯誤')}！",msg.error);
+            }
+        })
+    }
+
+    // 選擇支付方式埋單
+    $('.btn-pay-type').on('click', function () {
+        if(arrSn.length==0){
+            $('.alert-fail').text('{:lang(\'暫時未有訂單\')}').show().delay(1500).fadeOut();
+        }else{
+            $('.modal-pay-wrapper').show();
+        }
+
+    });
+
+    // 確定埋單
+    $('.btn-pay-confirm').on('click', function () {
+        $('.modal-pay-wrapper').hide();
+        var paytype = $('.pay-list').find('input[type="radio"][name="paytype"]:checked').val();
+        confirmPay(arrSn.join(),paytype);
+    });
+
+
+    function confirmPay(orderSN){
+        openloading("STATIC_PATH/assets/img/loading-2.gif");
+        $.ajax({
+            type: "POST",
+            url : "{:url('order/confirmPay')}",
+            data: {'orderSN':orderSN},async: true,
+            success: function(data) {
+                if(data.code){
+                    closeloading();
+                    $('.container,.swal2-overlay').css('pointer-events','none');
+                    swal({
+                        text: "{:lang('付款成功')}",
+                        confirmButtonText: "{:lang('確認')}",
+                        confirmButtonColor: "#e07a0a",
+                        imageUrl : "STATIC_PATH/assets/mobile/images/a-payment.png",
+                        imageSize: "16x16",
+                        customClass: "success"
+                    }).then(function (isConfirm) {
+                        if(isConfirm){
+                            window.location.href = "{:url('order/paybill')}";
+                        }
+                    })
+                }
+            },
+            error: function(request) {
+                closeloading();
+                swal({
+                    'text':'{:lang(\'操作失敗\')}',
+                    'confirmButtonText': '{:lang(\'確認\')}',
+                    'confirmButtonColor':'#e07a0a',
+                    'imageUrl': 'STATIC_PATH/assets/mobile/images/error-img.png',
+                    'imageSize': '16x16',
+                    'customClass': 'fail'
+                });
+            }
+        });
+    }
+
+
+    //折扣设置开关显示内容
+    $("input[name='sale']").on('change', function(event){
+        var flag = $("input[name='sale']").is(":checked");
+        flag ? $(".sale-price").show() : $(".sale-price").hide();
+    });
+
+    $('.modal-main,.btn-pay-close').on('click', function () {
+        $('.modal-pay-wrapper').hide();
+    })
+
+</script>
+</html>

@@ -1,0 +1,146 @@
+{layout name="layout" /}
+
+<!-- Content -->
+<section id="content" class="container">
+	<!-- Breadcrumb -->
+	{include file="public/breadcrumb"/}
+	<script src="{$Think.config.Houtai}js/jquery-3.3.1.min.js"></script>  
+	<h4 class="page-title b-0">打印机型号修改</h4>
+
+	<div class="listview list-container">
+		<!-- <header class="listview-header media">
+			<ul class="list-inline list-mass-actions pull-left">
+				<li>
+					<a data-toggle="modal" href="{:url('Bank/add')}" title="Add" class="tooltips">
+						<i class="sa-list-add"></i>
+					</a>
+				</li>
+
+				<li class="show-on" style="display: none;">
+					<a href="" title="Delete" class="tooltips">
+						<i class="sa-list-delete"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</header> -->
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-sm-8">
+								<form action="{:url('Printerbrand/edit')}" class="form-horizontal ajax-form" method="post" enctype="multipart/form-data" id="edit">
+									<input type="hidden" class="form-control" name="id" id="inputid" value="{$brand.id}">
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">打印机品牌</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="name" id="name" maxlength="80" value="{$brand.brand}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">打印机型号</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="number" id="number" maxlength="40" value="{$brand.brandNumber}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">文件名</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="file" id="file" maxlength="20" value="{$brand.fileName}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">商戶編號</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="shop" id="shop" maxlength="64" value="{$brand.shopNumber}">
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="inputname" class="col-sm-3 control-label">api密鑰</label>
+										<div class="col-sm-5">
+											<input type="text" class="form-control" name="api" id="api" maxlength="64" value="{$brand.apiKey}">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="inputcontact" class="col-sm-3 control-label">打印機類型</label>
+										<div class="col-sm-5">
+											<select id="type" class="form-control select2" name="type">  
+											    <option value="">請選擇</option>
+												<option value="1" {if($brand.type==1)}selected{/if}>云打印機</option>
+												<option value="2" {if($brand.type==2)}selected{/if}>非云打印機</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for=""> 是否启用 </label>
+										<div class="col-sm-5" style="margin-top: 7px;">
+											{if condition="$brand['disable'] eq 1"}
+											<label><input type="radio" name="disable" id="disable1" value="1" checked="checked"/>啟用</label>
+											<label><input type="radio" name="disable" id="disable0" value="0" />禁用</label>
+											{else /}
+											<label><input type="radio" name="disable" id="disable1" value="1"/>啟用</label>
+											<label><input type="radio" name="disable" id="disable0" value="0" checked="checked"/>禁用</label>
+											{/if}
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-sm-offset-3 col-sm-9">
+											<div class="btn btn-primary submit">提交</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<style>
+	.note-toolbar-wrapper,.note-toolbar{
+		background-color: #666 !important;
+	}
+</style>
+<script type="text/javascript">  
+    //页面加载完成后初始化select2控件  
+    $(function () {
+    	$("#type").select2({
+	    	width:'100%',
+		    language: {
+		        noResults: function (params) {
+		            return "没有该選項";
+		        }
+		    }
+		});
+		$(".submit").click(function(){
+			$.ajax({
+                type: "POST",
+                url : '{:url('Printerbrand/edit')}',
+                data: $("#edit").serialize(),
+                async: true,
+                success: function(data) {
+                	if(data.code){
+	                    alert(data.msg);
+	            		window.history.go(-1);
+                	}else{
+	                    alert(data.msg);
+                	}
+                },
+                error: function(request) {
+                    alert('頁面錯誤');
+                }
+            });
+		});
+	});
+</script> 

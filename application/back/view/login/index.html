@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+	<head>
+		<meta charset="utf-8">
+		<title>登录</title>
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- 这个是手机登录的关键 -->
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<!-- CSS -->
+		<link rel="stylesheet" href="{$Think.config.Css}assets/css/supersized.css">
+		<link rel="stylesheet" href="{$Think.config.Css}assets/css/style.css">
+	</head>
+
+	<body>
+		<div class="page-body">
+			<div class="row">
+				<div class="page-img" style="display: none">
+					<img src="{$Think.config.Css}assets/img/logo.png" />
+				</div>
+				<div class="page-container">
+					<h1>管理員登錄</h1>
+					<form action="{:url('login/logining')}" method="post" id="login">
+						<div class="input-div">
+						<input type="text" name="name" class="username" placeholder="用户名">
+						<img class="zhanghao" src="{$Think.config.Css}assets/img/zhanghao.png" />
+						</div>
+						<div class="input-div">
+						<input type="password" name="password" class="password" placeholder="密码">
+						<img class="mima" src="{$Think.config.Css}assets/img/mima.png" />
+						</div>
+						<input placeholder="请输入验证码" name="captcha" class="captcha"></input>
+						<img src="{:captcha_src()}" alt="captcha" onclick="this.src='{:captcha_src()}?'+Math.random()" class="captcha-img" />
+
+						<button type="submit" class="submit" onClick="return false;">提交</button>
+						<div class="error"><span>+</span></div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- Javascript -->
+		<script src="{$Think.config.Css}assets/js/jquery-1.8.2.min.js"></script>
+		<!-- <script src="{$Think.config.Css}assets/js/supersized.3.2.7.min.js"></script>-->
+		<script src="{$Think.config.Css}assets/js/scripts.js"></script>
+		<script type="text/javascript">  
+		    //页面加载完成后初始化select2控件  
+		    $(function () {
+				$(".submit").click(function(){
+					var rand = Math.random();
+					var newurl = '{:captcha_src()}?'+rand;
+					$.ajax({
+		                type: "POST",
+		                url : "{:url('login/logining')}",
+		                data: $("#login").serialize(),
+		                async: true,
+		                success: function(data) {
+		                	$('.captcha-img').attr('src',newurl);
+		                	if(data.code){
+			                    alert(data.msg);
+			                    location.href = data.url;
+		                	}else{
+			                    alert(data.msg);
+		                	}
+		                },
+		                error: function(request) {
+		                	$('.captcha-img').attr('src',newurl);
+		                    alert('頁面錯誤');
+		                }
+		            });
+				});
+			});
+		</script> 
+	</body>
+
+</html>
